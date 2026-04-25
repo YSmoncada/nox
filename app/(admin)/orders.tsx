@@ -1,0 +1,209 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, ScrollView, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import apiClient from '../../utils/apiClient';
+
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: keyof typeof Ionicons.glyphMap }> = {
+  Pendiente:  { label: 'PENDIENTE',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  icon: 'time-outline' },
+  Despachado: { label: 'DESPACHADO',  color: '#10b981', bg: 'rgba(16,185,129,0.1)',  icon: 'checkmark-circle-outline' },
+  Cancelado:  { label: 'CANCELADO',   color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   icon: 'close-circle-outline' },
+};
+
+const FILTROS = ['todos', 'Pendiente', 'Despachado', 'Cancelado'];
+
+export default function MonitorOrdenesScreen() {
+  const [pedidos, setPedidos] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [filtro, setFiltro] = useState('todos');
+  
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchPedidos = async (silent = false) => {
+    if (!silent) setLoading(true);
+    try {
+      const res = await apiClient.get('/pedidos/');
+      const data = Array.isArray(res.data) ? res.data : res.data.results ?? [];
+      data.sort((a: any, b: any) => {
+        const order = ['Pendiente', 'Despachado', 'Cancelado'];
+        const ia = order.indexOf(a.estado_nombre) ?? 99;
+        const ib = order.indexOf(b.estado_nombre) ?? 99;
+        if (ia !== ib) return ia - ib;
+        return new Date(b.fecha_hora ?? 0).getTime() - new Date(a.fecha_hora ?? 0).getTime();
+      });
+      setPedidos(data);
+    } catch (e) {
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPedidos();
+    intervalRef.current = setInterval(() => fetchPedidos(true), 5000); 
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, []);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchPedidos();
+  };
+
+  const filtered = filtro === 'todos' ? pedidos : pedidos.filter(p => p.estado_nombre === filtro);
+
+  const counts = FILTROS.reduce((acc, f) => {
+    acc[f] = f === 'todos' ? pedidos.length : pedidos.filter(p => p.estado_nombre === f).length;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const renderPedido = ({ item }: { item: any }) => {
+    const cfg = STATUS_CONFIG[item.estado_nombre] ?? { label: item.estado_nombre ?? '?', color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)', icon: 'help-circle-outline' };
+    const productos = item.productos_detalle ?? item.detalles ?? [];
+    const horaStr = item.hora ?? (item.fecha_hora ? new Date(item.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--');
+
+    return (
+      <View style={styles.card}>
+        <View style={[styles.cardAccent, {backgroundColor: cfg.color}]} />
+        <View style={styles.cardTop}>
+          <View style={styles.cardInfo}>
+            <Text style={styles.orderId}>ORDEN #{item.id}</Text>
+            <Text style={styles.mesaText}>MESA #{item.mesa_numero ?? item.mesa} • {item.usuario_nombre || 'S/N'}</Text>
+          </View>
+          <View style={[styles.badge, { backgroundColor: cfg.bg }]}>
+            <Ionicons name={cfg.icon as any} size={11} color={cfg.color} />
+            <Text style={[styles.badgeText, { color: cfg.color }]}>{cfg.label}</Text>
+          </View>
+        </View>
+
+        <View style={styles.content}>
+            {productos.slice(0, 5).map((p: any, i: number) => (
+                <View key={i} style={styles.itemRow}>
+                    <Text style={styles.itemCant}>{p.cantidad ?? 1}x</Text>
+                    <Text style={styles.itemName} numberOfLines={1}>{p.producto_nombre || p.nombre}</Text>
+                </View>
+            ))}
+            {productos.length > 5 && (
+                <Text style={styles.moreText}>Y {productos.length - 5} PRODUCTOS MÁS...</Text>
+            )}
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.cardBottom}>
+          <View style={styles.timeContainer}>
+            <Ionicons name="time-outline" size={12} color="#8A7BAF" />
+            <Text style={styles.hora}>{horaStr}</Text>
+          </View>
+          <Text style={styles.total}>${parseFloat(item.total || 0).toLocaleString()}</Text>
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
+          <Text style={styles.subtitle}>MONITOR DE ÓRDENES</Text>
+        </View>
+        <View style={styles.liveBadge}>
+          <View style={styles.liveDot} />
+          <Text style={styles.liveText}>EN VIVO</Text>
+        </View>
+      </View>
+
+      <View style={styles.statsRow}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.statsContainer}>
+            {FILTROS.map(f => (
+              <TouchableOpacity key={f} style={[styles.statBox, filtro === f && styles.statActive]} onPress={() => setFiltro(f)}>
+                  <Text style={[styles.statNum, filtro === f && {color: '#fff'}, f !== 'todos' && {color: STATUS_CONFIG[f]?.color}]}>{counts[f]}</Text>
+                  <Text style={styles.statLbl}>{f === 'todos' ? 'TODAS' : f.toUpperCase().substring(0,6)}</Text>
+              </TouchableOpacity>
+            ))}
+        </ScrollView>
+      </View>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 60 }} />
+      ) : filtered.length === 0 ? (
+        <View style={styles.emptyContainer}>
+            <Ionicons name="receipt-outline" size={60} color="rgba(138,123,175,0.05)" />
+            <Text style={styles.emptyText}>SIN ÓRDENES ACTIVAS</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={renderPedido}
+          contentContainerStyle={styles.listContent}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#A944FF" />}
+        />
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#050510' },
+  header: { 
+    paddingHorizontal: 25, 
+    paddingTop: Platform.OS === 'ios' ? 70 : 50, 
+    paddingBottom: 20, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center' 
+  },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
+  brandingOS: { color: '#A944FF' },
+  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+  liveBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(16,185,129,0.05)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(16,185,129,0.2)' },
+  liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#10b981', marginRight: 6 },
+  liveText: { color: '#10b981', fontSize: 9, fontWeight: '900', letterSpacing: 2 },
+
+  statsRow: { marginBottom: 15 },
+  statsContainer: { paddingHorizontal: 25, gap: 10 },
+  statBox: { 
+    backgroundColor: '#0E0D23', 
+    borderRadius: 20, 
+    padding: 15, 
+    minWidth: 80, 
+    alignItems: 'center', 
+    borderWidth: 1, 
+    borderColor: 'rgba(255,255,255,0.05)' 
+  },
+  statActive: { borderColor: '#A944FF', backgroundColor: 'rgba(169, 68, 255, 0.05)' },
+  statNum: { fontSize: 18, fontWeight: '900', color: '#fff' },
+  statLbl: { fontSize: 8, color: '#8A7BAF', fontWeight: '900', letterSpacing: 1.5, marginTop: 4 },
+
+  listContent: { padding: 20, paddingBottom: 100 },
+  card: { 
+    backgroundColor: '#0E0D23', 
+    borderRadius: 28, 
+    padding: 20, 
+    marginBottom: 16, 
+    borderWidth: 1, 
+    borderColor: 'rgba(255,255,255,0.05)' 
+  },
+  cardAccent: { position: 'absolute', left: 0, top: 25, bottom: 25, width: 4, borderTopRightRadius: 10, borderBottomRightRadius: 10 },
+  cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 15 },
+  cardInfo: { gap: 2 },
+  orderId: { color: '#fff', fontWeight: '900', fontSize: 13, letterSpacing: 1 },
+  mesaText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', textTransform: 'uppercase' },
+  badge: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, gap: 5 },
+  badgeText: { fontSize: 9, fontWeight: '900', letterSpacing: 1 },
+  content: { gap: 6, marginBottom: 15 },
+  itemRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  itemCant: { color: '#A944FF', fontWeight: '900', fontSize: 12 },
+  itemName: { color: '#ccc', fontSize: 13, flex: 1 },
+  moreText: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', marginTop: 4 },
+  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.05)', marginBottom: 15 },
+  cardBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  timeContainer: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  hora: { color: '#8A7BAF', fontSize: 11, fontWeight: 'bold' },
+  total: { color: '#10b981', fontSize: 18, fontWeight: '900' },
+
+  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100, gap: 15, opacity: 0.5 },
+  emptyText: { color: '#8A7BAF', fontWeight: '900', fontSize: 11, letterSpacing: 3 },
+});

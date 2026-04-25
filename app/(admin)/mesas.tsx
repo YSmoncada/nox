@@ -1,0 +1,279 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator, Alert, Modal, ScrollView, Image, Share, RefreshControl, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
+import apiClient from '../../utils/apiClient';
+import * as Linking from 'expo-linking';
+
+export default function AdminMesasScreen() {
+  const [mesas, setMesas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [selectedMesa, setSelectedMesa] = useState<any>(null);
+  const [formData, setFormData] = useState({ numero: '', capacidad: '4' });
+  const [refreshing, setRefreshing] = useState(false);
+  
+  useFocusEffect(
+    useCallback(() => {
+      fetchMesas();
+      const interval = setInterval(() => fetchMesas(), 15000);
+      return () => clearInterval(interval);
+    }, [])
+  );
+
+  const fetchMesas = async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    else if (mesas.length === 0) setLoading(true);
+    try {
+      const res = await apiClient.get('/mesas/');
+      setMesas(Array.isArray(res.data) ? res.data : []);
+    } finally { 
+        setLoading(false); 
+        setRefreshing(false);
+    }
+  };
+
+  const handleAddMesa = async () => {
+    if (!formData.numero) return Alert.alert('Error', 'Número de mesa requerido');
+    try {
+      await apiClient.post('/mesas/', {
+        numero: parseInt(formData.numero),
+        capacidad: parseInt(formData.capacidad) || 1
+      });
+      setModalOpen(false);
+      setFormData({ numero: '', capacidad: '4' });
+      fetchMesas();
+      Alert.alert('Éxito', 'Mesa agregada correctamente');
+    } catch (error) { Alert.alert('Error', 'Ya existe una mesa con este número'); }
+  };
+
+  const handleDeleteMesa = (id: any, numero: any) => {
+    Alert.alert("Eliminar Mesa", `¿Eliminar Mesa #${numero}?`, [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Eliminar", style: "destructive", onPress: async () => {
+          try {
+            await apiClient.delete(`/mesas/${id}/`);
+            fetchMesas();
+          } catch (error) { console.error(error); }
+      }}
+    ]);
+  };
+
+  const getClientUrl = (mesaId: any) => {
+      // Usamos Linking.createURL para generar el deep link hacia Expo Go (ej. exp://IP:8081/--/1)
+      return Linking.createURL(String(mesaId));
+  };
+
+  const getQrUrl = (mesaId: any) => {
+      const url = getClientUrl(mesaId);
+      const encodedUrl = encodeURIComponent(url);
+      return `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodedUrl}`;
+  };
+
+  const handleShareQr = async (mesa: any) => {
+      const url = getClientUrl(mesa.id);
+      try {
+          await Share.share({
+              message: `Menú Digital - Mesa #${mesa.numero}\nPide aquí: ${url}`,
+              url: url
+          });
+      } catch (error) { console.log(error); }
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Header Premium */}
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
+          <Text style={styles.subtitle}>CONFIGURACIÓN DE SALÓN</Text>
+        </View>
+        <TouchableOpacity style={styles.addBtn} onPress={() => setModalOpen(true)}>
+          <Ionicons name="add" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 50 }} />
+      ) : (
+        <FlatList 
+          data={mesas} 
+          keyExtractor={it => String(it.id)} 
+          contentContainerStyle={styles.listContent}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchMesas(true)} tintColor="#A944FF" />}
+          renderItem={({item}) => {
+            const isOcupada = item.estado_nombre === 'Ocupada';
+            const isSolicitando = item.estado_nombre === 'Solicitando Cuenta';
+            const isLibre = !isOcupada && !isSolicitando;
+
+            let statusColor = '#10b981'; // Libre
+            if (isOcupada) statusColor = '#A944FF';
+            if (isSolicitando) statusColor = '#f59e0b'; // Amarillo/Naranja
+
+            return (
+              <View style={styles.mesaCard}>
+                <View style={[styles.cardAccent, {backgroundColor: statusColor}]} />
+                <View style={[styles.mesaIcon, {backgroundColor: statusColor}]}>
+                  <Ionicons name={isSolicitando ? "cash-outline" : "restaurant-outline"} size={24} color="#fff" />
+                </View>
+                <View style={styles.mesaMain}>
+                  <Text style={styles.mesaTitle}>Mesa {item.numero}</Text>
+                  <Text style={styles.mesaSap}>CAPACIDAD: {item.capacidad} PERSONAS</Text>
+                  <View style={[styles.badge, {backgroundColor: `${statusColor}1A`}]}>
+                    <View style={[styles.dot, {backgroundColor: statusColor}]} />
+                    <Text style={[styles.badgeText, {color: statusColor}]}>
+                        {item.estado_nombre?.toUpperCase() || 'LIBRE'}
+                    </Text>
+                  </View>
+                </View>
+                
+                <View style={styles.actions}>
+                    <TouchableOpacity 
+                        onPress={() => { setSelectedMesa(item); setQrModalOpen(true); }} 
+                        style={styles.iconBtnQr}
+                    >
+                        <Ionicons name="qr-code-outline" size={18} color="#A944FF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDeleteMesa(item.id, item.numero)} style={styles.iconBtnDanger}>
+                        <Ionicons name="trash-outline" size={18} color="#ff4444" />
+                    </TouchableOpacity>
+                </View>
+              </View>
+            );
+          }} 
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+                <Ionicons name="grid-outline" size={60} color="rgba(138, 123, 175, 0.1)" />
+                <Text style={styles.emptyText}>SIN MESAS ACTIVAS</Text>
+            </View>
+          }
+        />
+      )}
+
+      {/* MODAL QR MESA */}
+      <Modal visible={qrModalOpen} transparent animationType="fade">
+          <View style={styles.modalBg}>
+              <View style={styles.glassCard}>
+                  <View style={styles.modalHeader}>
+                      <View>
+                        <Text style={styles.modalTitle}>CÓDIGO QR</Text>
+                        <Text style={styles.selectedProdName}>MESA #{selectedMesa?.numero}</Text>
+                      </View>
+                      <TouchableOpacity onPress={() => setQrModalOpen(false)}>
+                          <Ionicons name="close-circle" size={32} color="rgba(255,255,255,0.2)" />
+                      </TouchableOpacity>
+                  </View>
+                  
+                  <View style={styles.qrFrame}>
+                      {selectedMesa && (
+                          <Image source={{ uri: getQrUrl(selectedMesa.id) }} style={styles.qrImage} resizeMode="contain" />
+                      )}
+                  </View>
+                  
+                  <Text style={styles.qrInfo}>Escanea este código para realizar pedidos directamente desde esta mesa en el portal del cliente.</Text>
+                  
+                  <TouchableOpacity style={styles.shareBtn} onPress={() => handleShareQr(selectedMesa)}>
+                      <Ionicons name="share-social-outline" size={20} color="#fff" style={{marginRight: 10}} />
+                      <Text style={styles.saveBtnText}>COMPARTIR ENLACE</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+      </Modal>
+
+      {/* MODAL CONFIG MESA */}
+      <Modal visible={modalOpen} transparent animationType="fade">
+        <View style={styles.modalBg}>
+            <View style={styles.glassCard}>
+                <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>NUEVA MESA</Text>
+                    <TouchableOpacity onPress={() => setModalOpen(false)}>
+                        <Ionicons name="close-circle" size={32} color="rgba(255,255,255,0.2)" />
+                    </TouchableOpacity>
+                </View>
+                
+                <Text style={styles.label}>NÚMERO IDENTIFICADOR</Text>
+                <TextInput 
+                    style={styles.input} placeholder="Ej: 101" placeholderTextColor="#444"
+                    keyboardType="number-pad" value={formData.numero} onChangeText={t => setFormData({...formData, numero: t})} 
+                />
+                
+                <Text style={styles.label}>CAPACIDAD MÁXIMA</Text>
+                <TextInput 
+                    style={styles.input} placeholder="4" placeholderTextColor="#444"
+                    keyboardType="number-pad" value={formData.capacidad} onChangeText={t => setFormData({...formData, capacidad: t})} 
+                />
+                
+                <TouchableOpacity style={styles.saveBtn} onPress={handleAddMesa}>
+                    <Text style={styles.saveBtnText}>REGISTRAR EN SALÓN</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+      </Modal>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#050510' },
+  header: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingHorizontal: 25, 
+    paddingTop: Platform.OS === 'ios' ? 70 : 50,
+    paddingBottom: 30
+  },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
+  brandingOS: { color: '#A944FF' },
+  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+  addBtn: { backgroundColor: '#A944FF', width: 56, height: 56, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#A944FF', shadowOpacity: 0.5, shadowRadius: 15 },
+
+  listContent: { padding: 20, paddingBottom: 100 },
+  mesaCard: { 
+    backgroundColor: '#0E0D23', 
+    borderRadius: 28, 
+    padding: 16, 
+    marginBottom: 16, 
+    flexDirection: 'row', 
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.05)'
+  },
+  cardAccent: { position: 'absolute', left: 0, top: 25, bottom: 25, width: 4, backgroundColor: '#A944FF', borderTopRightRadius: 10, borderBottomRightRadius: 10 },
+  mesaIcon: { width: 60, height: 60, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 5 },
+  mesaLibre: { backgroundColor: '#10b981' },
+  mesaOcupada: { backgroundColor: '#A944FF' },
+  
+  mesaMain: { flex: 1, marginLeft: 16, gap: 2 },
+  mesaTitle: { fontSize: 17, fontWeight: 'bold', color: '#fff' },
+  mesaSap: { fontSize: 9, color: '#8A7BAF', fontWeight: '900', letterSpacing: 1, textTransform: 'uppercase' },
+  
+  badge: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, marginTop: 8, backgroundColor: 'rgba(255,255,255,0.03)', gap: 6 },
+  dot: { width: 6, height: 6, borderRadius: 3 },
+  badgeText: { fontSize: 9, fontWeight: '900', letterSpacing: 1 },
+  badgeLibre: { backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+  badgeOcupada: { backgroundColor: 'rgba(169, 68, 255, 0.1)' },
+  
+  actions: { flexDirection: 'row', gap: 8 },
+  iconBtnQr: { width: 40, height: 40, borderRadius: 14, backgroundColor: 'rgba(169, 68, 255, 0.1)', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)' },
+  iconBtnDanger: { width: 40, height: 40, borderRadius: 14, backgroundColor: 'rgba(255, 68, 68, 0.05)', justifyContent: 'center', alignItems: 'center' },
+
+  modalBg: { flex: 1, backgroundColor: 'rgba(5, 5, 16, 0.95)', justifyContent: 'center', padding: 25 },
+  glassCard: { backgroundColor: '#0E0D23', borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)' },
+  qrFrame: { backgroundColor: '#fff', padding: 20, borderRadius: 30, marginBottom: 25, width: '100%', height: 280, justifyContent: 'center', alignItems: 'center' },
+  qrImage: { width: '100%', height: '100%' },
+  qrInfo: { color: '#8A7BAF', fontSize: 12, textAlign: 'center', marginBottom: 30, lineHeight: 22 },
+  shareBtn: { backgroundColor: '#A944FF', flexDirection: 'row', padding: 22, borderRadius: 25, alignItems: 'center', width: '100%', justifyContent: 'center' },
+
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 30, width: '100%' },
+  modalTitle: { color: '#fff', fontSize: 22, fontWeight: '900', letterSpacing: 2 },
+  selectedProdName: { color: '#A944FF', fontSize: 12, fontWeight: 'bold', marginTop: 4, textTransform: 'uppercase' },
+  label: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', marginBottom: 12, letterSpacing: 2, textTransform: 'uppercase' },
+  input: { backgroundColor: '#1A103C', color: '#fff', borderRadius: 20, padding: 20, fontSize: 16, marginBottom: 25, borderWidth:1, borderColor:'rgba(255,255,255,0.05)' },
+  saveBtn: { backgroundColor: '#A944FF', padding: 22, borderRadius: 25, alignItems: 'center', width: '100%' },
+  saveBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 14 },
+
+  emptyContainer: { alignItems: 'center', marginTop: 100, gap: 15, opacity: 0.5 },
+  emptyText: { color: '#8A7BAF', fontWeight: '900', fontSize: 12, letterSpacing: 3 }
+});
