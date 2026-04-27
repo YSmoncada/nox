@@ -61,8 +61,9 @@ export default function AdminMesasScreen() {
   };
 
   const getClientUrl = (mesaId: any) => {
-      // Usamos Linking.createURL para generar el deep link hacia Expo Go (ej. exp://IP:8081/--/1)
-      return Linking.createURL(String(mesaId));
+      // URL de producción en Vercel para acceso universal sin descargas
+      const baseUrl = "https://mandala-proyect.vercel.app";
+      return `${baseUrl}/(client)/${mesaId}`;
   };
 
   const getQrUrl = (mesaId: any) => {

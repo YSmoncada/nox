@@ -11,7 +11,7 @@ const MODULES = [
   { id: 'inventory', label: 'INVENTARIO', sub: 'Control de Stock', icon: 'cube-outline', path: '/(admin)/inventory' },
   { id: 'orders', label: 'PEDIDOS', sub: 'Historial y Monitor', icon: 'receipt-outline', path: '/(admin)/orders' },
   { id: 'mesas', label: 'MESAS', sub: 'Configuración Salón', icon: 'grid-outline', path: '/(admin)/mesas' },
-  { id: 'users', label: 'PERSONAL', sub: 'Gestión de Staff', icon: 'people-outline', path: '/(admin)/users' },
+  { id: 'users', label: 'USUARIOS', sub: 'Gestión de Staff', icon: 'people-outline', path: '/(admin)/users' },
   { id: 'history', label: 'REPORTES', sub: 'Estadísticas Nox', icon: 'bar-chart-outline', path: '/(admin)/history' },
   { id: 'accounting', label: 'CAJA', sub: 'Flujo de Efectivo', icon: 'cash-outline', path: '/(admin)/accounting' },
 ];

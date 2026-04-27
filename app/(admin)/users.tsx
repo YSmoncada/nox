@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, ActivityIndicator, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
+import { useAuthStore } from '../../store/authStore';
 
 export default function AdmUsersScreen() {
+  const { user: currentUser } = useAuthStore();
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('operativo');
@@ -86,7 +88,27 @@ export default function AdmUsersScreen() {
     }
   };
 
+  const handleToggleStatus = async (user: any) => {
+    if (String(user.id) === String(currentUser?.id)) {
+      Alert.alert('Acceso Denegado', 'No puedes desactivar tu propia cuenta de administrador.');
+      return;
+    }
+    try {
+      const newStatus = !user.activo;
+      await apiClient.put(`/usuarios/${user.id}/`, { activo: newStatus });
+      fetchData();
+      Alert.alert('Éxito', `Usuario ${newStatus ? 'activado' : 'desactivado'} correctamente.`);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'No se pudo cambiar el estado del usuario.');
+    }
+  };
+
   const handleDelete = (id: any) => {
+    if (String(id) === String(currentUser?.id)) {
+      Alert.alert('Acceso Denegado', 'No puedes eliminar tu propia cuenta de administrador.');
+      return;
+    }
     Alert.alert("Confirmación", "¿Eliminar permanentemente este usuario?", [
       { text: "Cancelar", style: "cancel" },
       { text: "Eliminar", style: "destructive", onPress: async () => {
@@ -115,6 +137,9 @@ export default function AdmUsersScreen() {
           </View>
         </View>
         <View style={styles.actions}>
+          <TouchableOpacity onPress={() => handleToggleStatus(item)} style={[styles.iconBtn, { backgroundColor: item.activo ? '#10b98120' : '#ff444420' }]}>
+            <Ionicons name={item.activo ? "person-outline" : "person-remove-outline"} size={18} color={item.activo ? "#10b981" : "#ff4444"} />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => handleOpenReset(item)} style={styles.iconBtn}>
             <Ionicons name="key-outline" size={18} color="#fff" />
           </TouchableOpacity>
@@ -132,7 +157,7 @@ export default function AdmUsersScreen() {
       <View style={styles.header}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
-          <Text style={styles.subtitle}>GESTIÓN DE PERSONAL</Text>
+          <Text style={styles.subtitle}>USUARIOS</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowAddModal(true)}>
           <Ionicons name="person-add" size={24} color="#fff" />

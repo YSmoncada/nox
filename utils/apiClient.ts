@@ -79,6 +79,8 @@ apiClient.interceptors.response.use(
         } else {
           Alert.alert("Sesión Expirada", "Vuelve a iniciar sesión.");
         }
+      } else if (status === 400 && message === "Usuario inactivo") {
+        Alert.alert("Acceso Restringido", "Tu cuenta ha sido desactivada. Por favor, contacta con el administrador de la discoteca.");
       } else {
         Alert.alert(`Error ${status}`, message);
       }
