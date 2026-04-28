@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore';
 
 // export const API_URL = "http://localhost:8000/api";
 // export const API_URL = "http://192.168.18.12:8000/api";
-export const API_URL = "https://mandala-proyect.onrender.com/api";
+export const API_URL = "https://noxos-movil-backend.onrender.com/api";
 // export const API_URL = "http://172.20.10.2:8000/api"; // Tu IP de red local para MariaDB
 
 const apiClient = axios.create({
