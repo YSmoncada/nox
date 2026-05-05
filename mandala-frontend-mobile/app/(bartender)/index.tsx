@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import LogoutModal from '../../components/LogoutModal';
 
 const { width } = Dimensions.get('window');
 
@@ -10,17 +11,16 @@ export default function BartenderMenu() {
   const router = useRouter();
 
   const clearAuth = useAuthStore(state => state.clearAuth);
+  const [showLogout, setShowLogout] = useState(false);
 
   const handleLogout = () => {
-    if (Platform.OS === 'web') {
-        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-            clearAuth();
-            router.replace("/(auth)/login");
-        }
-    } else {
-        clearAuth();
-        router.replace("/(auth)/login");
-    }
+    setShowLogout(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogout(false);
+    clearAuth();
+    router.replace("/(auth)/login");
   };
 
   return (
@@ -52,6 +52,12 @@ export default function BartenderMenu() {
             <Text style={styles.menuDesc}>Registrar venta directa</Text>
         </TouchableOpacity>
       </View>
+
+      <LogoutModal 
+        visible={showLogout} 
+        onCancel={() => setShowLogout(false)} 
+        onConfirm={confirmLogout} 
+      />
     </View>
   );
 }

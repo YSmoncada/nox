@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
+import LogoutModal from '../../components/LogoutModal';
 
 const ESTADO_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   pendiente:   { label: 'Pendiente',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
@@ -21,6 +22,7 @@ export default function MisPedidosScreen() {
   const user = useAuthStore(state => state.user);
   const clearAuth = useAuthStore(state => state.clearAuth);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [showLogout, setShowLogout] = useState(false);
   const [mesaAlerta, setMesaAlerta] = useState<any>(null);
   const [tab, setTab] = useState<'activas' | 'historial'>('activas');
   const router = useRouter();
@@ -78,24 +80,13 @@ export default function MisPedidosScreen() {
   }, [user?.id]);
 
   const handleLogout = () => {
-    if (Platform.OS === 'web') {
-        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-            clearAuth();
-            router.replace("/(auth)/login");
-        }
-    } else {
-        Alert.alert(
-            "Cerrar Sesión",
-            "¿Estás seguro de que deseas salir del sistema?",
-            [
-              { text: "Cancelar", style: "cancel" },
-              { text: "Salir", style: "destructive", onPress: () => {
-                  clearAuth();
-                  router.replace('/(auth)/login');
-              }}
-            ]
-        );
-    }
+    setShowLogout(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogout(false);
+    clearAuth();
+    router.replace("/(auth)/login");
   };
 
   // AGRUPAR PEDIDOS POR MESA
@@ -294,6 +285,12 @@ export default function MisPedidosScreen() {
           </View>
         </View>
       </Modal>
+
+      <LogoutModal 
+        visible={showLogout} 
+        onCancel={() => setShowLogout(false)} 
+        onConfirm={confirmLogout} 
+      />
     </View>
   );
 }

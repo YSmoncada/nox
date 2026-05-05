@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
+import LogoutModal from '../../components/LogoutModal';
 
 const ESTADO_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   pendiente:   { label: 'Pendiente',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
@@ -19,6 +20,7 @@ export default function BartenderHistoryScreen() {
   const user = useAuthStore(state => state.user);
   const clearAuth = useAuthStore(state => state.clearAuth);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [showLogout, setShowLogout] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,8 +55,13 @@ export default function BartenderHistoryScreen() {
   }, [user?.id]);
 
   const handleLogout = () => {
+    setShowLogout(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogout(false);
     clearAuth();
-    router.replace('/(auth)/login');
+    router.replace("/(auth)/login");
   };
 
   const handleUpdateEstado = async (pedidoId: number, nuevoEstado: string) => {
@@ -154,6 +161,9 @@ export default function BartenderHistoryScreen() {
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
           <Text style={styles.subtitle}>MIS PEDIDOS</Text>
         </View>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
+          <Ionicons name="log-out-outline" size={22} color="#ef4444" />
+        </TouchableOpacity>
       </View>
 
       {loading && !refreshing ? (
@@ -173,6 +183,12 @@ export default function BartenderHistoryScreen() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#A944FF" />}
         />
       )}
+
+      <LogoutModal 
+        visible={showLogout} 
+        onCancel={() => setShowLogout(false)} 
+        onConfirm={confirmLogout} 
+      />
     </View>
   );
 }

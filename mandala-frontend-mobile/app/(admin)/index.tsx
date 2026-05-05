@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, Stack, useFocusEffect } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
+import LogoutModal from '../../components/LogoutModal';
 
 const { width } = Dimensions.get('window');
 
@@ -21,6 +22,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { clearAuth, user } = useAuthStore();
+  const [showLogout, setShowLogout] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -67,20 +69,13 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    if (Platform.OS === 'web') {
-        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-            clearAuth();
-            router.replace("/(auth)/login");
-        }
-    } else {
-        Alert.alert("Cerrar Sesión", "¿Estás seguro?", [
-            { text: "Cancelar", style: "cancel" },
-            { text: "Salir", style: "destructive", onPress: () => {
-                clearAuth();
-                router.replace("/(auth)/login");
-            }}
-        ]);
-    }
+    setShowLogout(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogout(false);
+    clearAuth();
+    router.replace("/(auth)/login");
   };
 
   return (
@@ -164,6 +159,12 @@ export default function AdminDashboard() {
 
         <View style={{height: 120}} />
       </ScrollView>
+
+      <LogoutModal 
+        visible={showLogout} 
+        onCancel={() => setShowLogout(false)} 
+        onConfirm={confirmLogout} 
+      />
     </View>
   );
 }

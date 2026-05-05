@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import apiClient from '../../utils/apiClient';
+import LogoutModal from '../../components/LogoutModal';
 
 // ─── Sub-pantalla: Config de Marca ───────────────────────────────────────────
 function BrandConfigScreen({ onBack }: { onBack: () => void }) {
@@ -152,24 +153,18 @@ export default function SettingsScreen() {
   const user = useAuthStore(state => state.user);
   const clearAuth = useAuthStore(state => state.clearAuth);
   const [showBrand, setShowBrand] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
   if (showBrand) return <BrandConfigScreen onBack={() => setShowBrand(false)} />;
 
   const handleLogout = () => {
-    if (Platform.OS === 'web') {
-        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-            clearAuth();
-            router.replace("/(auth)/login");
-        }
-    } else {
-        Alert.alert("Cerrar Sesión", "¿Estás seguro?", [
-            { text: "Cancelar", style: "cancel" },
-            { text: "Salir", style: "destructive", onPress: () => {
-                clearAuth();
-                router.replace("/(auth)/login");
-            }}
-        ]);
-    }
+    setShowLogout(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogout(false);
+    clearAuth();
+    router.replace("/(auth)/login");
   };
 return (
     <View style={styles.container}>
@@ -232,6 +227,12 @@ return (
         </TouchableOpacity>
 
       </ScrollView>
+
+      <LogoutModal 
+        visible={showLogout} 
+        onCancel={() => setShowLogout(false)} 
+        onConfirm={confirmLogout} 
+      />
     </View>
   );
 }

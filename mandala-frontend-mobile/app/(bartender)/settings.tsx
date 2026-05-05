@@ -1,39 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import { LinearGradient } from 'expo-linear-gradient';
+import LogoutModal from '../../components/LogoutModal';
 
 export default function BartenderSettingsScreen() {
   const router = useRouter();
   const user = useAuthStore(state => state.user);
   const clearAuth = useAuthStore(state => state.clearAuth);
+  const [showLogout, setShowLogout] = useState(false);
 
   const handleLogout = () => {
-    if (Platform.OS === 'web') {
-        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-            clearAuth();
-            router.replace("/(auth)/login");
-        }
-    } else {
-        Alert.alert(
-          "Cerrar Sesión",
-          "¿Estás seguro de que deseas salir del sistema?",
-          [
-            { text: "Cancelar", style: "cancel" },
-            { 
-              text: "Salir", 
-              style: "destructive",
-              onPress: () => {
-                clearAuth();
-                router.replace('/(auth)/login');
-              }
-            }
-          ]
-        );
-    }
+    setShowLogout(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogout(false);
+    clearAuth();
+    router.replace("/(auth)/login");
   };
 
   return (
@@ -66,6 +53,12 @@ export default function BartenderSettingsScreen() {
             </View>
         </View>
       </SafeAreaView>
+
+      <LogoutModal 
+        visible={showLogout} 
+        onCancel={() => setShowLogout(false)} 
+        onConfirm={confirmLogout} 
+      />
     </View>
   );
 }
