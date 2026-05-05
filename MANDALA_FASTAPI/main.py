@@ -1,10 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from db.database import engine, Base
 from api.endpoints import auth, pedidos, inventario, mesas, usuarios, config
 from fastapi.staticfiles import StaticFiles
 import os
 import logging
+from db import models # Asegurar que todos los modelos se carguen
 
 # Configurar logging solo a consola para evitar bucles de reinicio
 logging.basicConfig(
@@ -13,6 +15,7 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()]
 )
 logger = logging.getLogger("mandala")
+
 
 # Crear tablas y semillar si es necesario
 Base.metadata.create_all(bind=engine)
@@ -33,7 +36,22 @@ finally:
 
 app = FastAPI(title="Mandala API (FastAPI)")
 
+# Middleware de diagnóstico para ver errores reales en Render
+@app.middleware("http")
+async def db_diagnostic_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        import traceback
+        error_msg = f"ERROR NO CONTROLADO: {str(e)}\n{traceback.format_exc()}"
+        logger.error(error_msg)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Error interno: {str(e)}", "traceback": error_msg[:200]}
+        )
+
 # Configurar CORS
+
 origins = [
     "http://localhost:8081",
     "http://localhost:8082",
