@@ -37,5 +37,6 @@ export default function Index() {
   }
 
   // Por defecto, mandamos al login
-  return <Redirect href="/(auth)" />;
+  return <Redirect href="/(auth)/login" />;
+
 }
