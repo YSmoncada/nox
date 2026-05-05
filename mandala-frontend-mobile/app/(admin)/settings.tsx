@@ -156,16 +156,22 @@ export default function SettingsScreen() {
   if (showBrand) return <BrandConfigScreen onBack={() => setShowBrand(false)} />;
 
   const handleLogout = () => {
-    Alert.alert("Cerrar Sesión", "¿Estás seguro?", [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Salir", style: "destructive", onPress: () => {
+    if (Platform.OS === 'web') {
+        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
             clearAuth();
-            router.replace('/(auth)/login');
-        }}
-    ]);
+            router.replace("/(auth)/login");
+        }
+    } else {
+        Alert.alert("Cerrar Sesión", "¿Estás seguro?", [
+            { text: "Cancelar", style: "cancel" },
+            { text: "Salir", style: "destructive", onPress: () => {
+                clearAuth();
+                router.replace("/(auth)/login");
+            }}
+        ]);
+    }
   };
-
-  return (
+return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerTitleContainer}>

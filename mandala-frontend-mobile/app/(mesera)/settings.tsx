@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -12,21 +12,28 @@ export default function MeseraSettingsScreen() {
   const clearAuth = useAuthStore(state => state.clearAuth);
 
   const handleLogout = () => {
-    Alert.alert(
-      "Cerrar Sesión",
-      "¿Estás seguro de que deseas salir del sistema?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { 
-          text: "Salir", 
-          style: "destructive",
-          onPress: () => {
+    if (Platform.OS === 'web') {
+        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
             clearAuth();
-            router.replace('/(auth)/login');
-          }
+            router.replace("/(auth)/login");
         }
-      ]
-    );
+    } else {
+        Alert.alert(
+          "Cerrar Sesión",
+          "¿Estás seguro de que deseas salir del sistema?",
+          [
+            { text: "Cancelar", style: "cancel" },
+            { 
+              text: "Salir", 
+              style: "destructive",
+              onPress: () => {
+                clearAuth();
+                router.replace('/(auth)/login');
+              }
+            }
+          ]
+        );
+    }
   };
 
   return (

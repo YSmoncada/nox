@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert, RefreshControl, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert, RefreshControl, Modal, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import apiClient from '../../utils/apiClient';
@@ -78,8 +78,24 @@ export default function MisPedidosScreen() {
   }, [user?.id]);
 
   const handleLogout = () => {
-    clearAuth();
-    router.replace('/(auth)/login');
+    if (Platform.OS === 'web') {
+        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+            clearAuth();
+            router.replace("/(auth)/login");
+        }
+    } else {
+        Alert.alert(
+            "Cerrar Sesión",
+            "¿Estás seguro de que deseas salir del sistema?",
+            [
+              { text: "Cancelar", style: "cancel" },
+              { text: "Salir", style: "destructive", onPress: () => {
+                  clearAuth();
+                  router.replace('/(auth)/login');
+              }}
+            ]
+        );
+    }
   };
 
   // AGRUPAR PEDIDOS POR MESA

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-native';
+import { useAuthStore } from '../../store/authStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
@@ -8,8 +9,18 @@ const { width } = Dimensions.get('window');
 export default function BartenderMenu() {
   const router = useRouter();
 
+  const clearAuth = useAuthStore(state => state.clearAuth);
+
   const handleLogout = () => {
-    router.replace("/(auth)/login");
+    if (Platform.OS === 'web') {
+        if (window.confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+            clearAuth();
+            router.replace("/(auth)/login");
+        }
+    } else {
+        clearAuth();
+        router.replace("/(auth)/login");
+    }
   };
 
   return (
