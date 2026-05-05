@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 
 interface LogoutModalProps {
   visible: boolean;
@@ -14,9 +13,6 @@ export default function LogoutModal({ visible, onConfirm, onCancel, isLoggingOut
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent>
       <View style={styles.overlay}>
-        {/* Usamos BlurView en iOS/Web y un fondo oscuro en Android donde blur a veces falla */}
-        <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
-        
         <View style={styles.card}>
           <View style={styles.iconContainer}>
             <Ionicons name="log-out-outline" size={40} color="#ff4444" />
