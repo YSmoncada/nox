@@ -36,24 +36,33 @@ def seed():
 
     db.commit()
 
-    # 5. Usuario Admin por defecto
-    admin_user = db.query(models.Usuario).filter(models.Usuario.username == "admin").first()
-    if not admin_user:
-        hashed_password = get_password_hash("admin123")
-        admin_user = models.Usuario(
-            username="admin",
-            email="admin@mandala.com",
-            password=hashed_password,
-            nombre_completo="Administrador Sistema",
-            activo=True
-        )
-        db.add(admin_user)
-        db.commit()
-        db.refresh(admin_user)
-        
-        rol_admin = db.query(models.Rol).filter(models.Rol.nombre == "admin").first()
-        db.add(models.UsuarioRol(usuario_id=admin_user.id, rol_id=rol_admin.id))
-        db.commit()
+    # 5. Usuarios base por defecto
+    usuarios_base = [
+        {"user": "admin", "pass": "admin123", "email": "admin@mandala.com", "name": "Administrador", "rol": "admin"},
+        {"user": "bartender", "pass": "bartender123", "email": "bartender@mandala.com", "name": "Bartender de Turno", "rol": "bartender"},
+        {"user": "mesera", "pass": "mesera123", "email": "mesera@mandala.com", "name": "Mesera de Turno", "rol": "mesera"}
+    ]
+
+    for u_data in usuarios_base:
+        user = db.query(models.Usuario).filter(models.Usuario.username == u_data["user"]).first()
+        if not user:
+            hashed_password = get_password_hash(u_data["pass"])
+            user = models.Usuario(
+                username=u_data["user"],
+                email=u_data["email"],
+                password=hashed_password,
+                nombre_completo=u_data["name"],
+                activo=True
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            
+            rol = db.query(models.Rol).filter(models.Rol.nombre == u_data["rol"]).first()
+            if rol:
+                db.add(models.UsuarioRol(usuario_id=user.id, rol_id=rol.id))
+                db.commit()
+            print(f"- Usuario {u_data['user']} creado con éxito.")
 
     categorias_data = [
         {"nombre": "Cervezas", "desc": "Cervezas nacionales e importadas"},
