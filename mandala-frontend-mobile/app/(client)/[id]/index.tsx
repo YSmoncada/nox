@@ -42,11 +42,13 @@ export default function ClientMenuScreen() {
   const fetchData = async () => {
     setLoading(true);
     try {
+      console.log("Fetching menu for mesa:", mesaId);
       const [prodRes, mesaRes, catRes] = await Promise.all([
         apiClient.get('/productos/'),
         apiClient.get(`/mesas/${mesaId}/`),
         apiClient.get('/categorias/')
       ]);
+      console.log("Data fetched successfully");
       setProductos(prodRes.data);
       setMesaInfo(mesaRes.data);
       if (Array.isArray(catRes.data)) {
@@ -56,11 +58,16 @@ export default function ClientMenuScreen() {
         }));
         setCategorias([{ id: "", label: "Todos" }, ...dbCats]);
       }
-    } catch (e) {
-      Alert.alert('Error', 'No se pudo conectar con el servidor.');
+    } catch (e: any) {
+      console.error("Fetch Data Error:", e.message, e.config?.url);
+      Alert.alert(
+        'Error de Conexión', 
+        `No se pudo cargar el menú. Detalle: ${e.message || 'Error desconocido'}. Revisa la consola o contacta soporte.`
+      );
     } finally {
       setLoading(false);
     }
+
   };
 
   const addToOrder = (prod: any) => {

@@ -34,13 +34,21 @@ finally:
 app = FastAPI(title="Mandala API (FastAPI)")
 
 # Configurar CORS
+origins = [
+    "http://localhost:8081",
+    "http://localhost:8082",
+    "https://mandala-proyect.vercel.app",
+    "https://mandala-nuevo.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Montar archivos estáticos para las imágenes (Ruta Relativa)
 current_dir = os.path.dirname(os.path.abspath(__file__))
