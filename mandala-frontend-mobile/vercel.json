@@ -5,9 +5,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/((?!assets/|static/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
+
 
