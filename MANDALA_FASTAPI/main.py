@@ -91,7 +91,8 @@ app.include_router(config.router, prefix="/api/config", tags=["config"])
 
 @app.get("/")
 def read_root():
-    return {"message": "Mandala FastAPI Backend System - Operational"}
+    return {"message": "Mandala FastAPI Backend - Version 2.0.1 (Fresh DB Ready)"}
+
 
 if __name__ == "__main__":
     import uvicorn
