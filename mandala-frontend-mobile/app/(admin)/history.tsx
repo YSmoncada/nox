@@ -1,0 +1,433 @@
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { View, Text, StyleSheet, SectionList, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Dimensions, RefreshControl, Platform, Modal } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import apiClient from '../../utils/apiClient';
+
+const { width, height } = Dimensions.get('window');
+
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: keyof typeof Ionicons.glyphMap }> = {
+  Pendiente:  { label: 'PENDIENTE',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  icon: 'time-outline' },
+  Despachado: { label: 'DESPACHADO',  color: '#10b981', bg: 'rgba(16,185,129,0.1)',  icon: 'checkmark-circle-outline' },
+  Cancelado:  { label: 'CANCELADO',   color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   icon: 'close-circle-outline' },
+  Pagado:     { label: 'PAGADO',      color: '#A944FF', bg: 'rgba(169,68,255,0.1)',  icon: 'card-outline' },
+  Preparando: { label: 'PREPARANDO',  color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',  icon: 'flash-outline' },
+};
+
+export default function AdminHistoryScreen() {
+  const insets = useSafeAreaInsets();
+  const [pedidos, setPedidos] = useState<any[]>([]);
+  const [meseras, setMeseras] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [userFilterModalOpen, setUserFilterModalOpen] = useState(false);
+  const [selectedPedido, setSelectedPedido] = useState<any>(null);
+  
+  const [filterType, setFilterType] = useState<'today' | 'all'>('today');
+  const [selectedMesera, setSelectedMesera] = useState<number | 'system' | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+        fetchData();
+    }, [])
+  );
+
+  const fetchData = async (isRef = false) => {
+    if (isRef) setRefreshing(true);
+    else if (pedidos.length === 0) setLoading(true);
+    try {
+      const [pedRes, mesRes] = await Promise.all([
+        apiClient.get('/pedidos/'),
+        apiClient.get('/usuarios/')
+      ]);
+      setPedidos(Array.isArray(pedRes.data) ? pedRes.data : []);
+      setMeseras(Array.isArray(mesRes.data) ? mesRes.data : []);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const handleChangeStatus = async (pedidoId: number, nuevoEstado: string) => {
+    try {
+        await apiClient.patch(`/pedidos/${pedidoId}/`, { estado_nombre: nuevoEstado });
+        setStatusModalOpen(false);
+        fetchData(true);
+        Alert.alert("Éxito", "Historial actualizado.");
+    } catch (e: any) {
+        const errorMsg = e.response?.data?.detail || "No se pudo cambiar el estado.";
+        Alert.alert("Error", errorMsg);
+    }
+  };
+
+  const groupedData = useMemo(() => {
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    const localTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    const filtered = pedidos.filter(p => {
+      const pedidoDate = (p.fecha_hora || "").split('T')[0];
+      if (filterType === 'today') {
+         if (pedidoDate !== todayStr && pedidoDate !== localTodayStr) return false;
+      }
+      if (selectedMesera !== null) {
+        if (p.creado_por !== selectedMesera) return false;
+      }
+      return true;
+    });
+
+    const groups: Record<string, any[]> = {};
+    filtered.forEach(p => {
+      const date = (p.fecha_hora || "").split('T')[0] || 'Sin Fecha';
+      if (!groups[date]) groups[date] = [];
+      groups[date].push(p);
+    });
+
+    return Object.keys(groups).sort((a, b) => b.localeCompare(a)).map(date => {
+      const dayTotal = groups[date]
+        .filter(p => p.estado_nombre === 'Pagado' || p.estado_nombre === 'Despachado')
+        .reduce((acc, p) => acc + parseFloat(p.total || 0), 0);
+      
+      return {
+        title: date,
+        dayTotal,
+        data: groups[date]
+      };
+    });
+  }, [pedidos, filterType, selectedMesera]);
+
+  const totalCaja = useMemo(() => {
+    return groupedData.reduce((acc, section) => acc + section.dayTotal, 0);
+  }, [groupedData]);
+
+  const currentMeseraName = useMemo(() => {
+     if (selectedMesera === null) return "TODOS";
+     const m = meseras.find(it => it.id === selectedMesera);
+     return m ? m.username.toUpperCase() : "TODOS";
+  }, [selectedMesera, meseras]);
+
+  const renderPedido = ({ item }: { item: any }) => {
+    const status = STATUS_CONFIG[item.estado_nombre] || { label: item.estado_nombre || 'S/E', color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)', icon: 'help-circle-outline' };
+    
+    return (
+        <TouchableOpacity 
+          style={styles.card} 
+          activeOpacity={0.8}
+          onPress={() => { setSelectedPedido(item); setStatusModalOpen(true); }}
+        >
+          <View style={styles.cardHeader}>
+            <View style={styles.mesaTag}>
+              <Text style={styles.mesaText}>MESA #{item.mesa_numero ?? item.mesa}</Text>
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
+                <Text style={[styles.statusText, { color: status.color }]}>{status.label.toUpperCase()}</Text>
+            </View>
+          </View>
+    
+          <View style={styles.infoGrid}>
+            <View style={styles.infoCol}>
+              <Text style={styles.infoLabel}>RESPONSABLE</Text>
+              <Text style={styles.infoVal} numberOfLines={1}>{item.usuario_nombre || 'SISTEMA'}</Text>
+            </View>
+            <View style={styles.infoCol}>
+              <Text style={styles.infoLabel}>HORA</Text>
+              <Text style={styles.infoVal} numberOfLines={1}>
+                  {item.fecha_hora ? new Date(item.fecha_hora).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '--:--'}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.productSection}>
+              {(item.productos_detalle || item.detalles || []).map((p: any, idx: number) => (
+                  <View key={idx} style={styles.productRow}>
+                      <Text style={styles.productCant}>{p.cantidad || 1}x</Text>
+                      <Text style={styles.productName} numberOfLines={1}>{p.producto_nombre || 'Producto'}</Text>
+                      <Text style={styles.productPrice}>${parseFloat(p.producto_price || p.producto_precio || 0).toLocaleString()}</Text>
+                  </View>
+              ))}
+          </View>
+
+          <View style={styles.divider} />
+    
+          <View style={styles.cardFooter}>
+            <Text style={styles.dateText}>ID #{item.id}</Text>
+            <Text style={styles.totalVal}>${parseFloat(item.total || 0).toLocaleString()}</Text>
+          </View>
+        </TouchableOpacity>
+    );
+  };
+
+  const renderSectionHeader = ({ section: { title, dayTotal } }: { section: any }) => {
+    const dateObj = new Date(title + 'T00:00:00');
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+    const dateStr = dateObj.toLocaleDateString('es-ES', options).toUpperCase();
+
+    return (
+      <View style={styles.sectionHeader}>
+        <View style={styles.sectionHeaderLine} />
+        <View style={styles.sectionHeaderContent}>
+          <Text style={styles.sectionTitleText}>{dateStr}</Text>
+          <View style={styles.sectionTotalBadge}>
+            <Text style={styles.sectionTotalText}>TOTAL DÍA: ${dayTotal.toLocaleString()}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
+          <Text style={styles.subtitle}>HISTORIAL DE VENTAS</Text>
+        </View>
+      </View>
+
+      <View style={styles.filterSection}>
+          <View style={styles.filterGroup}>
+              <TouchableOpacity 
+                style={[styles.filterChip, filterType === 'today' && styles.filterChipActive]} 
+                onPress={() => setFilterType('today')}
+              >
+                <Text style={[styles.filterChipText, filterType === 'today' && {color: '#fff'}]}>HOY</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterChip, filterType === 'all' && styles.filterChipActive]} 
+                onPress={() => setFilterType('all')}
+              >
+                <Text style={[styles.filterChipText, filterType === 'all' && {color: '#fff'}]}>HISTÓRICO</Text>
+              </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity 
+            style={[styles.userSelectBtn, selectedMesera !== null && styles.userSelectBtnActive]}
+            onPress={() => setUserFilterModalOpen(true)}
+          >
+              <Ionicons name="person-circle-outline" size={20} color={selectedMesera !== null ? "#fff" : "#A944FF"} />
+              <Text style={[styles.userSelectText, selectedMesera !== null && {color: '#fff'}]}>
+                  {currentMeseraName}
+              </Text>
+              <Ionicons name="chevron-down" size={14} color={selectedMesera !== null ? "#fff" : "#8A7BAF"} />
+          </TouchableOpacity>
+      </View>
+
+      <View style={styles.summaryContainer}>
+          <View style={styles.summaryCard}>
+              <View style={styles.summaryInfo}>
+                <Text style={styles.summaryLabel}>BALANCE TOTAL ({filterType === 'today' ? 'HOY' : 'TOTAL'})</Text>
+                <Text style={styles.summaryAmount}>${totalCaja.toLocaleString()}</Text>
+              </View>
+              <View style={styles.summaryStats}>
+                  <Text style={styles.statCount}>{groupedData.reduce((acc, s) => acc + s.data.length, 0)}</Text>
+                  <Text style={styles.statSub}>VENTAS</Text>
+              </View>
+          </View>
+      </View>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 40 }} />
+      ) : (
+        <SectionList
+          sections={groupedData}
+          keyExtractor={item => String(item.id)}
+          renderItem={renderPedido}
+          renderSectionHeader={renderSectionHeader}
+          contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 100 }]}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor="#A944FF" />}
+          stickySectionHeadersEnabled={false}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+                <Ionicons name="receipt-outline" size={60} color="#1A103C" />
+                <Text style={styles.emptyText}>SIN REGISTROS DISPONIBLES</Text>
+            </View>
+          }
+        />
+      )}
+
+      {/* Modal Selector de Usuario */}
+      <Modal visible={userFilterModalOpen} transparent animationType="fade">
+          <View style={styles.modalBg}>
+              <View style={styles.glassCard}>
+                  <View style={styles.modalHeader}>
+                      <Text style={styles.modalTitle}>FILTRAR POR USUARIO</Text>
+                      <TouchableOpacity onPress={() => setUserFilterModalOpen(false)} style={styles.closeBtn}>
+                          <Ionicons name="close" size={24} color="#fff" />
+                      </TouchableOpacity>
+                  </View>
+
+                  <ScrollView style={{maxHeight: 400}}>
+                      <TouchableOpacity 
+                        style={[styles.userItem, selectedMesera === null && styles.userItemActive]}
+                        onPress={() => { setSelectedMesera(null); setUserFilterModalOpen(false); }}
+                      >
+                          <Ionicons name="apps-outline" size={20} color={selectedMesera === null ? "#fff" : "#A944FF"} />
+                          <Text style={[styles.userItemText, selectedMesera === null && {color: '#fff'}]}>TODOS LOS USUARIOS</Text>
+                      </TouchableOpacity>
+
+                      <Text style={styles.modalSubLabel}>PERSONAL REGISTRADO</Text>
+                      {meseras.map(m => (
+                          <TouchableOpacity 
+                            key={m.id} 
+                            style={[styles.userItem, selectedMesera === m.id && styles.userItemActive]}
+                            onPress={() => { setSelectedMesera(m.id); setUserFilterModalOpen(false); }}
+                          >
+                              <View style={[styles.miniAvatar, {backgroundColor: `${m.user_role === 'admin' ? '#f59e0b' : '#A944FF'}20`}]}>
+                                  <Text style={[styles.miniAvatarText, {color: m.user_role === 'admin' ? '#f59e0b' : '#A944FF'}]}>{m.username.charAt(0).toUpperCase()}</Text>
+                              </View>
+                              <View>
+                                  <Text style={[styles.userItemText, selectedMesera === m.id && {color: '#fff'}]}>{m.username.toUpperCase()}</Text>
+                                  <Text style={styles.userRoleText}>{m.user_role?.toUpperCase() || 'PERSONAL'}</Text>
+                              </View>
+                              {selectedMesera === m.id && <Ionicons name="checkmark-circle" size={20} color="#fff" style={{marginLeft: 'auto'}} />}
+                          </TouchableOpacity>
+                      ))}
+                  </ScrollView>
+              </View>
+          </View>
+      </Modal>
+
+      {/* Modal Status */}
+      <Modal visible={statusModalOpen} transparent animationType="fade">
+          <View style={styles.modalBg}>
+              <View style={[styles.glassCard, { maxHeight: height * 0.85 }]}>
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.modalHeader}>
+                        <View>
+                            <Text style={styles.modalTitle}>GESTIONAR</Text>
+                            <Text style={styles.selectedProdName}>VENTA #{selectedPedido?.id}</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => setStatusModalOpen(false)} style={styles.closeBtn}>
+                            <Ionicons name="close" size={24} color="#fff" />
+                        </TouchableOpacity>
+                    </View>
+
+                    <Text style={styles.label}>CAMBIAR ESTADO A:</Text>
+                    
+                    <View style={styles.statusGrid}>
+                        {['Pendiente', 'Despachado', 'Cancelado'].map(s => {
+                            const config = STATUS_CONFIG[s];
+                            const isSelected = selectedPedido?.estado_nombre === s;
+                            return (
+                                <TouchableOpacity 
+                                    key={s} 
+                                    style={[
+                                        styles.statusGridItem, 
+                                        { borderColor: isSelected ? config.color : 'rgba(255,255,255,0.05)' },
+                                        isSelected && { backgroundColor: config.bg }
+                                    ]}
+                                    onPress={() => handleChangeStatus(selectedPedido.id, s)}
+                                >
+                                    <View style={[styles.statusIconCircle, { backgroundColor: isSelected ? config.color : 'rgba(255,255,255,0.03)' }]}>
+                                        <Ionicons name={config.icon} size={22} color={isSelected ? '#fff' : config.color} />
+                                    </View>
+                                    <Text style={[styles.statusItemText, { color: isSelected ? '#fff' : '#8A7BAF' }]}>{config.label}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                    
+                    <View style={styles.infoBox}>
+                        <Ionicons name="alert-circle-outline" size={16} color="#A944FF" />
+                        <Text style={styles.qrInfo}>Modificar una venta afecta el reporte financiero del día correspondiente.</Text>
+                    </View>
+                  </ScrollView>
+              </View>
+          </View>
+      </Modal>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#050510' },
+  header: { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 15 },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
+  brandingOS: { color: '#A944FF' },
+  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+
+  filterSection: { paddingHorizontal: 20, marginBottom: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  filterGroup: { flexDirection: 'row', gap: 8 },
+  filterChip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 14, backgroundColor: '#0E0D23', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  filterChipActive: { backgroundColor: '#1A103C', borderColor: 'rgba(169,68,255,0.3)' },
+  filterChipText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900' },
+  
+  userSelectBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#0E0D23', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', maxWidth: 160 },
+  userSelectBtnActive: { backgroundColor: '#A944FF', borderColor: '#A944FF' },
+  userSelectText: { color: '#A944FF', fontSize: 10, fontWeight: '900', flexShrink: 1 },
+
+  summaryContainer: { paddingHorizontal: 20, marginBottom: 25 },
+  summaryCard: { 
+    backgroundColor: '#1A103C', borderRadius: 28, padding: 22, flexDirection: 'row', 
+    justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.3)'
+  },
+  summaryInfo: { gap: 4 },
+  summaryLabel: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', letterSpacing: 2 },
+  summaryAmount: { color: '#fff', fontSize: 32, fontWeight: '900' },
+  summaryStats: { alignItems: 'center', backgroundColor: 'rgba(169, 68, 255, 0.1)', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 18 },
+  statCount: { color: '#fff', fontSize: 20, fontWeight: '900' },
+  statSub: { color: '#A944FF', fontSize: 8, fontWeight: '900' },
+
+  listContent: { paddingHorizontal: 20 },
+  sectionHeader: { marginTop: 25, marginBottom: 15 },
+  sectionHeaderLine: { height: 1, backgroundColor: 'rgba(138, 123, 175, 0.1)', position: 'absolute', left: 0, right: 0, top: 12 },
+  sectionHeaderContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#050510', alignSelf: 'flex-start', paddingRight: 15 },
+  sectionTitleText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 3, backgroundColor: '#050510', paddingRight: 10 },
+  sectionTotalBadge: { backgroundColor: 'rgba(16, 185, 129, 0.1)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1, borderColor: 'rgba(16, 185, 129, 0.2)' },
+  sectionTotalText: { color: '#10b981', fontSize: 9, fontWeight: 'bold' },
+
+  card: { backgroundColor: '#0E0D23', borderRadius: 24, padding: 18, marginBottom: 15, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+  mesaTag: { backgroundColor: 'rgba(169, 68, 255, 0.1)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12 },
+  mesaText: { color: '#A944FF', fontWeight: '900', fontSize: 11 },
+  statusBadge: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12 },
+  statusText: { fontSize: 9, fontWeight: '900' },
+
+  infoGrid: { flexDirection: 'row', gap: 20, marginBottom: 15 },
+  infoCol: { flex: 1, gap: 4 },
+  infoLabel: { color: '#444', fontSize: 8, fontWeight: '900', letterSpacing: 1 },
+  infoVal: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
+
+  productSection: { marginTop: 5, gap: 8 },
+  productRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  productCant: { color: '#A944FF', fontSize: 12, fontWeight: '900', minWidth: 25 },
+  productName: { color: '#8A7BAF', fontSize: 13, flex: 1 },
+  productPrice: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
+
+  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.05)', marginVertical: 15 },
+  cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  dateText: { color: '#444', fontSize: 10, fontWeight: 'bold' },
+  totalVal: { color: '#10b981', fontSize: 24, fontWeight: '900' },
+
+  modalBg: { flex: 1, backgroundColor: 'rgba(5, 5, 16, 0.95)', justifyContent: 'center', padding: 25 },
+  glassCard: { backgroundColor: '#0E0D23', borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', shadowColor: '#A944FF', shadowOpacity: 0.1, shadowRadius: 30 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, alignItems: 'center' },
+  modalTitle: { color: '#fff', fontSize: 18, fontWeight: '900', letterSpacing: 2 },
+  modalSubLabel: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', marginVertical: 20, letterSpacing: 2 },
+  closeBtn: { backgroundColor: '#1A103C', width: 44, height: 44, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  
+  userItem: { flexDirection: 'row', alignItems: 'center', gap: 15, padding: 18, borderRadius: 20, marginBottom: 8, backgroundColor: 'rgba(255,255,255,0.02)', borderWidth: 1, borderColor: 'transparent' },
+  userItemActive: { backgroundColor: '#A944FF', borderColor: 'rgba(255,255,255,0.2)' },
+  miniAvatar: { width: 40, height: 40, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  miniAvatarText: { fontWeight: '900', fontSize: 16 },
+  userItemText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
+  userRoleText: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', marginTop: 2 },
+
+  label: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', marginBottom: 20, letterSpacing: 2 },
+  statusGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between' },
+  statusGridItem: { width: '47%', paddingVertical: 20, borderRadius: 24, borderWidth: 1, alignItems: 'center', gap: 10 },
+  statusIconCircle: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
+  statusItemText: { fontSize: 10, fontWeight: '900', letterSpacing: 1 },
+  
+  infoBox: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: 'rgba(169, 68, 255, 0.05)', padding: 16, borderRadius: 20, marginTop: 25 },
+  qrInfo: { color: '#8A7BAF', fontSize: 10, flex: 1, lineHeight: 16 },
+
+  emptyContainer: { alignItems: 'center', marginTop: 100, gap: 15, opacity: 0.2 },
+  emptyText: { color: '#8A7BAF', fontWeight: '900', fontSize: 11, letterSpacing: 3 },
+  selectedProdName: { color: '#A944FF', fontSize: 12, fontWeight: 'bold', marginTop: 4 }
+});
