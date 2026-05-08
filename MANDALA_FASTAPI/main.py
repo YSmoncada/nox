@@ -47,8 +47,9 @@ async def db_diagnostic_middleware(request: Request, call_next):
         logger.error(error_msg)
         return JSONResponse(
             status_code=500,
-            content={"detail": f"Error interno: {str(e)}", "traceback": error_msg[:200]}
+            content={"detail": f"Error interno: {str(e)}", "traceback": error_msg}
         )
+
 
 # Configurar CORS
 
@@ -61,11 +62,12 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 # Montar archivos estáticos para las imágenes (Ruta Relativa)
@@ -91,7 +93,11 @@ app.include_router(config.router, prefix="/api/config", tags=["config"])
 
 @app.get("/")
 def read_root():
-    return {"message": "Mandala FastAPI Backend - Version 2.0.1 (Fresh DB Ready)"}
+    return {"message": "Mandala FastAPI Backend - Version 2.0.5 (Token Validation Fix)"}
+
+
+
+
 
 
 if __name__ == "__main__":
