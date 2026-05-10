@@ -65,10 +65,10 @@ export default function PedidosScreen() {
         apiClient.get('/contabilidad/turno/actual/')
       ]);
       
-      if (prodRes.status === 'fulfilled') setProductos(prodRes.data.data);
-      if (mesasRes.status === 'fulfilled') setMesas(mesasRes.data.data);
-      if (catRes.status === 'fulfilled' && Array.isArray(catRes.data.data)) {
-        const dbCats = catRes.data.data.map((c: any) => ({
+      if (prodRes.status === 'fulfilled') setProductos(prodRes.value.data);
+      if (mesasRes.status === 'fulfilled') setMesas(mesasRes.value.data);
+      if (catRes.status === 'fulfilled' && Array.isArray(catRes.value.data)) {
+        const dbCats = catRes.value.data.map((c: any) => ({
           id: c.id,
           label: c.nombre
         }));
