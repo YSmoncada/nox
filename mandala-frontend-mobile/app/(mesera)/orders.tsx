@@ -95,7 +95,8 @@ export default function PedidosScreen() {
         cantidad: it.cantidad,
         precio_unitario: parseFloat(it.precio)
       })),
-      total: total
+      total: total,
+      force_append: selectedMesa.estado_nombre === 'Ocupada'
     };
 
     // Adjuntar usuario si es cuenta del sistema (no PIN de mesera operativa)
@@ -215,15 +216,14 @@ export default function PedidosScreen() {
                         style={[
                             styles.mesaMini, 
                             selectedMesa?.id === m.id && styles.mesaMiniActive, 
-                            m.estado_nombre === 'Ocupada' && { backgroundColor: '#3f3f46', opacity: 0.5 }
+                            m.estado_nombre === 'Ocupada' && styles.mesaMiniOcupada
                         ]}
                         onPress={() => setSelectedMesa(m)}
-                        disabled={m.estado_nombre === 'Ocupada' && selectedMesa?.id !== m.id}
                     >
                         <Text style={[
                             styles.mesaMiniText, 
                             selectedMesa?.id === m.id && { color: '#fff' },
-                            m.estado_nombre === 'Ocupada' && { color: '#71717a' }
+                            m.estado_nombre === 'Ocupada' && { color: '#A944FF' }
                         ]}>#{m.numero}</Text>
                     </TouchableOpacity>
                     ))}
@@ -345,6 +345,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.05)'
   },
   mesaMiniActive: { backgroundColor: '#A944FF', borderColor: '#fff' },
+  mesaMiniOcupada: { backgroundColor: 'rgba(169, 68, 255, 0.1)', borderColor: 'rgba(169, 68, 255, 0.3)' },
   mesaMiniText: { color: '#8A7BAF', fontWeight: 'bold' },
   
   orderItem: { 
