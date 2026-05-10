@@ -72,7 +72,18 @@ apiClient.interceptors.response.use(
       showAlert("Error de Conexión", "No se pudo contactar al servidor. Verifica tu internet.", "error");
     } else {
       const { status, data } = error.response;
-      const message = data?.detail || data?.message || "Ocurrió un error inesperado";
+      let message = data?.detail || data?.message || "Ocurrió un error inesperado";
+      
+      // Si el mensaje es un objeto o array (como errores de validación de FastAPI)
+      // lo convertimos a string para evitar que React explote
+      if (typeof message === 'object') {
+        if (Array.isArray(message)) {
+          // Extraer el primer mensaje de error legible si es un array de Pydantic
+          message = message[0]?.msg || JSON.stringify(message);
+        } else {
+          message = JSON.stringify(message);
+        }
+      }
       
       if (status === 401) {
         if (originalRequest.url.includes('/login')) {
