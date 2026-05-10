@@ -1,3 +1,4 @@
+# Deployment Trigger: 2026-05-10 16:26
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -97,7 +98,7 @@ app.include_router(contabilidad.router, prefix="/api/contabilidad", tags=["conta
 
 @app.get("/")
 def read_root():
-    return {"message": "Mandala FastAPI Backend - Version 2.0.5 (Token Validation Fix)"}
+    return {"message": "Mandala FastAPI Backend - Version 2.2.0 (Robust Shift Implementation)"}
 
 
 
