@@ -18,6 +18,9 @@ logger = logging.getLogger("mandala")
 
 
 # Crear tablas y semillar si es necesario
+from db.migrate_turnos import migrate
+# Ejecutar migración manual antes de arrancar
+migrate()
 Base.metadata.create_all(bind=engine)
 
 # Auto-seed si la base de datos está vacía (Especialmente para Render)

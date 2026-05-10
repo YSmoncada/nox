@@ -167,7 +167,7 @@ export default function AdminAccountingScreen() {
                                 <Text style={{color: '#fff', fontWeight: 'bold'}}>CANCELAR</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.modalConfirm} onPress={handleAbrirTurno}>
-                                <Text style={{color: '#fff', fontWeight: '900'}}>ABRIR CAJA</Text>
+                                <Text style={{color: '#fff', fontWeight: '900'}}>ABRIR TURNO</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
