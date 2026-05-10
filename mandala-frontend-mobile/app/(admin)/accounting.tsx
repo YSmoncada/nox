@@ -28,11 +28,7 @@ export default function AdminAccountingScreen() {
       const res = await apiClient.get('/contabilidad/turno/actual/');
       setTurno(res.data);
     } catch (e: any) {
-      if (e.response?.status === 404) {
-          setTurno(null);
-      } else {
-          console.error(e);
-      }
+      console.error(e);
     } finally {
       setLoading(false);
     }

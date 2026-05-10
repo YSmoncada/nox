@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from db.database import get_db
 from db import models
 from schemas import schemas
@@ -9,11 +9,11 @@ from datetime import datetime
 
 router = APIRouter()
 
-@router.get("/turno/actual/", response_model=schemas.Turno)
+@router.get("/turno/actual/", response_model=Optional[schemas.Turno])
 def get_turno_actual(db: Session = Depends(deps.get_db)):
     turno = db.query(models.Turno).filter(models.Turno.estado == "abierto").first()
     if not turno:
-        raise HTTPException(status_code=404, detail="No hay un turno abierto actualmente")
+        return None
     
     # Calcular ventas totales actuales de pedidos que no estén cancelados
     # Asumiendo que el estado 'Cancelado' existe

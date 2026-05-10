@@ -76,7 +76,7 @@ export default function PedidosScreen() {
       }
       
       // Validar turno
-      if (turnoRes.status === 'fulfilled') {
+      if (turnoRes.status === 'fulfilled' && turnoRes.value.data) {
           setTurnoAbierto(true);
       } else {
           setTurnoAbierto(false);
