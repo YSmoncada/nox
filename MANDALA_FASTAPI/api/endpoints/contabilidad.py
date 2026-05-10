@@ -4,13 +4,13 @@ from typing import List, Optional
 from db.database import get_db
 from db import models
 from schemas import schemas
-from api import deps
+from api.deps import get_db, get_current_active_user, check_admin_role
 from datetime import datetime
 
 router = APIRouter()
 
 @router.get("/turno/actual/", response_model=Optional[schemas.Turno])
-def get_turno_actual(db: Session = Depends(deps.get_db)):
+def get_turno_actual(db: Session = Depends(get_db)):
     turno = db.query(models.Turno).filter(models.Turno.estado == "abierto").first()
     if not turno:
         return None
@@ -40,8 +40,8 @@ def get_turno_actual(db: Session = Depends(deps.get_db)):
 @router.post("/turno/abrir/", response_model=schemas.Turno)
 def abrir_turno(
     turno_in: schemas.TurnoCreate, 
-    db: Session = Depends(deps.get_db),
-    current_user: models.Usuario = Depends(deps.get_current_active_user)
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(get_current_active_user)
 ):
     # Verificar si ya hay uno abierto
     existe = db.query(models.Turno).filter(models.Turno.estado == "abierto").first()
@@ -62,8 +62,8 @@ def abrir_turno(
 @router.post("/turno/cerrar/", response_model=schemas.Turno)
 def cerrar_turno(
     cierre: schemas.TurnoCierre,
-    db: Session = Depends(deps.get_db),
-    current_user: models.Usuario = Depends(deps.get_current_active_user)
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(get_current_active_user)
 ):
     turno = db.query(models.Turno).filter(models.Turno.estado == "abierto").first()
     if not turno:
@@ -94,8 +94,8 @@ def cerrar_turno(
 def get_historial_turnos(
     skip: int = 0, 
     limit: int = 50, 
-    db: Session = Depends(deps.get_db),
-    current_user: models.Usuario = Depends(deps.check_admin_role)
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(check_admin_role)
 ):
     turnos = db.query(models.Turno).order_by(models.Turno.fecha_apertura.desc()).offset(skip).limit(limit).all()
     for t in turnos:
