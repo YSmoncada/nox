@@ -263,9 +263,6 @@ export default function MisPedidosScreen() {
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
           <Text style={styles.subtitle}>MIS PEDIDOS</Text>
         </View>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-          <Ionicons name="log-out-outline" size={22} color="#ef4444" />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.tabBar}>
