@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
 import { formatImageUrl } from '../../utils/imageHelpers';
+import NoxAlert from '../../components/NoxAlert';
 
 const { width } = Dimensions.get('window');
 
@@ -27,6 +28,24 @@ export default function PedidosScreen() {
   const [filtroNombre, setFiltroNombre] = useState("");
   const [showCheckout, setShowCheckout] = useState(false);
   const user = useAuthStore(state => state.user);
+
+  // Custom Alert State
+  const [alertConfig, setAlertConfig] = useState<{
+    visible: boolean,
+    title: string,
+    message: string,
+    type: 'success' | 'error' | 'info' | 'warning',
+    onConfirm?: () => void
+  }>({
+    visible: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
+  const showAlert = (title: string, message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', onConfirm?: () => void) => {
+    setAlertConfig({ visible: true, title, message, type, onConfirm });
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -55,7 +74,7 @@ export default function PedidosScreen() {
         setCategorias([{ id: "", label: "Todos" }, ...dbCats]);
       }
     } catch (e) {
-      Alert.alert('Error', 'No se pudo sincronizar el menú');
+      showAlert('Error', 'No se pudo sincronizar el menú', 'error');
     } finally {
       setLoading(false);
     }
@@ -84,8 +103,8 @@ export default function PedidosScreen() {
   const total = order.reduce((sum, item) => sum + (parseFloat(item.precio) * item.cantidad), 0);
 
   const handleFinalizar = async () => {
-    if (!selectedMesa) return Alert.alert('Error', 'Debes seleccionar una mesa');
-    if (order.length === 0) return Alert.alert('Error', 'El pedido está vacío');
+    if (!selectedMesa) return showAlert('Error', 'Debes seleccionar una mesa', 'warning');
+    if (order.length === 0) return showAlert('Error', 'El pedido está vacío', 'warning');
 
     // Construir payload incluyendo el usuario para cuentas de sistema
     const payload: any = {
@@ -107,7 +126,7 @@ export default function PedidosScreen() {
     try {
       const res = await apiClient.post('/pedidos/', payload);
       if (res.status === 201 || res.status === 200) {
-        Alert.alert('¡Excelente!', 'Pedido enviado a cocina/barra');
+        showAlert('¡Excelente!', 'Pedido enviado a cocina/barra', 'success');
         setOrder([]);
         setSelectedMesa(null);
         setShowCheckout(false);
@@ -115,7 +134,7 @@ export default function PedidosScreen() {
       }
     } catch (e: any) {
       const msg = e?.response?.data?.detail || 'No se pudo procesar el pedido';
-      Alert.alert('Error al crear pedido', msg);
+      showAlert('Error al crear pedido', msg, 'error');
     }
   };
 
@@ -275,6 +294,14 @@ export default function PedidosScreen() {
             </View>
         </View>
       </Modal>
+
+      <NoxAlert 
+        {...alertConfig} 
+        onConfirm={() => {
+            setAlertConfig(prev => ({ ...prev, visible: false }));
+            if (alertConfig.onConfirm) alertConfig.onConfirm();
+        }} 
+      />
     </View>
   );
 }

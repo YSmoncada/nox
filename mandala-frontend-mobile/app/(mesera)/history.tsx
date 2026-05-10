@@ -5,6 +5,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
 import LogoutModal from '../../components/LogoutModal';
+import NoxAlert from '../../components/NoxAlert';
 
 const ESTADO_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   pendiente:   { label: 'Pendiente',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
@@ -26,6 +27,24 @@ export default function MisPedidosScreen() {
   const [mesaAlerta, setMesaAlerta] = useState<any>(null);
   const [tab, setTab] = useState<'activas' | 'historial'>('activas');
   const router = useRouter();
+
+  // Custom Alert State
+  const [alertConfig, setAlertConfig] = useState<{
+    visible: boolean,
+    title: string,
+    message: string,
+    type: 'success' | 'error' | 'info' | 'warning',
+    onConfirm?: () => void
+  }>({
+    visible: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
+  const showAlert = (title: string, message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', onConfirm?: () => void) => {
+    setAlertConfig({ visible: true, title, message, type, onConfirm });
+  };
 
   const fetchPedidos = async (uid?: string) => {
     const id = uid || user?.id;
@@ -61,7 +80,7 @@ export default function MisPedidosScreen() {
       await apiClient.post(`/mesas/${mesaAlerta.id}/limpiar-cuenta/`);
       setMesaAlerta(null);
     } catch (e) {
-      Alert.alert("Error", "No se pudo limpiar la alerta");
+      showAlert("Error", "No se pudo limpiar la alerta", "error");
     }
   };
 
@@ -293,6 +312,14 @@ export default function MisPedidosScreen() {
         visible={showLogout} 
         onCancel={() => setShowLogout(false)} 
         onConfirm={confirmLogout} 
+      />
+
+      <NoxAlert 
+        {...alertConfig} 
+        onConfirm={() => {
+            setAlertConfig(prev => ({ ...prev, visible: false }));
+            if (alertConfig.onConfirm) alertConfig.onConfirm();
+        }} 
       />
     </View>
   );

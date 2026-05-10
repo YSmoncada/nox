@@ -2,12 +2,34 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
+import NoxAlert from '../../components/NoxAlert';
 
 export default function BartenderPrepScreen() {
   const [pedidos, setPedidos] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+
+  // Custom Alert State
+  const [alertConfig, setAlertConfig] = useState<{
+    visible: boolean,
+    title: string,
+    message: string,
+    type: 'success' | 'error' | 'info' | 'warning',
+    onConfirm?: () => void,
+    onCancel?: () => void,
+    confirmText?: string,
+    cancelText?: string
+  }>({
+    visible: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
+  const showAlert = (config: Partial<typeof alertConfig>) => {
+    setAlertConfig(prev => ({ ...prev, visible: true, ...config }));
+  };
 
   useEffect(() => {
     fetchPending();
@@ -34,15 +56,16 @@ export default function BartenderPrepScreen() {
     try {
       // Usar PATCH como lo pide el backend para cambios de estado
       const res = await apiClient.patch(`/pedidos/${pedidoId}/`, { estado: nuevoEstado });
-      console.log(`DEBUG BARTENDER: Respuesta patch pedido ${pedidoId}:`, res.status);
       if (res.status === 200 || res.status === 201) {
-        // Refrescar inmediatamente
         fetchPending();
-        Alert.alert('¡Excelente!', `Pedido #${pedidoId} marcado como ${nuevoEstado === 'despachado' ? 'LISTO' : 'RECHAZADO'}.`);
+        showAlert({
+            title: '¡Excelente!', 
+            message: `Pedido #${pedidoId} marcado como ${nuevoEstado === 'despachado' ? 'LISTO' : 'RECHAZADO'}.`,
+            type: 'success'
+        });
       }
     } catch (e) {
-      console.error("Error actualizando pedido:", e);
-      Alert.alert('Error', 'No se pudo actualizar el estado del pedido. Verifica tu conexión.');
+      showAlert({ title: 'Error', message: 'No se pudo actualizar el pedido', type: 'error' });
     } finally {
       setUpdatingId(null);
     }
@@ -53,25 +76,22 @@ export default function BartenderPrepScreen() {
       await apiClient.post(`/pedidos/${pedidoId}/despachar_producto/`, { item_id: itemId });
       fetchPending();
     } catch (e) {
-      Alert.alert('Error', 'No se pudo despachar el producto');
+      showAlert({ title: 'Error', message: 'No se pudo despachar el producto', type: 'error' });
     }
   };
 
   const confirmAction = (pedidoId: number, estado: string) => {
     const isDespacho = estado === 'despachado';
-    const label = isDespacho ? 'MARCAR COMO LISTO' : 'RECHAZAR PEDIDO';
-    const message = isDespacho 
-      ? `¿Confirmas que el pedido #${pedidoId} está listo para ser entregado?`
-      : `¿Estás seguro de RECHAZAR el pedido #${pedidoId}? Esta acción no se puede deshacer.`;
-
-    Alert.alert('Confirmación', message, [
-      { text: 'Cancelar', style: 'cancel' },
-      { 
-        text: isDespacho ? 'SÍ, LISTO' : 'SÍ, RECHAZAR', 
-        style: isDespacho ? 'default' : 'destructive',
-        onPress: () => handleUpdateEstado(pedidoId, estado) 
-      },
-    ]);
+    showAlert({
+        title: 'Confirmación',
+        message: isDespacho 
+            ? `¿Confirmas que el pedido #${pedidoId} está listo?`
+            : `¿Estás seguro de RECHAZAR el pedido #${pedidoId}?`,
+        type: isDespacho ? 'info' : 'warning',
+        confirmText: isDespacho ? 'SÍ, LISTO' : 'SÍ, RECHAZAR',
+        onConfirm: () => handleUpdateEstado(pedidoId, estado),
+        onCancel: () => setAlertConfig(prev => ({ ...prev, visible: false }))
+    });
   };
 
   const renderPedido = ({ item }: { item: any }) => {
@@ -199,6 +219,14 @@ export default function BartenderPrepScreen() {
           }
         />
       )}
+
+      <NoxAlert 
+        {...alertConfig} 
+        onConfirm={() => {
+            setAlertConfig(prev => ({ ...prev, visible: false }));
+            if (alertConfig.onConfirm) alertConfig.onConfirm();
+        }} 
+      />
     </View>
   );
 }
