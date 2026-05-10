@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Alert } from 'react-native';
 import { useAuthStore } from '../store/authStore';
+import { useAlertStore } from '../store/alertStore';
 
 // En modo local (Expo Go) se usa la variable de entorno EXPO_PUBLIC_API_URL
 // En producción (Vercel) se usa la URL de Render como fallback
@@ -30,6 +30,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const { showAlert } = useAlertStore.getState();
 
     // Manejo de expiración de token (401)
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -60,7 +61,7 @@ apiClient.interceptors.response.use(
         } catch (refreshError) {
           // Si el refresh token también falló, cerramos sesión
           useAuthStore.getState().clearAuth();
-          Alert.alert("Sesión Expirada", "Tu sesión ha expirado. Por favor ingresa de nuevo.");
+          showAlert("Sesión Expirada", "Tu sesión ha expirado. Por favor ingresa de nuevo.", "warning");
           return Promise.reject(refreshError);
         }
       }
@@ -68,21 +69,21 @@ apiClient.interceptors.response.use(
 
     // Manejo de otros errores
     if (!error.response) {
-      Alert.alert("Error de Conexión", "No se pudo contactar al servidor.");
+      showAlert("Error de Conexión", "No se pudo contactar al servidor. Verifica tu internet.", "error");
     } else {
       const { status, data } = error.response;
       const message = data?.detail || data?.message || "Ocurrió un error inesperado";
       
       if (status === 401) {
         if (originalRequest.url.includes('/login')) {
-          Alert.alert("Acceso Denegado", "El usuario o la clave no coinciden.");
+          showAlert("Acceso Denegado", "El usuario o la clave no coinciden.", "error");
         } else {
-          Alert.alert("Sesión Expirada", "Vuelve a iniciar sesión.");
+          showAlert("Sesión Expirada", "Vuelve a iniciar sesión.", "warning");
         }
       } else if (status === 400 && message === "Usuario inactivo") {
-        Alert.alert("Acceso Restringido", "Tu cuenta ha sido desactivada. Por favor, contacta con el administrador de la discoteca.");
+        showAlert("Acceso Restringido", "Tu cuenta ha sido desactivada. Contacta con el administrador.", "error");
       } else {
-        Alert.alert(`Error ${status}`, message);
+        showAlert(`Error ${status}`, message, "error");
       }
     }
     console.log("API ERROR:", error.response?.status, error.config?.url);

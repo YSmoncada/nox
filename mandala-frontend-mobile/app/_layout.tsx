@@ -6,6 +6,8 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '../store/authStore';
+import { useAlertStore } from '../store/alertStore';
+import NoxAlert from '../components/NoxAlert';
 
 export const unstable_settings = {
   initialRouteName: '(auth)',
@@ -17,6 +19,9 @@ export default function RootLayout() {
   const router = useRouter();
   const { token, user } = useAuthStore();
   const navigationState = useRootNavigationState();
+  
+  // Global Alert State
+  const alert = useAlertStore();
 
   useEffect(() => {
     if (!navigationState?.key) return;
@@ -75,6 +80,19 @@ export default function RootLayout() {
         <Stack.Screen name="(client)/[id]" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
+
+      {/* Global Alert System */}
+      <NoxAlert 
+        visible={alert.visible}
+        title={alert.title}
+        message={alert.message}
+        type={alert.type}
+        confirmText={alert.confirmText}
+        onConfirm={() => {
+          if (alert.onConfirm) alert.onConfirm();
+          alert.hideAlert();
+        }}
+      />
     </ThemeProvider>
   );
 }

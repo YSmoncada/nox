@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator,
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuthStore } from '../../store/authStore';
+import { useAlertStore } from '../../store/alertStore';
 import apiClient from "../../utils/apiClient";
 
 export default function LoginScreen() {
   const setAuth = useAuthStore(state => state.setAuth);
+  const showAlert = useAlertStore(state => state.showAlert);
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +17,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert("Acceso Requerido", "Por favor ingresa tu usuario y clave de seguridad.");
+      showAlert("Acceso Requerido", "Por favor ingresa tu usuario y clave de seguridad.", "warning");
       return;
     }
 
@@ -52,10 +54,6 @@ export default function LoginScreen() {
       
     } catch (error: any) {
       console.error("Login Error Details:", error.response?.data || error.message);
-      // El interceptor en apiClient ya muestra un Alert, pero podemos añadir uno específico aquí si falla sin respuesta
-      if (!error.response) {
-        Alert.alert("Error de Red", "No se pudo conectar con el servidor NoxOS. Verifica tu conexión a internet.");
-      }
     } finally {
       setLoading(false);
     }
