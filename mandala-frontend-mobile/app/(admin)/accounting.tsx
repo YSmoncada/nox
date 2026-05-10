@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Dimensions, TouchableOpacity, Alert, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Dimensions, TouchableOpacity, Alert, TextInput, Modal, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
 import { useAlertStore } from '../../store/alertStore';
@@ -134,74 +134,90 @@ export default function AdminAccountingScreen() {
 
       {/* Modal Abrir Turno */}
       <Modal visible={showAbrir} transparent animationType="slide">
-          <View style={styles.modalBg}>
-              <View style={styles.modalCard}>
-                  <Text style={styles.modalTitle}>INICIAR TURNO</Text>
-                  <Text style={styles.modalLabel}>BASE INICIAL (EFECTIVO)</Text>
-                  <TextInput 
-                    style={styles.modalInput} 
-                    keyboardType="numeric" 
-                    value={baseInicial} 
-                    onChangeText={setBaseInicial}
-                    placeholder="0"
-                    placeholderTextColor="#444"
-                  />
-                  <Text style={styles.modalLabel}>OBSERVACIONES</Text>
-                  <TextInput 
-                    style={[styles.modalInput, {height: 80}]} 
-                    multiline 
-                    value={observaciones} 
-                    onChangeText={setObservaciones}
-                    placeholder="Ej: Turno nocturno viernes"
-                    placeholderTextColor="#444"
-                  />
-                  
-                  <View style={styles.modalActions}>
-                      <TouchableOpacity style={styles.modalCancel} onPress={() => setShowAbrir(false)}>
-                          <Text style={{color: '#fff', fontWeight: 'bold'}}>CANCELAR</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.modalConfirm} onPress={handleAbrirTurno}>
-                          <Text style={{color: '#fff', fontWeight: '900'}}>ABRIR CAJA</Text>
-                      </TouchableOpacity>
-                  </View>
-              </View>
-          </View>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalBg}>
+                <KeyboardAvoidingView 
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={{ width: '100%' }}
+                >
+                    <View style={styles.modalCard}>
+                        <Text style={styles.modalTitle}>INICIAR TURNO</Text>
+                        <Text style={styles.modalLabel}>BASE INICIAL (EFECTIVO)</Text>
+                        <TextInput 
+                            style={styles.modalInput} 
+                            keyboardType="numeric" 
+                            value={baseInicial} 
+                            onChangeText={setBaseInicial}
+                            placeholder="0"
+                            placeholderTextColor="#444"
+                            returnKeyType="done"
+                        />
+                        <Text style={styles.modalLabel}>OBSERVACIONES</Text>
+                        <TextInput 
+                            style={[styles.modalInput, {height: 80}]} 
+                            multiline 
+                            value={observaciones} 
+                            onChangeText={setObservaciones}
+                            placeholder="Ej: Turno nocturno viernes"
+                            placeholderTextColor="#444"
+                        />
+                        
+                        <View style={styles.modalActions}>
+                            <TouchableOpacity style={styles.modalCancel} onPress={() => setShowAbrir(false)}>
+                                <Text style={{color: '#fff', fontWeight: 'bold'}}>CANCELAR</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.modalConfirm} onPress={handleAbrirTurno}>
+                                <Text style={{color: '#fff', fontWeight: '900'}}>ABRIR CAJA</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
+            </View>
+          </TouchableWithoutFeedback>
       </Modal>
 
       {/* Modal Cerrar Turno */}
       <Modal visible={showCerrar} transparent animationType="slide">
-          <View style={styles.modalBg}>
-              <View style={styles.modalCard}>
-                  <Text style={[styles.modalTitle, {color: '#f44336'}]}>CIERRE DE CAJA</Text>
-                  <Text style={styles.modalLabel}>EFECTIVO REAL EN CAJA</Text>
-                  <TextInput 
-                    style={styles.modalInput} 
-                    keyboardType="numeric" 
-                    value={efectivoReal} 
-                    onChangeText={setEfectivoReal}
-                    placeholder="Cuenta el dinero físico..."
-                    placeholderTextColor="#444"
-                  />
-                  <Text style={styles.modalLabel}>NOTAS DE CIERRE</Text>
-                  <TextInput 
-                    style={[styles.modalInput, {height: 80}]} 
-                    multiline 
-                    value={observaciones} 
-                    onChangeText={setObservaciones}
-                    placeholder="Diferencias, novedades, etc."
-                    placeholderTextColor="#444"
-                  />
-                  
-                  <View style={styles.modalActions}>
-                      <TouchableOpacity style={styles.modalCancel} onPress={() => setShowCerrar(false)}>
-                          <Text style={{color: '#fff', fontWeight: 'bold'}}>VOLVER</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={[styles.modalConfirm, {backgroundColor: '#f44336'}]} onPress={handleCerrarTurno}>
-                          <Text style={{color: '#fff', fontWeight: '900'}}>CERRAR TURNO</Text>
-                      </TouchableOpacity>
-                  </View>
-              </View>
-          </View>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalBg}>
+                <KeyboardAvoidingView 
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={{ width: '100%' }}
+                >
+                    <View style={styles.modalCard}>
+                        <Text style={[styles.modalTitle, {color: '#f44336'}]}>CIERRE DE CAJA</Text>
+                        <Text style={styles.modalLabel}>EFECTIVO REAL EN CAJA</Text>
+                        <TextInput 
+                            style={styles.modalInput} 
+                            keyboardType="numeric" 
+                            value={efectivoReal} 
+                            onChangeText={setEfectivoReal}
+                            placeholder="Cuenta el dinero físico..."
+                            placeholderTextColor="#444"
+                            returnKeyType="done"
+                        />
+                        <Text style={styles.modalLabel}>NOTAS DE CIERRE</Text>
+                        <TextInput 
+                            style={[styles.modalInput, {height: 80}]} 
+                            multiline 
+                            value={observaciones} 
+                            onChangeText={setObservaciones}
+                            placeholder="Diferencias, novedades, etc."
+                            placeholderTextColor="#444"
+                        />
+                        
+                        <View style={styles.modalActions}>
+                            <TouchableOpacity style={styles.modalCancel} onPress={() => setShowCerrar(false)}>
+                                <Text style={{color: '#fff', fontWeight: 'bold'}}>VOLVER</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.modalConfirm, {backgroundColor: '#f44336'}]} onPress={handleCerrarTurno}>
+                                <Text style={{color: '#fff', fontWeight: '900'}}>CERRAR TURNO</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
+            </View>
+          </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
