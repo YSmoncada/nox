@@ -220,19 +220,19 @@ export default function PedidosScreen() {
                                 key={m.id} 
                                 style={[
                                     styles.mesaMini, 
-                                    selectedMesa?.id === m.id && styles.mesaMiniActive, 
-                                    isOcupada && (esMia ? styles.mesaMiniOcupada : styles.mesaMiniOtro)
+                                    isOcupada && (esMia ? styles.mesaMiniOcupada : styles.mesaMiniOtro),
+                                    selectedMesa?.id === m.id && styles.mesaMiniActive
                                 ]}
                                 onPress={() => setSelectedMesa(m)}
                                 disabled={deOtro}
                             >
                                 <Text style={[
                                     styles.mesaMiniText, 
-                                    selectedMesa?.id === m.id && { color: '#fff' },
                                     esMia && { color: '#A944FF' },
-                                    deOtro && { color: '#3f3f46' }
+                                    deOtro && { color: '#3f3f46' },
+                                    selectedMesa?.id === m.id && { color: '#fff' }
                                 ]}>#{m.numero}</Text>
-                                {esMia && <View style={styles.myBadge} />}
+                                {esMia && <View style={[styles.myBadge, selectedMesa?.id === m.id && { backgroundColor: '#fff' }]} />}
                             </TouchableOpacity>
                         );
                     })}
@@ -353,7 +353,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.05)'
   },
-  mesaMiniActive: { backgroundColor: '#A944FF', borderColor: '#fff' },
+  mesaMiniActive: { 
+    backgroundColor: '#A944FF', 
+    borderColor: '#fff', 
+    borderWidth: 2,
+    shadowColor: '#A944FF',
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 10
+  },
   mesaMiniOcupada: { backgroundColor: 'rgba(169, 68, 255, 0.1)', borderColor: 'rgba(169, 68, 255, 0.3)' },
   mesaMiniOtro: { backgroundColor: '#1A103C', opacity: 0.3, borderColor: 'transparent' },
   mesaMiniText: { color: '#8A7BAF', fontWeight: 'bold' },
