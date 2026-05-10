@@ -47,10 +47,9 @@ export default function PedidosScreen() {
     setAlertConfig({ visible: true, title, message, type, onConfirm });
   };
 
+  const [turnoAbierto, setTurnoAbierto] = useState(true);
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-        // window.alert('NOXOS MOBILE V2.5 - ACTUALIZADO');
-    }
     fetchData();
   }, []);
 
@@ -59,20 +58,30 @@ export default function PedidosScreen() {
     setLoading(true);
     try {
       const ts = new Date().getTime();
-      const [prodRes, mesasRes, catRes] = await Promise.all([
+      const [prodRes, mesasRes, catRes, turnoRes] = await Promise.allSettled([
         apiClient.get(`/productos/?_=${ts}`),
         apiClient.get(`/mesas/?_=${ts}`),
-        apiClient.get(`/categorias/?_=${ts}`)
+        apiClient.get(`/categorias/?_=${ts}`),
+        apiClient.get('/contabilidad/turno/actual/')
       ]);
-      setProductos(prodRes.data);
-      setMesas(mesasRes.data);
-      if (Array.isArray(catRes.data)) {
-        const dbCats = catRes.data.map((c: any) => ({
+      
+      if (prodRes.status === 'fulfilled') setProductos(prodRes.data.data);
+      if (mesasRes.status === 'fulfilled') setMesas(mesasRes.data.data);
+      if (catRes.status === 'fulfilled' && Array.isArray(catRes.data.data)) {
+        const dbCats = catRes.data.data.map((c: any) => ({
           id: c.id,
           label: c.nombre
         }));
         setCategorias([{ id: "", label: "Todos" }, ...dbCats]);
       }
+      
+      // Validar turno
+      if (turnoRes.status === 'fulfilled') {
+          setTurnoAbierto(true);
+      } else {
+          setTurnoAbierto(false);
+      }
+
     } catch (e) {
       showAlert('Error', 'No se pudo sincronizar el menú', 'error');
     } finally {
@@ -159,6 +168,13 @@ export default function PedidosScreen() {
           )}
         </TouchableOpacity>
       </View>
+
+      {!turnoAbierto && (
+        <View style={styles.lockBanner}>
+            <Ionicons name="lock-closed" size={20} color="#fff" />
+            <Text style={styles.lockText}>VENTAS BLOQUEADAS: EL ADMIN DEBE ABRIR TURNO</Text>
+        </View>
+      )}
 
       {/* Buscador y Categorías */}
       <View style={styles.searchSection}>
@@ -287,8 +303,12 @@ export default function PedidosScreen() {
                         <Text style={styles.totalLbl}>TOTAL A PAGAR</Text>
                         <Text style={styles.totalVal}>${total.toLocaleString()}</Text>
                     </View>
-                    <TouchableOpacity style={styles.finishBtn} onPress={handleFinalizar}>
-                        <Text style={styles.finishBtnText}>CONFIRMAR Y ENVIAR</Text>
+                    <TouchableOpacity 
+                        style={[styles.finishBtn, !turnoAbierto && { backgroundColor: '#3f3f46', opacity: 0.5 }]} 
+                        onPress={handleFinalizar}
+                        disabled={!turnoAbierto}
+                    >
+                        <Text style={styles.finishBtnText}>{turnoAbierto ? "CONFIRMAR Y ENVIAR" : "TURNO CERRADO"}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -412,5 +432,7 @@ const styles = StyleSheet.create({
   totalLbl: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 2 },
   totalVal: { color: '#fff', fontSize: 32, fontWeight: '900' },
   finishBtn: { backgroundColor: '#A944FF', padding: 22, borderRadius: 25, alignItems: 'center', shadowColor: '#A944FF', shadowOpacity: 0.3, shadowRadius: 15 },
-  finishBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 13 }
+  finishBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 13 },
+  lockBanner: { backgroundColor: '#ef4444', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, gap: 10, marginBottom: 10 },
+  lockText: { color: '#fff', fontWeight: '900', fontSize: 10, letterSpacing: 1 }
 });
