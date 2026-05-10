@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from db.database import engine, Base
-from api.endpoints import auth, pedidos, inventario, mesas, usuarios, config, contabilidad
+from api.endpoints import auth, pedidos, inventario, mesas, usuarios, config
 from fastapi.staticfiles import StaticFiles
 import os
 import logging
@@ -18,9 +18,6 @@ logger = logging.getLogger("mandala")
 
 
 # Crear tablas y semillar si es necesario
-from db.migrate_turnos import migrate
-# Ejecutar migración manual antes de arrancar
-migrate()
 Base.metadata.create_all(bind=engine)
 
 # Auto-seed si la base de datos está vacía (Especialmente para Render)
@@ -93,11 +90,10 @@ app.include_router(inventario.router, prefix="/api", tags=["inventario"])
 app.include_router(mesas.router, prefix="/api/mesas", tags=["mesas"])
 app.include_router(usuarios.router, prefix="/api/usuarios", tags=["usuarios"])
 app.include_router(config.router, prefix="/api/config", tags=["config"])
-app.include_router(contabilidad.router, prefix="/api/contabilidad", tags=["contabilidad"])
 
 @app.get("/")
 def read_root():
-    return {"message": "Mandala FastAPI Backend - Version 2.1.0 (Accounting & Shifts Implementation)"}
+    return {"message": "Mandala FastAPI Backend - Version 2.0.5 (Token Validation Fix)"}
 
 
 

@@ -69,14 +69,6 @@ def create_pedido(
             db.commit()
             db.refresh(est_obj)
 
-        # NUEVO: Verificar si hay un turno abierto
-        turno = db.query(models.Turno).filter(models.Turno.estado == "abierto").first()
-        if not turno:
-            raise HTTPException(
-                status_code=400, 
-                detail="NO HAY UN TURNO ABIERTO. El administrador debe iniciar el turno en el apartado de Contabilidad para poder realizar ventas."
-            )
-
         # 2. Verificar y actualizar estado de la mesa
         mesa_obj = db.query(models.Mesa).filter(models.Mesa.id == pedido.mesa).first()
         if not mesa_obj:
@@ -131,7 +123,6 @@ def create_pedido(
                     admin = db.query(models.Usuario).first()
                     data['creado_por'] = admin.id if admin else None
         data['estado'] = est_obj.id
-        data['turno_id'] = turno.id # Vincular con el turno activo
         
         db_pedido = models.Pedido(**data)
         db.add(db_pedido)
