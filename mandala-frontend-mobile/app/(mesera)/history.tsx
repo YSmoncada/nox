@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert, RefreshControl, Modal, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
 import LogoutModal from '../../components/LogoutModal';
@@ -30,7 +30,6 @@ export default function MisPedidosScreen() {
   const fetchPedidos = async (uid?: string) => {
     const id = uid || user?.id;
     if (!id) return;
-    setLoading(true);
     try {
       const res = await apiClient.get(`/pedidos/?usuario=${id}`);
       setPedidos(Array.isArray(res.data) ? res.data : []);
@@ -66,13 +65,17 @@ export default function MisPedidosScreen() {
     }
   };
 
-  useEffect(() => {
-    if (user?.id) {
-      fetchPedidos(user.id);
-      const interval = setInterval(checkBillRequests, 5000);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchPedidos();
+      const interval = setInterval(() => {
+        fetchPedidos();
+        checkBillRequests();
+      }, 8000); // Refresco cada 8 segundos para ver cambios del bartender
       return () => clearInterval(interval);
-    }
-  }, [user?.id, checkBillRequests]);
+    }, [user?.id, checkBillRequests])
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

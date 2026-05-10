@@ -210,23 +210,32 @@ export default function PedidosScreen() {
                 
                 <Text style={styles.label}>SELECCIONA LA MESA</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ height: 60, flexGrow: 0, marginBottom: 25 }}>
-                    {mesas.map(m => (
-                    <TouchableOpacity 
-                        key={m.id} 
-                        style={[
-                            styles.mesaMini, 
-                            selectedMesa?.id === m.id && styles.mesaMiniActive, 
-                            m.estado_nombre === 'Ocupada' && styles.mesaMiniOcupada
-                        ]}
-                        onPress={() => setSelectedMesa(m)}
-                    >
-                        <Text style={[
-                            styles.mesaMiniText, 
-                            selectedMesa?.id === m.id && { color: '#fff' },
-                            m.estado_nombre === 'Ocupada' && { color: '#A944FF' }
-                        ]}>#{m.numero}</Text>
-                    </TouchableOpacity>
-                    ))}
+                    {mesas.map(m => {
+                        const isOcupada = m.estado_nombre === 'Ocupada';
+                        const esMia = isOcupada && m.mesero_id === parseInt(user?.id || '0');
+                        const deOtro = isOcupada && !esMia;
+                        
+                        return (
+                            <TouchableOpacity 
+                                key={m.id} 
+                                style={[
+                                    styles.mesaMini, 
+                                    selectedMesa?.id === m.id && styles.mesaMiniActive, 
+                                    isOcupada && (esMia ? styles.mesaMiniOcupada : styles.mesaMiniOtro)
+                                ]}
+                                onPress={() => setSelectedMesa(m)}
+                                disabled={deOtro}
+                            >
+                                <Text style={[
+                                    styles.mesaMiniText, 
+                                    selectedMesa?.id === m.id && { color: '#fff' },
+                                    esMia && { color: '#A944FF' },
+                                    deOtro && { color: '#3f3f46' }
+                                ]}>#{m.numero}</Text>
+                                {esMia && <View style={styles.myBadge} />}
+                            </TouchableOpacity>
+                        );
+                    })}
                 </ScrollView>
 
                 <View style={{ flex: 1 }}>
@@ -346,7 +355,9 @@ const styles = StyleSheet.create({
   },
   mesaMiniActive: { backgroundColor: '#A944FF', borderColor: '#fff' },
   mesaMiniOcupada: { backgroundColor: 'rgba(169, 68, 255, 0.1)', borderColor: 'rgba(169, 68, 255, 0.3)' },
+  mesaMiniOtro: { backgroundColor: '#1A103C', opacity: 0.3, borderColor: 'transparent' },
   mesaMiniText: { color: '#8A7BAF', fontWeight: 'bold' },
+  myBadge: { position: 'absolute', top: 5, right: 5, width: 8, height: 8, borderRadius: 4, backgroundColor: '#A944FF' },
   
   orderItem: { 
     flexDirection: 'row', 
