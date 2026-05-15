@@ -15,7 +15,7 @@ echo  [*] URL Backend: %EXPO_PUBLIC_API_URL%
 echo  [*] Iniciando Expo Go...
 echo.
 
-cd /d %~dp0mandala-frontend-mobile
+cd /d %~dp0
 npx expo start
 
 pause
