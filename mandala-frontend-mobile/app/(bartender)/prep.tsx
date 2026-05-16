@@ -9,6 +9,7 @@ export default function BartenderPrepScreen() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [processedIds, setProcessedIds] = useState<Set<number>>(new Set());
 
   // Custom Alert State
   const [alertConfig, setAlertConfig] = useState<{
@@ -28,7 +29,7 @@ export default function BartenderPrepScreen() {
   });
 
   const showAlert = (config: Partial<typeof alertConfig>) => {
-    setAlertConfig(prev => ({ ...prev, visible: true, ...config }));
+    setAlertConfig({ visible: true, title: '', message: '', type: 'info', onConfirm: undefined, onCancel: undefined, confirmText: undefined, cancelText: undefined, ...config });
   };
 
   useEffect(() => {
@@ -42,7 +43,15 @@ export default function BartenderPrepScreen() {
     else setLoading(true);
     try {
       const res = await apiClient.get('/pedidos/?estado=pendiente');
-      setPedidos(Array.isArray(res.data) ? res.data : []);
+      const data = Array.isArray(res.data) ? res.data : [];
+      setPedidos(data);
+      // Limpiar IDs procesados que ya no están en la lista
+      setProcessedIds(prev => {
+        const currentIds = new Set(data.map((p: any) => p.id));
+        const cleaned = new Set<number>();
+        prev.forEach(id => { if (currentIds.has(id)) cleaned.add(id); });
+        return cleaned;
+      });
     } catch (e) {
       console.error(e);
     } finally {
@@ -52,12 +61,18 @@ export default function BartenderPrepScreen() {
   }, []);
 
   const handleUpdateEstado = async (pedidoId: number, nuevoEstado: string) => {
+    // Prevenir doble ejecución
+    if (updatingId !== null || processedIds.has(pedidoId)) return;
+    
     setUpdatingId(pedidoId);
+    setProcessedIds(prev => new Set(prev).add(pedidoId));
     try {
       // Usar PATCH como lo pide el backend para cambios de estado
       const res = await apiClient.patch(`/pedidos/${pedidoId}/`, { estado: nuevoEstado });
       if (res.status === 200 || res.status === 201) {
-        fetchPending();
+        // Primero refrescar la lista para quitar el pedido
+        await fetchPending();
+        // Luego mostrar la alerta de éxito (sin onConfirm para que sea solo informativa)
         showAlert({
             title: '¡Excelente!', 
             message: `Pedido #${pedidoId} marcado como ${nuevoEstado === 'despachado' ? 'LISTO' : 'RECHAZADO'}.`,
@@ -65,6 +80,12 @@ export default function BartenderPrepScreen() {
         });
       }
     } catch (e) {
+      // Si falló, quitar del set de procesados para permitir reintento
+      setProcessedIds(prev => {
+        const next = new Set(prev);
+        next.delete(pedidoId);
+        return next;
+      });
       showAlert({ title: 'Error', message: 'No se pudo actualizar el pedido', type: 'error' });
     } finally {
       setUpdatingId(null);
@@ -81,6 +102,9 @@ export default function BartenderPrepScreen() {
   };
 
   const confirmAction = (pedidoId: number, estado: string) => {
+    // No permitir acción si ya fue procesado o hay otro en curso
+    if (updatingId !== null || processedIds.has(pedidoId)) return;
+    
     const isDespacho = estado === 'despachado';
     showAlert({
         title: 'Confirmación',
@@ -97,12 +121,14 @@ export default function BartenderPrepScreen() {
   const renderPedido = ({ item }: { item: any }) => {
     const hora = new Date(item.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const isUpdating = updatingId === item.id;
+    const isProcessed = processedIds.has(item.id);
+    const isDisabled = isUpdating || isProcessed || updatingId !== null;
     
     // FALLBACK PARA MESA: Intentar encontrar el numero de mesa de varias formas
     const mesaNum = item.mesa_numero || (typeof item.mesa === 'object' ? item.mesa.numero : item.mesa) || "??";
 
     return (
-      <View style={styles.card}>
+      <View style={[styles.card, isProcessed && { opacity: 0.5 }]}>
         {/* Card Header */}
         <View style={styles.cardHeader}>
           <View style={styles.leftInfo}>
@@ -140,6 +166,7 @@ export default function BartenderPrepScreen() {
                   <TouchableOpacity
                     onPress={() => handleDespacharProducto(item.id, prod.id)}
                     style={styles.checkBtn}
+                    disabled={isDisabled}
                   >
                     <Ionicons name="checkmark" size={16} color="#fff" />
                   </TouchableOpacity>
@@ -156,18 +183,24 @@ export default function BartenderPrepScreen() {
         {/* Actions */}
         {isUpdating ? (
           <ActivityIndicator color="#A944FF" style={{ marginTop: 15 }} />
+        ) : isProcessed ? (
+          <View style={[styles.actions, { justifyContent: 'center' }]}>
+            <Text style={{ color: '#10b981', fontWeight: '900', fontSize: 11, letterSpacing: 2 }}>✓ PROCESADO</Text>
+          </View>
         ) : (
           <View style={styles.actions}>
             <TouchableOpacity
-              style={styles.cancelBtn}
+              style={[styles.cancelBtn, isDisabled && { opacity: 0.4 }]}
               onPress={() => confirmAction(item.id, 'cancelado')}
+              disabled={isDisabled}
             >
               <Ionicons name="close-circle-outline" size={16} color="#ef4444" />
               <Text style={styles.cancelBtnText}>RECHAZAR</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.listoBtn}
+              style={[styles.listoBtn, isDisabled && { opacity: 0.4 }]}
               onPress={() => confirmAction(item.id, 'despachado')}
+              disabled={isDisabled}
             >
               <Ionicons name="checkmark-circle" size={16} color="#fff" />
               <Text style={styles.listoBtnText}>¡PREPARADO!</Text>
@@ -223,8 +256,9 @@ export default function BartenderPrepScreen() {
       <NoxAlert 
         {...alertConfig} 
         onConfirm={() => {
-            setAlertConfig(prev => ({ ...prev, visible: false }));
-            if (alertConfig.onConfirm) alertConfig.onConfirm();
+            const callback = alertConfig.onConfirm;
+            setAlertConfig(prev => ({ ...prev, visible: false, onConfirm: undefined, onCancel: undefined }));
+            if (callback) callback();
         }} 
       />
     </View>
