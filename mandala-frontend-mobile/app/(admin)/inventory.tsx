@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, ActivityIndicator, Alert, ScrollView, Image, RefreshControl, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 import apiClient from '../../utils/apiClient';
 import { formatImageUrl } from '../../utils/imageHelpers';
 
@@ -21,6 +22,47 @@ export default function AdmInventarioScreen() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [tiposMov, setTiposMov] = useState<any[]>([]);
   const [movForm, setMovForm] = useState({ tipo_id: "", cantidad: "", motivo: "" });
+
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      uploadToCloudinary(result.assets[0].uri);
+    }
+  };
+
+  const uploadToCloudinary = async (uri: string) => {
+    setIsUploadingImage(true);
+    try {
+      const data = new FormData();
+      data.append("file", { uri, type: "image/jpeg", name: "upload.jpg" } as any);
+      data.append("upload_preset", "noxos_mobile");
+      data.append("cloud_name", "dakfgzabb");
+      
+      const res = await fetch("https://api.cloudinary.com/v1_1/dakfgzabb/image/upload", {
+        method: "POST",
+        body: data,
+      });
+      const result = await res.json();
+      if (result.secure_url) {
+        setForm(prev => ({ ...prev, imagen: result.secure_url }));
+      } else {
+        Alert.alert("Error", "No se pudo subir la imagen a Cloudinary.");
+      }
+    } catch (e) {
+      console.error("Cloudinary error:", e);
+      Alert.alert("Error", "Hubo un problema al subir la foto.");
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -101,7 +143,8 @@ export default function AdmInventarioScreen() {
           categoria: parseInt(form.categoria_id),
           precio: parseFloat(form.precio) || 0,
           stock_actual: parseInt(form.stock_actual) || 0,
-          activo: true
+          activo: true,
+          imagen: form.imagen || null
       };
       if (editId) await apiClient.patch(`/productos/${editId}/`, payload);
       else await apiClient.post('/productos/', payload);
@@ -250,8 +293,26 @@ export default function AdmInventarioScreen() {
                         placeholder="Ej: Ron Añejo..." placeholderTextColor="#444"
                         style={styles.input} value={form.nombre} onChangeText={t => setForm({...form, nombre: t})} 
                     />
+
+                    <Text style={[styles.label, { marginTop: 15 }]}>IMAGEN DEL PRODUCTO</Text>
+                    <TouchableOpacity 
+                      style={[styles.input, { alignItems: 'center', justifyContent: 'center', padding: 15, borderStyle: 'dashed' }]}
+                      onPress={pickImage}
+                      disabled={isUploadingImage}
+                    >
+                      {isUploadingImage ? (
+                        <ActivityIndicator color="#A944FF" />
+                      ) : form.imagen ? (
+                        <Image source={{ uri: form.imagen }} style={{ width: 100, height: 100, borderRadius: 10 }} />
+                      ) : (
+                        <View style={{ alignItems: 'center' }}>
+                          <Ionicons name="camera-outline" size={32} color="#8A7BAF" />
+                          <Text style={{ color: '#8A7BAF', fontSize: 12, marginTop: 5 }}>Tocar para elegir foto de galería</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
                     
-                    <Text style={styles.label}>CATEGORÍA</Text>
+                    <Text style={[styles.label, { marginTop: 15 }]}>CATEGORÍA</Text>
                     <View style={styles.row}>
                         {categorias.map((c: any) => (
                             <TouchableOpacity 
