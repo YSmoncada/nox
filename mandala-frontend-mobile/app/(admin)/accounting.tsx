@@ -68,7 +68,7 @@ export default function AdminAccountingScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header Premium */}
+      {/* Encabezado Premium */}
       <View style={styles.header}>
         <View>
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
@@ -98,7 +98,7 @@ export default function AdminAccountingScreen() {
                     <Text style={styles.metaText}>Iniciado por: {turno.usuario_apertura_nombre}</Text>
                 </View>
 
-                {/* Grid de Totales */}
+                {/* Rejilla de Totales */}
                 <View style={styles.grid}>
                     <View style={styles.statBox}>
                         <Text style={styles.statLbl}>Base Inicial</Text>

@@ -84,7 +84,7 @@ export default function AdminMesasScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header Premium */}
+      {/* Encabezado Premium */}
       <View style={styles.header}>
         <View>
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>

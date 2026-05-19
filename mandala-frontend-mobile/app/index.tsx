@@ -1,5 +1,5 @@
 import { Redirect } from "expo-router";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore, getDashboardRoute } from "../store/authStore";
 import { View, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
 
@@ -27,16 +27,11 @@ export default function Index() {
 
   // Si ya tenemos token y usuario, redireccionamos directo a su panel
   if (token && user) {
-    if (user.role === 'admin') {
-      return <Redirect href="/(admin)" />;
-    } else if (user.role === 'bartender') {
-      return <Redirect href="/(bartender)" />;
-    } else if (user.role === 'mesera') {
-      return <Redirect href="/(mesera)/orders" />;
-    }
+    return <Redirect href={getDashboardRoute(user.role) as any} />;
   }
 
   // Por defecto, mandamos al login
   return <Redirect href="/(auth)/login" />;
 
 }
+

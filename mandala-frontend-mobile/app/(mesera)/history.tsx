@@ -28,7 +28,7 @@ export default function MisPedidosScreen() {
   const [tab, setTab] = useState<'activas' | 'historial'>('activas');
   const router = useRouter();
 
-  // Custom Alert State
+  // Estado de alerta personalizada
   const [alertConfig, setAlertConfig] = useState<{
     visible: boolean,
     title: string,

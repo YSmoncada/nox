@@ -11,7 +11,7 @@ export default function BartenderPrepScreen() {
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [processedIds, setProcessedIds] = useState<Set<number>>(new Set());
 
-  // Custom Alert State
+  // Estado de alerta personalizada
   const [alertConfig, setAlertConfig] = useState<{
     visible: boolean,
     title: string,
@@ -34,7 +34,7 @@ export default function BartenderPrepScreen() {
 
   useEffect(() => {
     fetchPending();
-    const timer = setInterval(fetchPending, 60000); // refresca cada 60s
+    const timer = setInterval(fetchPending, 60000); // Refresca cada 60 segundos
     return () => clearInterval(timer);
   }, []);
 
@@ -129,7 +129,7 @@ export default function BartenderPrepScreen() {
 
     return (
       <View style={[styles.card, isProcessed && { opacity: 0.5 }]}>
-        {/* Card Header */}
+        {/* Encabezado de la Tarjeta */}
         <View style={styles.cardHeader}>
           <View style={styles.leftInfo}>
             <View style={styles.mesaBadge}>
@@ -180,7 +180,7 @@ export default function BartenderPrepScreen() {
           })}
         </View>
 
-        {/* Actions */}
+        {/* Acciones */}
         {isUpdating ? (
           <ActivityIndicator color="#A944FF" style={{ marginTop: 15 }} />
         ) : isProcessed ? (

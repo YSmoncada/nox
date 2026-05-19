@@ -103,7 +103,7 @@ export default function PedidosScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header Premium */}
+      {/* Encabezado Premium */}
       <View style={styles.header}>
         <View>
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
@@ -162,7 +162,7 @@ export default function PedidosScreen() {
         />
       )}
 
-      {/* MODAL CHECKOUT - NoxOS Style */}
+      {/* MODAL DE PAGO - Estilo NoxOS */}
       <Modal visible={showCheckout} animationType="slide" transparent>
         <View style={styles.modalBg}>
             <View style={styles.chkCard}>

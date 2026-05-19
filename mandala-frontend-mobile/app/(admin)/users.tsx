@@ -153,7 +153,7 @@ export default function AdmUsersScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header Premium */}
+      {/* Encabezado Premium */}
       <View style={styles.header}>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
