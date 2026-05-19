@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
 import apiClient from '../../../utils/apiClient';
 import { formatImageUrl } from '../../../utils/imageHelpers';
+import { NoxColors } from '../../../constants/theme';
+
 
 const { width } = Dimensions.get('window');
 
@@ -117,7 +119,7 @@ export default function ClientMenuScreen() {
 
   if (loading) return (
     <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#A944FF" />
+        <ActivityIndicator size="large" color=NoxColors.aura />
         <Text style={styles.loaderText}>CARGANDO MENÚ...</Text>
     </View>
   );
@@ -127,14 +129,14 @@ export default function ClientMenuScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.branding}>Nox<Text style={{color:'#71717a'}}>OS</Text></Text>
+          <Text style={styles.branding}>Nox<Text style={{color:NoxColors.subtext}}>OS</Text></Text>
           <Text style={styles.mesaTitle}>MESA #{mesaInfo?.numero || '?'}</Text>
           {mesaInfo?.mesero_nombre && (
-            <Text style={styles.meseroAsignado}>Atendido por: <Text style={{color:'#fff'}}>{mesaInfo.mesero_nombre}</Text></Text>
+            <Text style={styles.meseroAsignado}>Atendido por: <Text style={{color:NoxColors.text}}>{mesaInfo.mesero_nombre}</Text></Text>
           )}
         </View>
         <TouchableOpacity style={styles.cartBtnHeader} onPress={() => setShowCart(true)}>
-           <Ionicons name="bag-handle" size={24} color="#A944FF" />
+           <Ionicons name="bag-handle" size={24} color=NoxColors.aura />
            {order.length > 0 && <View style={styles.badge}><Text style={styles.badgeTxt}>{order.length}</Text></View>}
         </TouchableOpacity>
       </View>
@@ -142,11 +144,11 @@ export default function ClientMenuScreen() {
       {/* Buscador y Categorías */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
-          <Ionicons name="search" size={18} color="#8A7BAF" />
+          <Ionicons name="search" size={18} color=NoxColors.muted />
           <TextInput 
             style={styles.searchInput}
             placeholder="Buscar producto..."
-            placeholderTextColor="#8A7BAF"
+            placeholderTextColor=NoxColors.muted
             value={filtroNombre}
             onChangeText={setFiltroNombre}
           />
@@ -173,14 +175,14 @@ export default function ClientMenuScreen() {
         renderItem={({ item }) => (
           <View style={styles.prodCard}>
              <View style={styles.imgContainer}>
-                {item.imagen ? <Image source={{uri: formatImageUrl(item.imagen)}} style={styles.prodImg} /> : <Ionicons name="beer-outline" size={32} color="#8A7BAF" />}
+                {item.imagen ? <Image source={{uri: formatImageUrl(item.imagen)}} style={styles.prodImg} /> : <Ionicons name="beer-outline" size={32} color=NoxColors.muted />}
              </View>
              <View style={styles.infoContainer}>
                 <Text style={styles.prodName} numberOfLines={2}>{item.nombre}</Text>
                 <Text style={styles.prodPrice}>${parseFloat(item.precio).toLocaleString()}</Text>
              </View>
              <TouchableOpacity style={styles.addBtn} onPress={() => addToOrder(item)}>
-                <Ionicons name="add" size={20} color="#fff" />
+                <Ionicons name="add" size={20} color=NoxColors.text />
              </TouchableOpacity>
           </View>
         )}
@@ -203,7 +205,7 @@ export default function ClientMenuScreen() {
             <View style={styles.cartHead}>
               <Text style={styles.cartTitle}>TU PEDIDO</Text>
               <TouchableOpacity onPress={() => setShowCart(false)}>
-                <Ionicons name="close-circle" size={30} color="#71717a" />
+                <Ionicons name="close-circle" size={30} color=NoxColors.subtext />
               </TouchableOpacity>
             </View>
 
@@ -215,9 +217,9 @@ export default function ClientMenuScreen() {
                     <Text style={styles.cartItemPrice}>${(i.precio * i.qty).toLocaleString()}</Text>
                   </View>
                   <View style={styles.qtyRow}>
-                    <TouchableOpacity onPress={() => removeFromOrder(i.id)} style={styles.qtyBtn}><Ionicons name="remove" size={18} color="#fff" /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => removeFromOrder(i.id)} style={styles.qtyBtn}><Ionicons name="remove" size={18} color=NoxColors.text /></TouchableOpacity>
                     <Text style={styles.qtyVal}>{i.qty}</Text>
-                    <TouchableOpacity onPress={() => addToOrder(i)} style={styles.qtyBtn}><Ionicons name="add" size={18} color="#fff" /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => addToOrder(i)} style={styles.qtyBtn}><Ionicons name="add" size={18} color=NoxColors.text /></TouchableOpacity>
                   </View>
                 </View>
               ))}
@@ -240,54 +242,54 @@ export default function ClientMenuScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
-  loader: { flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' },
-  loaderText: { color: '#8A7BAF', fontWeight: '900', marginTop: 15, fontSize: 10, letterSpacing: 2 },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
+  loader: { flex: 1, backgroundColor: NoxColors.deep, justifyContent: 'center', alignItems: 'center' },
+  loaderText: { color: NoxColors.muted, fontWeight: '900', marginTop: 15, fontSize: 10, letterSpacing: 2 },
   header: { paddingHorizontal: 25, paddingTop: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  branding: { color: '#fff', fontSize: 24, fontWeight: '900', letterSpacing: 2 },
-  mesaTitle: { color: '#A944FF', fontWeight: '900', fontSize: 10, letterSpacing: 2, marginTop: 4 },
-  meseroAsignado: { color: '#8A7BAF', fontSize: 9, fontWeight: '700', marginTop: 2, textTransform: 'uppercase' },
-  cartBtnHeader: { backgroundColor: '#1A103C', width: 45, height: 45, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
-  badge: { position:'absolute', top: -5, right: -5, backgroundColor: '#A944FF', width: 18, height: 18, borderRadius: 9, justifyContent:'center', alignItems:'center' },
-  badgeTxt: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
+  branding: { color: NoxColors.text, fontSize: 24, fontWeight: '900', letterSpacing: 2 },
+  mesaTitle: { color: NoxColors.aura, fontWeight: '900', fontSize: 10, letterSpacing: 2, marginTop: 4 },
+  meseroAsignado: { color: NoxColors.muted, fontSize: 9, fontWeight: '700', marginTop: 2, textTransform: 'uppercase' },
+  cartBtnHeader: { backgroundColor: NoxColors.container, width: 45, height: 45, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  badge: { position:'absolute', top: -5, right: -5, backgroundColor: NoxColors.aura, width: 18, height: 18, borderRadius: 9, justifyContent:'center', alignItems:'center' },
+  badgeTxt: { color: NoxColors.text, fontSize: 10, fontWeight: 'bold' },
 
-  catBtn: { paddingHorizontal: 16, paddingVertical: 8, marginRight: 8, borderRadius: 12, backgroundColor: '#1A103C', height: 34, justifyContent:'center' },
-  catBtnActive: { backgroundColor: '#A944FF' },
-  catText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 1, textTransform: 'uppercase' },
-  catTextActive: { color: '#fff' },
+  catBtn: { paddingHorizontal: 16, paddingVertical: 8, marginRight: 8, borderRadius: 12, backgroundColor: NoxColors.container, height: 34, justifyContent:'center' },
+  catBtnActive: { backgroundColor: NoxColors.aura },
+  catText: { color: NoxColors.muted, fontSize: 10, fontWeight: '900', letterSpacing: 1, textTransform: 'uppercase' },
+  catTextActive: { color: NoxColors.text },
 
   searchSection: { marginTop: 15, marginBottom: 5 },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0E0D23', marginHorizontal: 20, marginBottom: 15, paddingHorizontal: 15, height: 45, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  searchInput: { flex: 1, marginLeft: 10, color: '#fff', fontSize: 14 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: NoxColors.card, marginHorizontal: 20, marginBottom: 15, paddingHorizontal: 15, height: 45, borderRadius: 15, borderWidth: 1, borderColor: NoxColors.border },
+  searchInput: { flex: 1, marginLeft: 10, color: NoxColors.text, fontSize: 14 },
 
-  prodCard: { width: (width - 60) / 2, backgroundColor: '#0E0D23', margin: 8, padding: 15, borderRadius: 28, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', height: 230, alignItems: 'center' },
-  imgContainer: { width: 110, height: 110, backgroundColor: '#1A103C', borderRadius: 25, justifyContent:'center', alignItems:'center', marginBottom: 12 },
+  prodCard: { width: (width - 60) / 2, backgroundColor: NoxColors.card, margin: 8, padding: 15, borderRadius: 28, borderWidth: 1, borderColor: NoxColors.border, height: 230, alignItems: 'center' },
+  imgContainer: { width: 110, height: 110, backgroundColor: NoxColors.container, borderRadius: 25, justifyContent:'center', alignItems:'center', marginBottom: 12 },
   prodImg: { width: 110, height: 110, borderRadius: 25 },
   infoContainer: { alignItems: 'center', width: '100%' },
-  prodName: { color: '#fff', fontWeight: 'bold', fontSize: 13, textAlign: 'center', height: 36, lineHeight: 18 },
-  prodPrice: { color: '#10b981', fontSize: 14, fontWeight: '900', marginTop: 5 },
-  addBtn: { position: 'absolute', bottom: 12, right: 12, backgroundColor: '#A944FF', width: 34, height: 34, borderRadius: 12, justifyContent: 'center', alignItems: 'center', shadowColor: '#A944FF', shadowOpacity: 0.4, shadowRadius: 10 },
+  prodName: { color: NoxColors.text, fontWeight: 'bold', fontSize: 13, textAlign: 'center', height: 36, lineHeight: 18 },
+  prodPrice: { color: NoxColors.emerald, fontSize: 14, fontWeight: '900', marginTop: 5 },
+  addBtn: { position: 'absolute', bottom: 12, right: 12, backgroundColor: NoxColors.aura, width: 34, height: 34, borderRadius: 12, justifyContent: 'center', alignItems: 'center', shadowColor: NoxColors.aura, shadowOpacity: 0.4, shadowRadius: 10 },
 
   floatingWrapper: { position: 'absolute', bottom: 85, left: 20, right: 20, zIndex: 99, elevation: 15 },
-  floatingCart: { backgroundColor: '#A944FF', padding: 20, borderRadius: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', shadowColor: '#A944FF', shadowOpacity: 0.5, shadowRadius: 20, elevation: 15 },
-  cartTotal: { color:'#fff', fontSize: 20, fontWeight:'900' },
-  cartConfirm: { color:'#fff', fontWeight: '900', letterSpacing: 2, fontSize: 12 },
+  floatingCart: { backgroundColor: NoxColors.aura, padding: 20, borderRadius: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', shadowColor: NoxColors.aura, shadowOpacity: 0.5, shadowRadius: 20, elevation: 15 },
+  cartTotal: { color:NoxColors.text, fontSize: 20, fontWeight:'900' },
+  cartConfirm: { color:NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 12 },
 
   cartOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'flex-end' },
-  cartContent: { backgroundColor: '#0E0D23', borderTopLeftRadius: 35, borderTopRightRadius: 35, maxHeight: '85%', padding: 30, paddingBottom: 40 },
+  cartContent: { backgroundColor: NoxColors.card, borderTopLeftRadius: 35, borderTopRightRadius: 35, maxHeight: '85%', padding: 30, paddingBottom: 40 },
   cartHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25 },
-  cartTitle: { color:'#fff', fontSize: 20, fontWeight:'bold', letterSpacing: 2 },
-  cartItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, borderBottomWidth:1, borderBottomColor: 'rgba(255,255,255,0.05)', paddingBottom: 15 },
-  cartItemName: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
-  cartItemPrice: { color: '#8A7BAF', fontSize: 14 },
+  cartTitle: { color:NoxColors.text, fontSize: 20, fontWeight:'bold', letterSpacing: 2 },
+  cartItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, borderBottomWidth:1, borderBottomColor: NoxColors.border, paddingBottom: 15 },
+  cartItemName: { color: NoxColors.text, fontWeight: 'bold', fontSize: 15 },
+  cartItemPrice: { color: NoxColors.muted, fontSize: 14 },
   qtyRow: { flexDirection: 'row', alignItems: 'center', gap: 15 },
-  qtyBtn: { backgroundColor: '#1A103C', width: 30, height: 30, borderRadius: 10, justifyContent:'center', alignItems:'center' },
-  qtyVal: { color: '#fff', fontWeight:'bold', fontSize: 16 },
+  qtyBtn: { backgroundColor: NoxColors.container, width: 30, height: 30, borderRadius: 10, justifyContent:'center', alignItems:'center' },
+  qtyVal: { color: NoxColors.text, fontWeight:'bold', fontSize: 16 },
   cartList: { flexShrink: 1, maxHeight: 300 },
   cartBottom: { paddingTop: 20, paddingBottom: 10 },
   totalRow: { flexDirection: 'row', justifyContent:'space-between', alignItems: 'center', marginBottom: 15 },
-  totalLbl: { color: '#8A7BAF', fontSize: 12, fontWeight: '900', letterSpacing: 2 },
-  totalVal: { color: '#fff', fontSize: 28, fontWeight: '900' },
-  sendBtn: { backgroundColor: '#A944FF', padding: 22, borderRadius: 20, alignItems: 'center' },
-  sendBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 14 },
+  totalLbl: { color: NoxColors.muted, fontSize: 12, fontWeight: '900', letterSpacing: 2 },
+  totalVal: { color: NoxColors.text, fontSize: 28, fontWeight: '900' },
+  sendBtn: { backgroundColor: NoxColors.aura, padding: 22, borderRadius: 20, alignItems: 'center' },
+  sendBtnText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 14 },
 });

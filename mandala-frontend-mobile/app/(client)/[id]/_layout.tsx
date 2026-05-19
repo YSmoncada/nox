@@ -2,14 +2,16 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View, Text } from 'react-native';
+import { NoxColors } from '../../../constants/theme';
+
 
 export default function ClientLayout() {
   return (
     <Tabs screenOptions={{
       headerShown: false,
       tabBarStyle: styles.tabBar,
-      tabBarActiveTintColor: '#A944FF',
-      tabBarInactiveTintColor: '#71717a',
+      tabBarActiveTintColor: NoxColors.aura,
+      tabBarInactiveTintColor: NoxColors.subtext,
       tabBarLabelStyle: styles.tabBarLabel,
     }}>
       <Tabs.Screen
@@ -36,9 +38,9 @@ export default function ClientLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: '#0E0D23',
+    backgroundColor: NoxColors.card,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.05)',
+    borderTopColor: NoxColors.border,
     height: 70,
     paddingBottom: 12,
     paddingTop: 8,
@@ -46,7 +48,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     elevation: 10,
-    shadowColor: '#000',
+    shadowColor: NoxColors.deep,
     shadowOpacity: 0.5,
     shadowRadius: 15,
   },

@@ -1,14 +1,16 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { NoxColors } from '../../constants/theme';
+
 
 export default function MeseraLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#A944FF',
+        tabBarActiveTintColor: NoxColors.aura,
         tabBarInactiveTintColor: '#4a4a6a',
         tabBarStyle: {
-          backgroundColor: '#0E0D23',
+          backgroundColor: NoxColors.card,
           borderTopColor: 'rgba(169,68,255,0.15)',
           borderTopWidth: 1,
           height: 60,

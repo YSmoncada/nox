@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { NoxColors } from '../constants/theme';
+
 
 interface NoxAlertProps {
   visible: boolean;
@@ -26,10 +28,10 @@ export default function NoxAlert({
 
   const getIcon = () => {
     switch (type) {
-      case 'success': return { name: 'checkmark-circle-outline', color: '#10b981', bg: 'rgba(16,185,129,0.1)' };
-      case 'error':   return { name: 'close-circle-outline', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' };
-      case 'warning': return { name: 'warning-outline', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' };
-      default:        return { name: 'information-circle-outline', color: '#A944FF', bg: 'rgba(169,68,255,0.1)' };
+      case 'success': return { name: 'checkmark-circle-outline', color: NoxColors.emerald, bg: 'rgba(16,185,129,0.1)' };
+      case 'error':   return { name: 'close-circle-outline', color: NoxColors.rose, bg: 'rgba(239,68,68,0.1)' };
+      case 'warning': return { name: 'warning-outline', color: NoxColors.amber, bg: 'rgba(245,158,11,0.1)' };
+      default:        return { name: 'information-circle-outline', color: NoxColors.aura, bg: 'rgba(169,68,255,0.1)' };
     }
   };
 
@@ -75,14 +77,14 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   card: {
-    backgroundColor: '#0E0D23',
+    backgroundColor: NoxColors.card,
     width: '100%',
     maxWidth: 340,
     borderRadius: 35,
     padding: 30,
     alignItems: 'center',
     borderWidth: 1.5,
-    shadowColor: '#000',
+    shadowColor: NoxColors.deep,
     shadowOpacity: 0.5,
     shadowRadius: 20,
     elevation: 20,
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    color: '#fff',
+    color: NoxColors.text,
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: 2,
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase'
   },
   message: {
-    color: '#8A7BAF',
+    color: NoxColors.muted,
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 30,
@@ -124,10 +126,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.03)',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
   cancelText: {
-    color: '#71717a',
+    color: NoxColors.subtext,
     fontSize: 12,
     fontWeight: 'bold',
     letterSpacing: 1,
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   confirmText: {
-    color: '#fff',
+    color: NoxColors.text,
     fontSize: 12,
     fontWeight: '900',
     letterSpacing: 1,

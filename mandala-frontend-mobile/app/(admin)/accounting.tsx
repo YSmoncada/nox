@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Dimensions, Touc
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
 import { useAlertStore } from '../../store/alertStore';
+import { NoxColors } from '../../constants/theme';
+
 
 const { width } = Dimensions.get('window');
 
@@ -75,13 +77,13 @@ export default function AdminAccountingScreen() {
           <Text style={styles.subtitle}>CONTABILIDAD Y CIERRE</Text>
         </View>
         <TouchableOpacity style={styles.refreshBtn} onPress={fetchTurnoActual} disabled={loading}>
-          <Ionicons name="sync-outline" size={24} color={loading ? "#444" : "#A944FF"} />
+          <Ionicons name="sync-outline" size={24} color={loading ? NoxColors.gray : NoxColors.aura} />
         </TouchableOpacity>
       </View>
 
       {loading ? (
         <View style={{ flex: 1, justifyContent: 'center' }}>
-            <ActivityIndicator size="large" color="#A944FF" />
+            <ActivityIndicator size="large" color=NoxColors.aura />
         </View>
       ) : (
         <ScrollView style={{ padding: 25 }} showsVerticalScrollIndicator={false}>
@@ -93,7 +95,7 @@ export default function AdminAccountingScreen() {
                     <Text style={styles.totalVal}>${parseFloat(turno.total_ventas || 0).toLocaleString()}</Text>
                     <View style={styles.lineGlow} />
                     <View style={[styles.statusBadge, {backgroundColor: 'rgba(16, 185, 129, 0.1)'}]}>
-                        <Text style={{color: '#10b981', fontSize: 10, fontWeight: '900', letterSpacing: 1}}>TURNO ABIERTO</Text>
+                        <Text style={{color: NoxColors.emerald, fontSize: 10, fontWeight: '900', letterSpacing: 1}}>TURNO ABIERTO</Text>
                     </View>
                     <Text style={styles.metaText}>Iniciado por: {turno.usuario_apertura_nombre}</Text>
                 </View>
@@ -112,13 +114,13 @@ export default function AdminAccountingScreen() {
 
                 {/* Acciones de Cierre */}
                 <TouchableOpacity style={styles.closeBtn} onPress={() => setShowCerrar(true)}>
-                    <Ionicons name="lock-closed-outline" size={24} color="#fff" />
+                    <Ionicons name="lock-closed-outline" size={24} color=NoxColors.text />
                     <Text style={styles.closeBtnText}>REALIZAR CORTE DE CAJA</Text>
                 </TouchableOpacity>
                 </>
             ) : (
                 <View style={styles.closedState}>
-                    <Ionicons name="calendar-outline" size={80} color="#1A103C" />
+                    <Ionicons name="calendar-outline" size={80} color=NoxColors.container />
                     <Text style={styles.closedTitle}>SISTEMA FUERA DE TURNO</Text>
                     <Text style={styles.closedMsg}>No hay una operación activa. Abre un nuevo turno para habilitar las ventas.</Text>
                     
@@ -149,7 +151,7 @@ export default function AdminAccountingScreen() {
                             value={baseInicial} 
                             onChangeText={setBaseInicial}
                             placeholder="0"
-                            placeholderTextColor="#444"
+                            placeholderTextColor=NoxColors.gray
                             returnKeyType="done"
                         />
                         <Text style={styles.modalLabel}>OBSERVACIONES</Text>
@@ -159,15 +161,15 @@ export default function AdminAccountingScreen() {
                             value={observaciones} 
                             onChangeText={setObservaciones}
                             placeholder="Ej: Turno nocturno viernes"
-                            placeholderTextColor="#444"
+                            placeholderTextColor=NoxColors.gray
                         />
                         
                         <View style={styles.modalActions}>
                             <TouchableOpacity style={styles.modalCancel} onPress={() => setShowAbrir(false)}>
-                                <Text style={{color: '#fff', fontWeight: 'bold'}}>CANCELAR</Text>
+                                <Text style={{color: NoxColors.text, fontWeight: 'bold'}}>CANCELAR</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.modalConfirm} onPress={handleAbrirTurno}>
-                                <Text style={{color: '#fff', fontWeight: '900'}}>ABRIR TURNO</Text>
+                                <Text style={{color: NoxColors.text, fontWeight: '900'}}>ABRIR TURNO</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -185,7 +187,7 @@ export default function AdminAccountingScreen() {
                     style={{ width: '100%' }}
                 >
                     <View style={styles.modalCard}>
-                        <Text style={[styles.modalTitle, {color: '#f44336'}]}>CIERRE DE CAJA</Text>
+                        <Text style={[styles.modalTitle, {color: NoxColors.rose}]}>CIERRE DE CAJA</Text>
                         <Text style={styles.modalLabel}>EFECTIVO REAL EN CAJA</Text>
                         <TextInput 
                             style={styles.modalInput} 
@@ -193,7 +195,7 @@ export default function AdminAccountingScreen() {
                             value={efectivoReal} 
                             onChangeText={setEfectivoReal}
                             placeholder="Cuenta el dinero físico..."
-                            placeholderTextColor="#444"
+                            placeholderTextColor=NoxColors.gray
                             returnKeyType="done"
                         />
                         <Text style={styles.modalLabel}>NOTAS DE CIERRE</Text>
@@ -203,15 +205,15 @@ export default function AdminAccountingScreen() {
                             value={observaciones} 
                             onChangeText={setObservaciones}
                             placeholder="Diferencias, novedades, etc."
-                            placeholderTextColor="#444"
+                            placeholderTextColor=NoxColors.gray
                         />
                         
                         <View style={styles.modalActions}>
                             <TouchableOpacity style={styles.modalCancel} onPress={() => setShowCerrar(false)}>
-                                <Text style={{color: '#fff', fontWeight: 'bold'}}>VOLVER</Text>
+                                <Text style={{color: NoxColors.text, fontWeight: 'bold'}}>VOLVER</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.modalConfirm, {backgroundColor: '#f44336'}]} onPress={handleCerrarTurno}>
-                                <Text style={{color: '#fff', fontWeight: '900'}}>CERRAR TURNO</Text>
+                            <TouchableOpacity style={[styles.modalConfirm, {backgroundColor: NoxColors.rose}]} onPress={handleCerrarTurno}>
+                                <Text style={{color: NoxColors.text, fontWeight: '900'}}>CERRAR TURNO</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -224,7 +226,7 @@ export default function AdminAccountingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   header: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -233,42 +235,42 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 20
   },
-  brandingNox: { fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: 2 },
-  brandingOS: { color: '#71717a' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 3, marginTop: 5 },
-  refreshBtn: { backgroundColor: '#1A103C', width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  brandingNox: { fontSize: 28, fontWeight: '900', color: NoxColors.text, letterSpacing: 2 },
+  brandingOS: { color: NoxColors.subtext },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 3, marginTop: 5 },
+  refreshBtn: { backgroundColor: NoxColors.container, width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
 
   cardMain: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 35, 
     padding: 35, 
     marginBottom: 30, 
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
-    shadowColor: '#A944FF',
+    borderColor: NoxColors.border,
+    shadowColor: NoxColors.aura,
     shadowOpacity: 0.1,
     shadowRadius: 20
   },
-  cardMainTitle: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 3, marginBottom: 15 },
-  totalVal: { color: '#fff', fontSize: 42, fontWeight: '900', textAlign: 'center' },
-  lineGlow: { width: 60, height: 4, backgroundColor: '#A944FF', borderRadius: 2, marginVertical: 20 },
+  cardMainTitle: { color: NoxColors.muted, fontSize: 10, fontWeight: '900', letterSpacing: 3, marginBottom: 15 },
+  totalVal: { color: NoxColors.text, fontSize: 42, fontWeight: '900', textAlign: 'center' },
+  lineGlow: { width: 60, height: 4, backgroundColor: NoxColors.aura, borderRadius: 2, marginVertical: 20 },
   statusBadge: { paddingHorizontal: 15, paddingVertical: 8, borderRadius: 12 },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 15, marginBottom: 40 },
   statBox: { 
     width: (width - 65) / 2, 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 24, 
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
-  statLbl: { color: '#444', fontSize: 9, fontWeight: '900', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' },
-  statVal: { color: '#fff', fontSize: 15, fontWeight: 'bold' },
+  statLbl: { color: NoxColors.gray, fontSize: 9, fontWeight: '900', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' },
+  statVal: { color: NoxColors.text, fontSize: 15, fontWeight: 'bold' },
 
   closeBtn: { 
-    backgroundColor: '#1A103C', 
+    backgroundColor: NoxColors.container, 
     padding: 22, 
     borderRadius: 25, 
     flexDirection: 'row', 
@@ -277,23 +279,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(169, 68, 255, 0.3)'
   },
-  closeBtnText: { color: '#A944FF', fontWeight: '900', marginLeft: 15, fontSize: 12, letterSpacing: 2 },
+  closeBtnText: { color: NoxColors.aura, fontWeight: '900', marginLeft: 15, fontSize: 12, letterSpacing: 2 },
 
-  metaText: { color: '#8A7BAF', fontSize: 10, marginTop: 10, fontWeight: '600' },
+  metaText: { color: NoxColors.muted, fontSize: 10, marginTop: 10, fontWeight: '600' },
   
   closedState: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 80, paddingHorizontal: 20 },
-  closedTitle: { color: '#fff', fontSize: 18, fontWeight: '900', letterSpacing: 2, marginTop: 25, marginBottom: 15 },
-  closedMsg: { color: '#8A7BAF', textAlign: 'center', fontSize: 13, lineHeight: 20, marginBottom: 40 },
+  closedTitle: { color: NoxColors.text, fontSize: 18, fontWeight: '900', letterSpacing: 2, marginTop: 25, marginBottom: 15 },
+  closedMsg: { color: NoxColors.muted, textAlign: 'center', fontSize: 13, lineHeight: 20, marginBottom: 40 },
   
-  openBtn: { backgroundColor: '#A944FF', paddingVertical: 20, paddingHorizontal: 40, borderRadius: 25, shadowColor: '#A944FF', shadowOpacity: 0.3, shadowRadius: 15 },
-  openBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 13 },
+  openBtn: { backgroundColor: NoxColors.aura, paddingVertical: 20, paddingHorizontal: 40, borderRadius: 25, shadowColor: NoxColors.aura, shadowOpacity: 0.3, shadowRadius: 15 },
+  openBtnText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 13 },
 
   modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.9)', justifyContent: 'center', alignItems: 'center', padding: 25 },
-  modalCard: { backgroundColor: '#0E0D23', borderRadius: 35, padding: 30, width: '100%', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  modalTitle: { color: '#A944FF', fontSize: 20, fontWeight: '900', letterSpacing: 2, marginBottom: 25, textAlign: 'center' },
-  modalLabel: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', letterSpacing: 1, marginBottom: 10, textTransform: 'uppercase' },
-  modalInput: { backgroundColor: '#000', borderRadius: 15, padding: 18, color: '#fff', fontSize: 16, marginBottom: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  modalCard: { backgroundColor: NoxColors.card, borderRadius: 35, padding: 30, width: '100%', borderWidth: 1, borderColor: NoxColors.border },
+  modalTitle: { color: NoxColors.aura, fontSize: 20, fontWeight: '900', letterSpacing: 2, marginBottom: 25, textAlign: 'center' },
+  modalLabel: { color: NoxColors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 1, marginBottom: 10, textTransform: 'uppercase' },
+  modalInput: { backgroundColor: NoxColors.deep, borderRadius: 15, padding: 18, color: NoxColors.text, fontSize: 16, marginBottom: 20, borderWidth: 1, borderColor: NoxColors.border },
   modalActions: { flexDirection: 'row', gap: 15, marginTop: 10 },
-  modalCancel: { flex: 1, padding: 20, borderRadius: 20, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.05)' },
-  modalConfirm: { flex: 1.5, padding: 20, borderRadius: 20, alignItems: 'center', backgroundColor: '#A944FF' }
+  modalCancel: { flex: 1, padding: 20, borderRadius: 20, alignItems: 'center', backgroundColor: NoxColors.border },
+  modalConfirm: { flex: 1.5, padding: 20, borderRadius: 20, alignItems: 'center', backgroundColor: NoxColors.aura }
 });

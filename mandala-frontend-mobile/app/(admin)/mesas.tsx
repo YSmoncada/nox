@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import * as Linking from 'expo-linking';
+import { NoxColors } from '../../constants/theme';
+
 
 export default function AdminMesasScreen() {
   const [mesas, setMesas] = useState<any[]>([]);
@@ -91,32 +93,32 @@ export default function AdminMesasScreen() {
           <Text style={styles.subtitle}>CONFIGURACIÓN DE SALÓN</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setModalOpen(true)}>
-          <Ionicons name="add" size={24} color="#fff" />
+          <Ionicons name="add" size={24} color=NoxColors.text />
         </TouchableOpacity>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 50 }} />
       ) : (
         <FlatList 
           data={mesas} 
           keyExtractor={it => String(it.id)} 
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchMesas(true)} tintColor="#A944FF" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchMesas(true)} tintColor=NoxColors.aura />}
           renderItem={({item}) => {
             const isOcupada = item.estado_nombre === 'Ocupada';
             const isSolicitando = item.estado_nombre === 'Solicitando Cuenta';
             const isLibre = !isOcupada && !isSolicitando;
 
-            let statusColor = '#10b981'; // Libre
-            if (isOcupada) statusColor = '#A944FF';
-            if (isSolicitando) statusColor = '#f59e0b'; // Amarillo/Naranja
+            let statusColor = NoxColors.emerald; // Libre
+            if (isOcupada) statusColor = NoxColors.aura;
+            if (isSolicitando) statusColor = NoxColors.amber; // Amarillo/Naranja
 
             return (
               <View style={styles.mesaCard}>
                 <View style={[styles.cardAccent, {backgroundColor: statusColor}]} />
                 <View style={[styles.mesaIcon, {backgroundColor: statusColor}]}>
-                  <Ionicons name={isSolicitando ? "cash-outline" : "restaurant-outline"} size={24} color="#fff" />
+                  <Ionicons name={isSolicitando ? "cash-outline" : "restaurant-outline"} size={24} color=NoxColors.text />
                 </View>
                 <View style={styles.mesaMain}>
                   <Text style={styles.mesaTitle}>Mesa {item.numero}</Text>
@@ -134,10 +136,10 @@ export default function AdminMesasScreen() {
                         onPress={() => { setSelectedMesa(item); setQrModalOpen(true); }} 
                         style={styles.iconBtnQr}
                     >
-                        <Ionicons name="qr-code-outline" size={18} color="#A944FF" />
+                        <Ionicons name="qr-code-outline" size={18} color=NoxColors.aura />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleDeleteMesa(item.id, item.numero)} style={styles.iconBtnDanger}>
-                        <Ionicons name="trash-outline" size={18} color="#ff4444" />
+                        <Ionicons name="trash-outline" size={18} color=NoxColors.rose />
                     </TouchableOpacity>
                 </View>
               </View>
@@ -175,7 +177,7 @@ export default function AdminMesasScreen() {
                   <Text style={styles.qrInfo}>Escanea este código para realizar pedidos directamente desde esta mesa en el portal del cliente.</Text>
                   
                   <TouchableOpacity style={styles.shareBtn} onPress={() => handleShareQr(selectedMesa)}>
-                      <Ionicons name="share-social-outline" size={20} color="#fff" style={{marginRight: 10}} />
+                      <Ionicons name="share-social-outline" size={20} color=NoxColors.text style={{marginRight: 10}} />
                       <Text style={styles.saveBtnText}>COMPARTIR ENLACE</Text>
                   </TouchableOpacity>
               </View>
@@ -195,13 +197,13 @@ export default function AdminMesasScreen() {
                 
                 <Text style={styles.label}>NÚMERO IDENTIFICADOR</Text>
                 <TextInput 
-                    style={styles.input} placeholder="Ej: 101" placeholderTextColor="#444"
+                    style={styles.input} placeholder="Ej: 101" placeholderTextColor=NoxColors.gray
                     keyboardType="number-pad" value={formData.numero} onChangeText={t => setFormData({...formData, numero: t})} 
                 />
                 
                 <Text style={styles.label}>CAPACIDAD MÁXIMA</Text>
                 <TextInput 
-                    style={styles.input} placeholder="4" placeholderTextColor="#444"
+                    style={styles.input} placeholder="4" placeholderTextColor=NoxColors.gray
                     keyboardType="number-pad" value={formData.capacidad} onChangeText={t => setFormData({...formData, capacidad: t})} 
                 />
                 
@@ -216,7 +218,7 @@ export default function AdminMesasScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#050510' },
+  container: { flex: 1, backgroundColor: NoxColors.background },
   header: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -225,30 +227,30 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 70 : 50,
     paddingBottom: 30
   },
-  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-  brandingOS: { color: '#A944FF' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
-  addBtn: { backgroundColor: '#A944FF', width: 56, height: 56, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#A944FF', shadowOpacity: 0.5, shadowRadius: 15 },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: NoxColors.text, letterSpacing: -1 },
+  brandingOS: { color: NoxColors.aura },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+  addBtn: { backgroundColor: NoxColors.aura, width: 56, height: 56, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: NoxColors.aura, shadowOpacity: 0.5, shadowRadius: 15 },
 
   listContent: { padding: 20, paddingBottom: 100 },
   mesaCard: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 28, 
     padding: 16, 
     marginBottom: 16, 
     flexDirection: 'row', 
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
-  cardAccent: { position: 'absolute', left: 0, top: 25, bottom: 25, width: 4, backgroundColor: '#A944FF', borderTopRightRadius: 10, borderBottomRightRadius: 10 },
-  mesaIcon: { width: 60, height: 60, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 5 },
-  mesaLibre: { backgroundColor: '#10b981' },
-  mesaOcupada: { backgroundColor: '#A944FF' },
+  cardAccent: { position: 'absolute', left: 0, top: 25, bottom: 25, width: 4, backgroundColor: NoxColors.aura, borderTopRightRadius: 10, borderBottomRightRadius: 10 },
+  mesaIcon: { width: 60, height: 60, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: NoxColors.deep, shadowOpacity: 0.2, shadowRadius: 5 },
+  mesaLibre: { backgroundColor: NoxColors.emerald },
+  mesaOcupada: { backgroundColor: NoxColors.aura },
   
   mesaMain: { flex: 1, marginLeft: 16, gap: 2 },
-  mesaTitle: { fontSize: 17, fontWeight: 'bold', color: '#fff' },
-  mesaSap: { fontSize: 9, color: '#8A7BAF', fontWeight: '900', letterSpacing: 1, textTransform: 'uppercase' },
+  mesaTitle: { fontSize: 17, fontWeight: 'bold', color: NoxColors.text },
+  mesaSap: { fontSize: 9, color: NoxColors.muted, fontWeight: '900', letterSpacing: 1, textTransform: 'uppercase' },
   
   badge: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, marginTop: 8, backgroundColor: 'rgba(255,255,255,0.03)', gap: 6 },
   dot: { width: 6, height: 6, borderRadius: 3 },
@@ -261,20 +263,20 @@ const styles = StyleSheet.create({
   iconBtnDanger: { width: 40, height: 40, borderRadius: 14, backgroundColor: 'rgba(255, 68, 68, 0.05)', justifyContent: 'center', alignItems: 'center' },
 
   modalBg: { flex: 1, backgroundColor: 'rgba(5, 5, 16, 0.95)', justifyContent: 'center', padding: 25 },
-  glassCard: { backgroundColor: '#0E0D23', borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)' },
-  qrFrame: { backgroundColor: '#fff', padding: 20, borderRadius: 30, marginBottom: 25, width: '100%', height: 280, justifyContent: 'center', alignItems: 'center' },
+  glassCard: { backgroundColor: NoxColors.card, borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)' },
+  qrFrame: { backgroundColor: NoxColors.text, padding: 20, borderRadius: 30, marginBottom: 25, width: '100%', height: 280, justifyContent: 'center', alignItems: 'center' },
   qrImage: { width: '100%', height: '100%' },
-  qrInfo: { color: '#8A7BAF', fontSize: 12, textAlign: 'center', marginBottom: 30, lineHeight: 22 },
-  shareBtn: { backgroundColor: '#A944FF', flexDirection: 'row', padding: 22, borderRadius: 25, alignItems: 'center', width: '100%', justifyContent: 'center' },
+  qrInfo: { color: NoxColors.muted, fontSize: 12, textAlign: 'center', marginBottom: 30, lineHeight: 22 },
+  shareBtn: { backgroundColor: NoxColors.aura, flexDirection: 'row', padding: 22, borderRadius: 25, alignItems: 'center', width: '100%', justifyContent: 'center' },
 
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 30, width: '100%' },
-  modalTitle: { color: '#fff', fontSize: 22, fontWeight: '900', letterSpacing: 2 },
-  selectedProdName: { color: '#A944FF', fontSize: 12, fontWeight: 'bold', marginTop: 4, textTransform: 'uppercase' },
-  label: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', marginBottom: 12, letterSpacing: 2, textTransform: 'uppercase' },
-  input: { backgroundColor: '#1A103C', color: '#fff', borderRadius: 20, padding: 20, fontSize: 16, marginBottom: 25, borderWidth:1, borderColor:'rgba(255,255,255,0.05)' },
-  saveBtn: { backgroundColor: '#A944FF', padding: 22, borderRadius: 25, alignItems: 'center', width: '100%' },
-  saveBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 14 },
+  modalTitle: { color: NoxColors.text, fontSize: 22, fontWeight: '900', letterSpacing: 2 },
+  selectedProdName: { color: NoxColors.aura, fontSize: 12, fontWeight: 'bold', marginTop: 4, textTransform: 'uppercase' },
+  label: { fontSize: 9, fontWeight: '900', color: NoxColors.muted, marginBottom: 12, letterSpacing: 2, textTransform: 'uppercase' },
+  input: { backgroundColor: NoxColors.container, color: NoxColors.text, borderRadius: 20, padding: 20, fontSize: 16, marginBottom: 25, borderWidth:1, borderColor:NoxColors.border },
+  saveBtn: { backgroundColor: NoxColors.aura, padding: 22, borderRadius: 25, alignItems: 'center', width: '100%' },
+  saveBtnText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 14 },
 
   emptyContainer: { alignItems: 'center', marginTop: 100, gap: 15, opacity: 0.5 },
-  emptyText: { color: '#8A7BAF', fontWeight: '900', fontSize: 12, letterSpacing: 3 }
+  emptyText: { color: NoxColors.muted, fontWeight: '900', fontSize: 12, letterSpacing: 3 }
 });

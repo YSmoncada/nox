@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, A
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
+import { NoxColors } from '../../constants/theme';
+
 
 export default function AdmUsersScreen() {
   const { user: currentUser } = useAuthStore();
@@ -122,7 +124,7 @@ export default function AdmUsersScreen() {
 
   const renderItem = ({ item }: { item: any }) => {
     const roleText = (item.user_role || 'SISTEMA').toUpperCase();
-    const roleColor = roleCategories.sistema.includes(roleText.toLowerCase()) ? '#f59e0b' : '#A944FF';
+    const roleColor = roleCategories.sistema.includes(roleText.toLowerCase()) ? NoxColors.amber : NoxColors.aura;
     
     return (
       <View style={styles.card}>
@@ -138,13 +140,13 @@ export default function AdmUsersScreen() {
         </View>
         <View style={styles.actions}>
           <TouchableOpacity onPress={() => handleToggleStatus(item)} style={[styles.iconBtn, { backgroundColor: item.activo ? '#10b98120' : '#ff444420' }]}>
-            <Ionicons name={item.activo ? "person-outline" : "person-remove-outline"} size={18} color={item.activo ? "#10b981" : "#ff4444"} />
+            <Ionicons name={item.activo ? "person-outline" : "person-remove-outline"} size={18} color={item.activo ? NoxColors.emerald : NoxColors.rose} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleOpenReset(item)} style={styles.iconBtn}>
-            <Ionicons name="key-outline" size={18} color="#fff" />
+            <Ionicons name="key-outline" size={18} color=NoxColors.text />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.iconBtnDanger}>
-            <Ionicons name="trash-outline" size={18} color="#ff4444" />
+            <Ionicons name="trash-outline" size={18} color=NoxColors.rose />
           </TouchableOpacity>
         </View>
       </View>
@@ -160,7 +162,7 @@ export default function AdmUsersScreen() {
           <Text style={styles.subtitle}>USUARIOS</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowAddModal(true)}>
-          <Ionicons name="person-add" size={24} color="#fff" />
+          <Ionicons name="person-add" size={24} color=NoxColors.text />
         </TouchableOpacity>
       </View>
 
@@ -181,7 +183,7 @@ export default function AdmUsersScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{marginTop:50}} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{marginTop:50}} />
       ) : (
         <FlatList 
           data={getFilteredUsers()} 
@@ -205,7 +207,7 @@ export default function AdmUsersScreen() {
                 
                 <Text style={styles.label}>NOMBRE DE USUARIO</Text>
                 <TextInput 
-                    placeholder="Ej: Mesera01" placeholderTextColor="#444" 
+                    placeholder="Ej: Mesera01" placeholderTextColor=NoxColors.gray 
                     style={styles.input} value={newProfileForm.username} 
                     onChangeText={t => setNewProfileForm({...newProfileForm, username: t})} 
                     autoCapitalize="none"
@@ -213,7 +215,7 @@ export default function AdmUsersScreen() {
 
                 <Text style={styles.label}>CONTRASEÑA / PIN</Text>
                 <TextInput 
-                    placeholder="Mínimo 4 caracteres" placeholderTextColor="#444" 
+                    placeholder="Mínimo 4 caracteres" placeholderTextColor=NoxColors.gray 
                     secureTextEntry style={styles.input} 
                     value={newProfileForm.password} 
                     onChangeText={t => setNewProfileForm({...newProfileForm, password: t})} 
@@ -226,7 +228,7 @@ export default function AdmUsersScreen() {
                         key={r} onPress={() => setSelectedRole(r)}
                         style={[styles.chip, selectedRole === r && styles.chipActive]}
                     >
-                        <Text style={[styles.chipText, selectedRole === r && {color:'#fff'}]}>{r.toUpperCase()}</Text>
+                        <Text style={[styles.chipText, selectedRole === r && {color:NoxColors.text}]}>{r.toUpperCase()}</Text>
                     </TouchableOpacity>
                     ))}
                 </View>
@@ -248,12 +250,12 @@ export default function AdmUsersScreen() {
                         <Ionicons name="close-circle" size={32} color="rgba(255,255,255,0.2)" />
                     </TouchableOpacity>
                 </View>
-                <Text style={[styles.label, {color: '#A944FF'}]}>USUARIO: {selectedUser?.username?.toUpperCase()}</Text>
+                <Text style={[styles.label, {color: NoxColors.aura}]}>USUARIO: {selectedUser?.username?.toUpperCase()}</Text>
                 
                 <View style={{marginTop: 15}}>
                     <Text style={styles.label}>NUEVA CONTRASEÑA O PIN</Text>
                     <TextInput 
-                        placeholder="Mínimo 4 dígitos" placeholderTextColor="#444" 
+                        placeholder="Mínimo 4 dígitos" placeholderTextColor=NoxColors.gray 
                         secureTextEntry style={styles.input} 
                         value={newCredentials} onChangeText={setNewCredentials} 
                     />
@@ -270,7 +272,7 @@ export default function AdmUsersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#050510' },
+  container: { flex: 1, backgroundColor: NoxColors.background },
   header: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -280,54 +282,54 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   headerTitleContainer: { gap: 4 },
-  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-  brandingOS: { color: '#A944FF' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
-  addBtn: { backgroundColor: '#A944FF', width: 56, height: 56, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#A944FF', shadowOpacity: 0.5, shadowRadius: 15 },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: NoxColors.text, letterSpacing: -1 },
+  brandingOS: { color: NoxColors.aura },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+  addBtn: { backgroundColor: NoxColors.aura, width: 56, height: 56, borderRadius: 20, justifyContent: 'center', alignItems: 'center', shadowColor: NoxColors.aura, shadowOpacity: 0.5, shadowRadius: 15 },
 
   tabsContainer: { flexDirection: 'row', paddingHorizontal: 25, gap: 12, marginBottom: 20 },
-  tab: { flex: 1, paddingVertical: 14, borderRadius: 18, backgroundColor: '#0E0D23', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  tabActive: { backgroundColor: '#1A103C', borderColor: 'rgba(169, 68, 255, 0.4)' },
-  tabText: { color: '#8A7BAF', fontWeight: 'bold', fontSize: 10, letterSpacing: 2 },
-  tabTextActive: { color: '#A944FF' },
+  tab: { flex: 1, paddingVertical: 14, borderRadius: 18, backgroundColor: NoxColors.card, alignItems: 'center', borderWidth: 1, borderColor: NoxColors.border },
+  tabActive: { backgroundColor: NoxColors.container, borderColor: 'rgba(169, 68, 255, 0.4)' },
+  tabText: { color: NoxColors.muted, fontWeight: 'bold', fontSize: 10, letterSpacing: 2 },
+  tabTextActive: { color: NoxColors.aura },
 
   listContent: { paddingHorizontal: 20, paddingBottom: 100 },
   card: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     padding: 16, 
     borderRadius: 28, 
     marginBottom: 12, 
     flexDirection: 'row', 
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
   cardAccent: { position: 'absolute', left: 0, top: 25, bottom: 25, width: 4, borderTopRightRadius: 10, borderBottomRightRadius: 10 },
   avatar: { width: 56, height: 56, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
   avatarText: { fontSize: 22, fontWeight: '900' },
   
   cardMain: { flex: 1, marginLeft: 15 },
-  cardTitle: { fontSize: 17, fontWeight: 'bold', color: '#fff' },
+  cardTitle: { fontSize: 17, fontWeight: 'bold', color: NoxColors.text },
   roleTag: { marginTop: 4 },
   roleTagText: { fontSize: 9, fontWeight: '900', letterSpacing: 1 },
 
   actions: { flexDirection: 'row', gap: 8 },
-  iconBtn: { width: 40, height: 40, borderRadius: 14, backgroundColor: '#1A103C', justifyContent: 'center', alignItems: 'center' },
+  iconBtn: { width: 40, height: 40, borderRadius: 14, backgroundColor: NoxColors.container, justifyContent: 'center', alignItems: 'center' },
   iconBtnDanger: { width: 40, height: 40, borderRadius: 14, backgroundColor: 'rgba(255, 68, 68, 0.1)', justifyContent: 'center', alignItems: 'center' },
 
   modalBg: { flex: 1, backgroundColor: 'rgba(5, 5, 16, 0.95)', justifyContent: 'center', padding: 25 },
-  glassCard: { backgroundColor: '#0E0D23', borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', shadowColor: '#A944FF', shadowOpacity: 0.1, shadowRadius: 30 },
+  glassCard: { backgroundColor: NoxColors.card, borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', shadowColor: NoxColors.aura, shadowOpacity: 0.1, shadowRadius: 30 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 },
-  modalTitle: { color: '#fff', fontSize: 22, fontWeight: '900', letterSpacing: 2 },
+  modalTitle: { color: NoxColors.text, fontSize: 22, fontWeight: '900', letterSpacing: 2 },
   
-  label: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', marginBottom: 12, letterSpacing: 2, textTransform: 'uppercase' },
-  input: { backgroundColor: '#1A103C', color: '#fff', borderRadius: 20, padding: 20, fontSize: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 20 },
+  label: { fontSize: 9, fontWeight: '900', color: NoxColors.muted, marginBottom: 12, letterSpacing: 2, textTransform: 'uppercase' },
+  input: { backgroundColor: NoxColors.container, color: NoxColors.text, borderRadius: 20, padding: 20, fontSize: 16, borderWidth: 1, borderColor: NoxColors.border, marginBottom: 20 },
   
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 30 },
-  chip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 14, backgroundColor: '#1A103C', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  chipActive: { backgroundColor: '#A944FF', borderColor: 'rgba(169, 68, 255, 0.3)' },
-  chipText: { fontSize: 10, fontWeight: 'bold', color: '#8A7BAF' },
+  chip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 14, backgroundColor: NoxColors.container, borderWidth: 1, borderColor: NoxColors.border },
+  chipActive: { backgroundColor: NoxColors.aura, borderColor: 'rgba(169, 68, 255, 0.3)' },
+  chipText: { fontSize: 10, fontWeight: 'bold', color: NoxColors.muted },
 
-  saveBtn: { backgroundColor: '#A944FF', padding: 22, borderRadius: 25, alignItems: 'center', marginTop: 10, shadowColor: '#A944FF', shadowOpacity: 0.5, shadowRadius: 15 },
-  saveBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 14 }
+  saveBtn: { backgroundColor: NoxColors.aura, padding: 22, borderRadius: 25, alignItems: 'center', marginTop: 10, shadowColor: NoxColors.aura, shadowOpacity: 0.5, shadowRadius: 15 },
+  saveBtnText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 14 }
 });

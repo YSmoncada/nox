@@ -4,14 +4,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import apiClient from '../../utils/apiClient';
+import { NoxColors } from '../../constants/theme';
+
 
 const { width, height } = Dimensions.get('window');
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: keyof typeof Ionicons.glyphMap }> = {
-  Pendiente:  { label: 'PENDIENTE',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  icon: 'time-outline' },
-  Despachado: { label: 'DESPACHADO',  color: '#10b981', bg: 'rgba(16,185,129,0.1)',  icon: 'checkmark-circle-outline' },
-  Cancelado:  { label: 'CANCELADO',   color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   icon: 'close-circle-outline' },
-  Pagado:     { label: 'PAGADO',      color: '#A944FF', bg: 'rgba(169,68,255,0.1)',  icon: 'card-outline' },
+  Pendiente:  { label: 'PENDIENTE',   color: NoxColors.amber, bg: 'rgba(245,158,11,0.1)',  icon: 'time-outline' },
+  Despachado: { label: 'DESPACHADO',  color: NoxColors.emerald, bg: 'rgba(16,185,129,0.1)',  icon: 'checkmark-circle-outline' },
+  Cancelado:  { label: 'CANCELADO',   color: NoxColors.rose, bg: 'rgba(239,68,68,0.1)',   icon: 'close-circle-outline' },
+  Pagado:     { label: 'PAGADO',      color: NoxColors.aura, bg: 'rgba(169,68,255,0.1)',  icon: 'card-outline' },
   Preparando: { label: 'PREPARANDO',  color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',  icon: 'flash-outline' },
 };
 
@@ -112,7 +114,7 @@ export default function AdminHistoryScreen() {
   }, [selectedMesera, meseras]);
 
   const renderPedido = ({ item }: { item: any }) => {
-    const status = STATUS_CONFIG[item.estado_nombre] || { label: item.estado_nombre || 'S/E', color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)', icon: 'help-circle-outline' };
+    const status = STATUS_CONFIG[item.estado_nombre] || { label: item.estado_nombre || 'S/E', color: NoxColors.muted, bg: 'rgba(138,123,175,0.1)', icon: 'help-circle-outline' };
     
     return (
         <TouchableOpacity 
@@ -195,13 +197,13 @@ export default function AdminHistoryScreen() {
                 style={[styles.filterChip, filterType === 'today' && styles.filterChipActive]} 
                 onPress={() => setFilterType('today')}
               >
-                <Text style={[styles.filterChipText, filterType === 'today' && {color: '#fff'}]}>HOY</Text>
+                <Text style={[styles.filterChipText, filterType === 'today' && {color: NoxColors.text}]}>HOY</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.filterChip, filterType === 'all' && styles.filterChipActive]} 
                 onPress={() => setFilterType('all')}
               >
-                <Text style={[styles.filterChipText, filterType === 'all' && {color: '#fff'}]}>HISTÓRICO</Text>
+                <Text style={[styles.filterChipText, filterType === 'all' && {color: NoxColors.text}]}>HISTÓRICO</Text>
               </TouchableOpacity>
           </View>
 
@@ -209,11 +211,11 @@ export default function AdminHistoryScreen() {
             style={[styles.userSelectBtn, selectedMesera !== null && styles.userSelectBtnActive]}
             onPress={() => setUserFilterModalOpen(true)}
           >
-              <Ionicons name="person-circle-outline" size={20} color={selectedMesera !== null ? "#fff" : "#A944FF"} />
-              <Text style={[styles.userSelectText, selectedMesera !== null && {color: '#fff'}]}>
+              <Ionicons name="person-circle-outline" size={20} color={selectedMesera !== null ? NoxColors.text : NoxColors.aura} />
+              <Text style={[styles.userSelectText, selectedMesera !== null && {color: NoxColors.text}]}>
                   {currentMeseraName}
               </Text>
-              <Ionicons name="chevron-down" size={14} color={selectedMesera !== null ? "#fff" : "#8A7BAF"} />
+              <Ionicons name="chevron-down" size={14} color={selectedMesera !== null ? NoxColors.text : NoxColors.muted} />
           </TouchableOpacity>
       </View>
 
@@ -231,7 +233,7 @@ export default function AdminHistoryScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 40 }} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 40 }} />
       ) : (
         <SectionList
           sections={groupedData}
@@ -239,11 +241,11 @@ export default function AdminHistoryScreen() {
           renderItem={renderPedido}
           renderSectionHeader={renderSectionHeader}
           contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 100 }]}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor="#A944FF" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor=NoxColors.aura />}
           stickySectionHeadersEnabled={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-                <Ionicons name="receipt-outline" size={60} color="#1A103C" />
+                <Ionicons name="receipt-outline" size={60} color=NoxColors.container />
                 <Text style={styles.emptyText}>SIN REGISTROS DISPONIBLES</Text>
             </View>
           }
@@ -257,7 +259,7 @@ export default function AdminHistoryScreen() {
                   <View style={styles.modalHeader}>
                       <Text style={styles.modalTitle}>FILTRAR POR USUARIO</Text>
                       <TouchableOpacity onPress={() => setUserFilterModalOpen(false)} style={styles.closeBtn}>
-                          <Ionicons name="close" size={24} color="#fff" />
+                          <Ionicons name="close" size={24} color=NoxColors.text />
                       </TouchableOpacity>
                   </View>
 
@@ -266,8 +268,8 @@ export default function AdminHistoryScreen() {
                         style={[styles.userItem, selectedMesera === null && styles.userItemActive]}
                         onPress={() => { setSelectedMesera(null); setUserFilterModalOpen(false); }}
                       >
-                          <Ionicons name="apps-outline" size={20} color={selectedMesera === null ? "#fff" : "#A944FF"} />
-                          <Text style={[styles.userItemText, selectedMesera === null && {color: '#fff'}]}>TODOS LOS USUARIOS</Text>
+                          <Ionicons name="apps-outline" size={20} color={selectedMesera === null ? NoxColors.text : NoxColors.aura} />
+                          <Text style={[styles.userItemText, selectedMesera === null && {color: NoxColors.text}]}>TODOS LOS USUARIOS</Text>
                       </TouchableOpacity>
 
                       <Text style={styles.modalSubLabel}>PERSONAL REGISTRADO</Text>
@@ -277,14 +279,14 @@ export default function AdminHistoryScreen() {
                             style={[styles.userItem, selectedMesera === m.id && styles.userItemActive]}
                             onPress={() => { setSelectedMesera(m.id); setUserFilterModalOpen(false); }}
                           >
-                              <View style={[styles.miniAvatar, {backgroundColor: `${m.user_role === 'admin' ? '#f59e0b' : '#A944FF'}20`}]}>
-                                  <Text style={[styles.miniAvatarText, {color: m.user_role === 'admin' ? '#f59e0b' : '#A944FF'}]}>{m.username.charAt(0).toUpperCase()}</Text>
+                              <View style={[styles.miniAvatar, {backgroundColor: `${m.user_role === 'admin' ? NoxColors.amber : NoxColors.aura}20`}]}>
+                                  <Text style={[styles.miniAvatarText, {color: m.user_role === 'admin' ? NoxColors.amber : NoxColors.aura}]}>{m.username.charAt(0).toUpperCase()}</Text>
                               </View>
                               <View>
-                                  <Text style={[styles.userItemText, selectedMesera === m.id && {color: '#fff'}]}>{m.username.toUpperCase()}</Text>
+                                  <Text style={[styles.userItemText, selectedMesera === m.id && {color: NoxColors.text}]}>{m.username.toUpperCase()}</Text>
                                   <Text style={styles.userRoleText}>{m.user_role?.toUpperCase() || 'PERSONAL'}</Text>
                               </View>
-                              {selectedMesera === m.id && <Ionicons name="checkmark-circle" size={20} color="#fff" style={{marginLeft: 'auto'}} />}
+                              {selectedMesera === m.id && <Ionicons name="checkmark-circle" size={20} color=NoxColors.text style={{marginLeft: 'auto'}} />}
                           </TouchableOpacity>
                       ))}
                   </ScrollView>
@@ -303,7 +305,7 @@ export default function AdminHistoryScreen() {
                             <Text style={styles.selectedProdName}>VENTA #{selectedPedido?.id}</Text>
                         </View>
                         <TouchableOpacity onPress={() => setStatusModalOpen(false)} style={styles.closeBtn}>
-                            <Ionicons name="close" size={24} color="#fff" />
+                            <Ionicons name="close" size={24} color=NoxColors.text />
                         </TouchableOpacity>
                     </View>
 
@@ -318,22 +320,22 @@ export default function AdminHistoryScreen() {
                                     key={s} 
                                     style={[
                                         styles.statusGridItem, 
-                                        { borderColor: isSelected ? config.color : 'rgba(255,255,255,0.05)' },
+                                        { borderColor: isSelected ? config.color : NoxColors.border },
                                         isSelected && { backgroundColor: config.bg }
                                     ]}
                                     onPress={() => handleChangeStatus(selectedPedido.id, s)}
                                 >
                                     <View style={[styles.statusIconCircle, { backgroundColor: isSelected ? config.color : 'rgba(255,255,255,0.03)' }]}>
-                                        <Ionicons name={config.icon} size={22} color={isSelected ? '#fff' : config.color} />
+                                        <Ionicons name={config.icon} size={22} color={isSelected ? NoxColors.text : config.color} />
                                     </View>
-                                    <Text style={[styles.statusItemText, { color: isSelected ? '#fff' : '#8A7BAF' }]}>{config.label}</Text>
+                                    <Text style={[styles.statusItemText, { color: isSelected ? NoxColors.text : NoxColors.muted }]}>{config.label}</Text>
                                 </TouchableOpacity>
                             );
                         })}
                     </View>
                     
                     <View style={styles.infoBox}>
-                        <Ionicons name="alert-circle-outline" size={16} color="#A944FF" />
+                        <Ionicons name="alert-circle-outline" size={16} color=NoxColors.aura />
                         <Text style={styles.qrInfo}>Modificar una venta afecta el reporte financiero del día correspondiente.</Text>
                     </View>
                   </ScrollView>
@@ -345,89 +347,89 @@ export default function AdminHistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#050510' },
+  container: { flex: 1, backgroundColor: NoxColors.background },
   header: { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 15 },
-  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-  brandingOS: { color: '#A944FF' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: NoxColors.text, letterSpacing: -1 },
+  brandingOS: { color: NoxColors.aura },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
 
   filterSection: { paddingHorizontal: 20, marginBottom: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   filterGroup: { flexDirection: 'row', gap: 8 },
-  filterChip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 14, backgroundColor: '#0E0D23', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  filterChipActive: { backgroundColor: '#1A103C', borderColor: 'rgba(169,68,255,0.3)' },
-  filterChipText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900' },
+  filterChip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 14, backgroundColor: NoxColors.card, borderWidth: 1, borderColor: NoxColors.border },
+  filterChipActive: { backgroundColor: NoxColors.container, borderColor: 'rgba(169,68,255,0.3)' },
+  filterChipText: { color: NoxColors.muted, fontSize: 10, fontWeight: '900' },
   
-  userSelectBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#0E0D23', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', maxWidth: 160 },
-  userSelectBtnActive: { backgroundColor: '#A944FF', borderColor: '#A944FF' },
-  userSelectText: { color: '#A944FF', fontSize: 10, fontWeight: '900', flexShrink: 1 },
+  userSelectBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: NoxColors.card, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', maxWidth: 160 },
+  userSelectBtnActive: { backgroundColor: NoxColors.aura, borderColor: NoxColors.aura },
+  userSelectText: { color: NoxColors.aura, fontSize: 10, fontWeight: '900', flexShrink: 1 },
 
   summaryContainer: { paddingHorizontal: 20, marginBottom: 25 },
   summaryCard: { 
-    backgroundColor: '#1A103C', borderRadius: 28, padding: 22, flexDirection: 'row', 
+    backgroundColor: NoxColors.container, borderRadius: 28, padding: 22, flexDirection: 'row', 
     justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.3)'
   },
   summaryInfo: { gap: 4 },
-  summaryLabel: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', letterSpacing: 2 },
-  summaryAmount: { color: '#fff', fontSize: 32, fontWeight: '900' },
+  summaryLabel: { color: NoxColors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 2 },
+  summaryAmount: { color: NoxColors.text, fontSize: 32, fontWeight: '900' },
   summaryStats: { alignItems: 'center', backgroundColor: 'rgba(169, 68, 255, 0.1)', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 18 },
-  statCount: { color: '#fff', fontSize: 20, fontWeight: '900' },
-  statSub: { color: '#A944FF', fontSize: 8, fontWeight: '900' },
+  statCount: { color: NoxColors.text, fontSize: 20, fontWeight: '900' },
+  statSub: { color: NoxColors.aura, fontSize: 8, fontWeight: '900' },
 
   listContent: { paddingHorizontal: 20 },
   sectionHeader: { marginTop: 25, marginBottom: 15 },
   sectionHeaderLine: { height: 1, backgroundColor: 'rgba(138, 123, 175, 0.1)', position: 'absolute', left: 0, right: 0, top: 12 },
-  sectionHeaderContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#050510', alignSelf: 'flex-start', paddingRight: 15 },
-  sectionTitleText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 3, backgroundColor: '#050510', paddingRight: 10 },
+  sectionHeaderContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: NoxColors.background, alignSelf: 'flex-start', paddingRight: 15 },
+  sectionTitleText: { color: NoxColors.muted, fontSize: 10, fontWeight: '900', letterSpacing: 3, backgroundColor: NoxColors.background, paddingRight: 10 },
   sectionTotalBadge: { backgroundColor: 'rgba(16, 185, 129, 0.1)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1, borderColor: 'rgba(16, 185, 129, 0.2)' },
-  sectionTotalText: { color: '#10b981', fontSize: 9, fontWeight: 'bold' },
+  sectionTotalText: { color: NoxColors.emerald, fontSize: 9, fontWeight: 'bold' },
 
-  card: { backgroundColor: '#0E0D23', borderRadius: 24, padding: 18, marginBottom: 15, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  card: { backgroundColor: NoxColors.card, borderRadius: 24, padding: 18, marginBottom: 15, borderWidth: 1, borderColor: NoxColors.border },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
   mesaTag: { backgroundColor: 'rgba(169, 68, 255, 0.1)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12 },
-  mesaText: { color: '#A944FF', fontWeight: '900', fontSize: 11 },
+  mesaText: { color: NoxColors.aura, fontWeight: '900', fontSize: 11 },
   statusBadge: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12 },
   statusText: { fontSize: 9, fontWeight: '900' },
 
   infoGrid: { flexDirection: 'row', gap: 20, marginBottom: 15 },
   infoCol: { flex: 1, gap: 4 },
-  infoLabel: { color: '#444', fontSize: 8, fontWeight: '900', letterSpacing: 1 },
-  infoVal: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
+  infoLabel: { color: NoxColors.gray, fontSize: 8, fontWeight: '900', letterSpacing: 1 },
+  infoVal: { color: NoxColors.text, fontSize: 12, fontWeight: 'bold' },
 
   productSection: { marginTop: 5, gap: 8 },
   productRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  productCant: { color: '#A944FF', fontSize: 12, fontWeight: '900', minWidth: 25 },
-  productName: { color: '#8A7BAF', fontSize: 13, flex: 1 },
-  productPrice: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
+  productCant: { color: NoxColors.aura, fontSize: 12, fontWeight: '900', minWidth: 25 },
+  productName: { color: NoxColors.muted, fontSize: 13, flex: 1 },
+  productPrice: { color: NoxColors.text, fontSize: 12, fontWeight: 'bold' },
 
-  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.05)', marginVertical: 15 },
+  divider: { height: 1, backgroundColor: NoxColors.border, marginVertical: 15 },
   cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  dateText: { color: '#444', fontSize: 10, fontWeight: 'bold' },
-  totalVal: { color: '#10b981', fontSize: 24, fontWeight: '900' },
+  dateText: { color: NoxColors.gray, fontSize: 10, fontWeight: 'bold' },
+  totalVal: { color: NoxColors.emerald, fontSize: 24, fontWeight: '900' },
 
   modalBg: { flex: 1, backgroundColor: 'rgba(5, 5, 16, 0.95)', justifyContent: 'center', padding: 25 },
-  glassCard: { backgroundColor: '#0E0D23', borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', shadowColor: '#A944FF', shadowOpacity: 0.1, shadowRadius: 30 },
+  glassCard: { backgroundColor: NoxColors.card, borderRadius: 40, padding: 30, borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.2)', shadowColor: NoxColors.aura, shadowOpacity: 0.1, shadowRadius: 30 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, alignItems: 'center' },
-  modalTitle: { color: '#fff', fontSize: 18, fontWeight: '900', letterSpacing: 2 },
-  modalSubLabel: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', marginVertical: 20, letterSpacing: 2 },
-  closeBtn: { backgroundColor: '#1A103C', width: 44, height: 44, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  modalTitle: { color: NoxColors.text, fontSize: 18, fontWeight: '900', letterSpacing: 2 },
+  modalSubLabel: { fontSize: 9, fontWeight: '900', color: NoxColors.muted, marginVertical: 20, letterSpacing: 2 },
+  closeBtn: { backgroundColor: NoxColors.container, width: 44, height: 44, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
   
   userItem: { flexDirection: 'row', alignItems: 'center', gap: 15, padding: 18, borderRadius: 20, marginBottom: 8, backgroundColor: 'rgba(255,255,255,0.02)', borderWidth: 1, borderColor: 'transparent' },
-  userItemActive: { backgroundColor: '#A944FF', borderColor: 'rgba(255,255,255,0.2)' },
+  userItemActive: { backgroundColor: NoxColors.aura, borderColor: 'rgba(255,255,255,0.2)' },
   miniAvatar: { width: 40, height: 40, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
   miniAvatarText: { fontWeight: '900', fontSize: 16 },
-  userItemText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
-  userRoleText: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', marginTop: 2 },
+  userItemText: { color: NoxColors.text, fontWeight: 'bold', fontSize: 14 },
+  userRoleText: { color: NoxColors.muted, fontSize: 9, fontWeight: '900', marginTop: 2 },
 
-  label: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', marginBottom: 20, letterSpacing: 2 },
+  label: { fontSize: 9, fontWeight: '900', color: NoxColors.muted, marginBottom: 20, letterSpacing: 2 },
   statusGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between' },
   statusGridItem: { width: '47%', paddingVertical: 20, borderRadius: 24, borderWidth: 1, alignItems: 'center', gap: 10 },
   statusIconCircle: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
   statusItemText: { fontSize: 10, fontWeight: '900', letterSpacing: 1 },
   
   infoBox: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: 'rgba(169, 68, 255, 0.05)', padding: 16, borderRadius: 20, marginTop: 25 },
-  qrInfo: { color: '#8A7BAF', fontSize: 10, flex: 1, lineHeight: 16 },
+  qrInfo: { color: NoxColors.muted, fontSize: 10, flex: 1, lineHeight: 16 },
 
   emptyContainer: { alignItems: 'center', marginTop: 100, gap: 15, opacity: 0.2 },
-  emptyText: { color: '#8A7BAF', fontWeight: '900', fontSize: 11, letterSpacing: 3 },
-  selectedProdName: { color: '#A944FF', fontSize: 12, fontWeight: 'bold', marginTop: 4 }
+  emptyText: { color: NoxColors.muted, fontWeight: '900', fontSize: 11, letterSpacing: 3 },
+  selectedProdName: { color: NoxColors.aura, fontSize: 12, fontWeight: 'bold', marginTop: 4 }
 });

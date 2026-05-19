@@ -1,5 +1,7 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { NoxColors } from '../../constants/theme';
+
 
 export default function AdminLayout() {
   return (
@@ -8,15 +10,15 @@ export default function AdminLayout() {
         tabBarActiveTintColor: '#4CAF50',
         tabBarInactiveTintColor: '#999',
         tabBarStyle: {
-          backgroundColor: '#000',
+          backgroundColor: NoxColors.deep,
           borderTopColor: '#333',
           height: 60,
           paddingBottom: 10,
         },
         headerStyle: {
-          backgroundColor: '#000',
+          backgroundColor: NoxColors.deep,
         },
-        headerTintColor: '#FFF',
+        headerTintColor: NoxColors.text,
       }}
     >
       <Tabs.Screen 

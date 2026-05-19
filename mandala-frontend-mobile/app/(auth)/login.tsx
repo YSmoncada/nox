@@ -5,6 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuthStore, getDashboardRoute } from '../../store/authStore';
 import { useAlertStore } from '../../store/alertStore';
 import apiClient from "../../utils/apiClient";
+import { NoxColors } from '../../constants/theme';
+
 
 export default function LoginScreen() {
   const setAuth = useAuthStore(state => state.setAuth);
@@ -75,7 +77,7 @@ export default function LoginScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Usuario</Text>
               <View style={styles.inputWrapper}>
-                <Ionicons name="person-outline" size={18} color="#8A7BAF" style={styles.inputIcon} />
+                <Ionicons name="person-outline" size={18} color=NoxColors.muted style={styles.inputIcon} />
                 <TextInput 
                   placeholder="Nombre de usuario" 
                   placeholderTextColor="#8A7BAF50"
@@ -90,7 +92,7 @@ export default function LoginScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Clave de Seguridad</Text>
               <View style={styles.inputWrapper}>
-                <Ionicons name="lock-closed-outline" size={18} color="#8A7BAF" style={styles.inputIcon} />
+                <Ionicons name="lock-closed-outline" size={18} color=NoxColors.muted style={styles.inputIcon} />
                 <TextInput 
                   placeholder="••••••••••••" 
                   placeholderTextColor="#8A7BAF50"
@@ -100,7 +102,7 @@ export default function LoginScreen() {
                   secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeBtn}>
-                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#8A7BAF" />
+                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color=NoxColors.muted />
                 </TouchableOpacity>
               </View>
             </View>
@@ -111,7 +113,7 @@ export default function LoginScreen() {
               disabled={loading || !username || !password}
             >
               {loading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color=NoxColors.text />
               ) : (
                 <Text style={styles.btnText}>ACCEDER AL SISTEMA</Text>
               )}
@@ -127,40 +129,40 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   card: { 
-    backgroundColor: '#1A103C', 
+    backgroundColor: NoxColors.container, 
     marginHorizontal: 20,
     borderRadius: 40, 
     padding: 35, 
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    shadowColor: '#000', 
+    borderColor: NoxColors.border,
+    shadowColor: NoxColors.deep, 
     shadowOpacity: 0.5, 
     shadowRadius: 30,
     elevation: 10
   },
   header: { alignItems: 'center', marginBottom: 45 },
   logoContainer: { alignItems: 'center', marginBottom: 10 },
-  logoText: { fontSize: 48, fontWeight: '900', color: '#fff', letterSpacing: 5 },
-  logoAltText: { color: '#71717a' },
-  logoLine: { width: 60, height: 4, backgroundColor: '#A944FF', borderRadius: 2, marginTop: -5, opacity: 0.5 },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4 },
+  logoText: { fontSize: 48, fontWeight: '900', color: NoxColors.text, letterSpacing: 5 },
+  logoAltText: { color: NoxColors.subtext },
+  logoLine: { width: 60, height: 4, backgroundColor: NoxColors.aura, borderRadius: 2, marginTop: -5, opacity: 0.5 },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 4 },
   
   form: { width: '100%' },
   inputGroup: { marginBottom: 25 },
-  label: { fontSize: 10, color: '#8A7BAF', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 10, marginLeft: 5 },
+  label: { fontSize: 10, color: NoxColors.muted, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 10, marginLeft: 5 },
   inputWrapper: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 20, 
     paddingHorizontal: 15,
     borderWidth: 1,
     borderColor: 'rgba(108, 63, 168, 0.3)'
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, paddingVertical: 18, fontSize: 14, color: '#fff', fontWeight: '600' },
+  input: { flex: 1, paddingVertical: 18, fontSize: 14, color: NoxColors.text, fontWeight: '600' },
   eyeBtn: { padding: 10 },
   
   btn: { 
@@ -169,18 +171,18 @@ const styles = StyleSheet.create({
     borderRadius: 20, 
     alignItems: 'center', 
     marginTop: 20,
-    shadowColor: '#A944FF',
+    shadowColor: NoxColors.aura,
     shadowOpacity: 0.3,
     shadowRadius: 15,
     elevation: 5
   },
   btnDisabled: { opacity: 0.4 },
-  btnText: { color: '#fff', fontWeight: '900', letterSpacing: 3, fontSize: 11 },
+  btnText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 3, fontSize: 11 },
   
   footerInfo: { marginTop: 30, alignItems: 'center' },
   footerText: { color: 'rgba(138, 123, 175, 0.4)', fontSize: 8, fontWeight: 'bold', letterSpacing: 3 },
   
   devLinks: { marginTop: 40, alignItems: 'center' },
   devBtn: { padding: 15 },
-  devText: { color: '#A944FF', fontSize: 10, fontWeight: 'bold', letterSpacing: 2, textDecorationLine: 'underline' }
+  devText: { color: NoxColors.aura, fontSize: 10, fontWeight: 'bold', letterSpacing: 2, textDecorationLine: 'underline' }
 });

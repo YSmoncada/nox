@@ -6,14 +6,16 @@ import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
 import LogoutModal from '../../components/LogoutModal';
 import NoxAlert from '../../components/NoxAlert';
+import { NoxColors } from '../../constants/theme';
+
 
 const ESTADO_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  pendiente:   { label: 'Pendiente',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-  despachado:  { label: 'Despachado',  color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-  finalizada:  { label: 'Finalizado',  color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)' },
-  finalizado:  { label: 'Finalizado',  color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)' },
-  pagado:      { label: 'Pagado',      color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)' },
-  cancelado:   { label: 'Cancelado',   color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+  pendiente:   { label: 'Pendiente',   color: NoxColors.amber, bg: 'rgba(245,158,11,0.1)' },
+  despachado:  { label: 'Despachado',  color: NoxColors.emerald, bg: 'rgba(16,185,129,0.1)' },
+  finalizada:  { label: 'Finalizado',  color: NoxColors.muted, bg: 'rgba(138,123,175,0.1)' },
+  finalizado:  { label: 'Finalizado',  color: NoxColors.muted, bg: 'rgba(138,123,175,0.1)' },
+  pagado:      { label: 'Pagado',      color: NoxColors.muted, bg: 'rgba(138,123,175,0.1)' },
+  cancelado:   { label: 'Cancelado',   color: NoxColors.rose, bg: 'rgba(239,68,68,0.1)' },
 };
 
 export default function MisPedidosScreen() {
@@ -181,7 +183,7 @@ export default function MisPedidosScreen() {
       <View style={styles.cardHead}>
         <View style={styles.cardLeft}>
           <View style={[styles.estadoBadge, { backgroundColor: 'rgba(169,68,255,0.1)' }]}>
-            <Text style={[styles.estadoText, { color: '#A944FF' }]}>CUENTA ACTIVA</Text>
+            <Text style={[styles.estadoText, { color: NoxColors.aura }]}>CUENTA ACTIVA</Text>
           </View>
           <Text style={styles.pedidoId}>Mesa #{item.mesa_numero}</Text>
         </View>
@@ -193,7 +195,7 @@ export default function MisPedidosScreen() {
 
       {item.pidiendo_cuenta && (
         <View style={styles.billAlertInline}>
-          <Ionicons name="notifications-outline" size={16} color="#A944FF" />
+          <Ionicons name="notifications-outline" size={16} color=NoxColors.aura />
           <Text style={styles.billAlertText}>SOLICITÓ LA CUENTA</Text>
         </View>
       )}
@@ -206,10 +208,10 @@ export default function MisPedidosScreen() {
           const isLlevado = cantD >= cantT;
           return (
             <View key={idx} style={styles.prodRow}>
-              <View style={[styles.statusDot, { backgroundColor: isLlevado ? '#10b981' : '#f59e0b' }]} />
+              <View style={[styles.statusDot, { backgroundColor: isLlevado ? NoxColors.emerald : NoxColors.amber }]} />
               <Text style={[styles.prodName, isLlevado && { opacity: 0.6 }]} numberOfLines={1}>{prod.producto_nombre}</Text>
               <Text style={styles.prodQty}>x{prod.cantidad}</Text>
-              <Text style={[styles.statusTextSmall, { color: isLlevado ? '#10b981' : '#f59e0b' }]}>
+              <Text style={[styles.statusTextSmall, { color: isLlevado ? NoxColors.emerald : NoxColors.amber }]}>
                 {isLlevado ? 'LLEVADO' : (cantD > 0 ? `${cantD}/${cantT}` : 'PENDIENTE')}
               </Text>
             </View>
@@ -275,17 +277,17 @@ export default function MisPedidosScreen() {
       </View>
 
       {loading && !refreshing ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 60 }} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 60 }} />
       ) : (
         <FlatList
           data={tab === 'activas' ? activeGroups : historicalPedidos}
           keyExtractor={item => String(item.id || item.mesa_id)}
           renderItem={tab === 'activas' ? renderMesaGroup : renderPedidoIndividual}
           contentContainerStyle={{ padding: 15, paddingBottom: 100 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#A944FF" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor=NoxColors.aura />}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Ionicons name="receipt-outline" size={64} color="#1A103C" />
+              <Ionicons name="receipt-outline" size={64} color=NoxColors.container />
               <Text style={styles.emptyTitle}>Sin pedidos</Text>
             </View>
           }
@@ -295,9 +297,9 @@ export default function MisPedidosScreen() {
       <Modal visible={!!mesaAlerta} transparent animationType="fade">
         <View style={styles.alertOverlay}>
           <View style={styles.alertCard}>
-            <View style={styles.alertIcon}><Ionicons name="receipt" size={40} color="#fff" /></View>
+            <View style={styles.alertIcon}><Ionicons name="receipt" size={40} color=NoxColors.text /></View>
             <Text style={styles.alertTitle}>¡SOLICITUD DE CUENTA!</Text>
-            <Text style={styles.alertMsg}>La <Text style={{color: '#A944FF', fontWeight: '900'}}>MESA #{mesaAlerta?.numero}</Text> está solicitando su cuenta.</Text>
+            <Text style={styles.alertMsg}>La <Text style={{color: NoxColors.aura, fontWeight: '900'}}>MESA #{mesaAlerta?.numero}</Text> está solicitando su cuenta.</Text>
             <TouchableOpacity style={styles.alertBtn} onPress={handleLimpiarAlerta}>
               <Text style={styles.alertBtnText}>ENTENDIDO</Text>
             </TouchableOpacity>
@@ -323,20 +325,20 @@ export default function MisPedidosScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 25, paddingTop: 60, paddingBottom: 20 },
-  brandingNox: { fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: 2 },
-  brandingOS: { color: '#71717a' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 3, marginTop: 4 },
-  logoutBtn: { backgroundColor: '#1A103C', padding: 12, borderRadius: 15 },
+  brandingNox: { fontSize: 28, fontWeight: '900', color: NoxColors.text, letterSpacing: 2 },
+  brandingOS: { color: NoxColors.subtext },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 3, marginTop: 4 },
+  logoutBtn: { backgroundColor: NoxColors.container, padding: 12, borderRadius: 15 },
 
   tabBar: { flexDirection: 'row', paddingHorizontal: 20, marginBottom: 15, gap: 10 },
-  tab: { flex: 1, paddingVertical: 12, alignItems: 'center', borderRadius: 15, backgroundColor: '#0E0D23' },
-  tabActive: { backgroundColor: '#1A103C', borderWidth: 1, borderColor: '#A944FF' },
-  tabText: { color: '#71717a', fontSize: 10, fontWeight: '900', letterSpacing: 1 },
-  tabTextActive: { color: '#fff' },
+  tab: { flex: 1, paddingVertical: 12, alignItems: 'center', borderRadius: 15, backgroundColor: NoxColors.card },
+  tabActive: { backgroundColor: NoxColors.container, borderWidth: 1, borderColor: NoxColors.aura },
+  tabText: { color: NoxColors.subtext, fontSize: 10, fontWeight: '900', letterSpacing: 1 },
+  tabTextActive: { color: NoxColors.text },
 
-  card: { backgroundColor: '#0E0D23', borderRadius: 24, padding: 18, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  card: { backgroundColor: NoxColors.card, borderRadius: 24, padding: 18, marginBottom: 12, borderWidth: 1, borderColor: NoxColors.border },
   cardActive: { borderColor: 'rgba(169,68,255,0.3)' },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 },
   cardLeft: { gap: 6 },
@@ -344,31 +346,31 @@ const styles = StyleSheet.create({
 
   estadoBadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
   estadoText: { fontSize: 10, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1 },
-  pedidoId: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  mesaText: { color: '#8A7BAF', fontSize: 12, fontWeight: '600' },
-  totalText: { color: '#10b981', fontWeight: '900', fontSize: 18 },
+  pedidoId: { color: NoxColors.text, fontWeight: 'bold', fontSize: 16 },
+  mesaText: { color: NoxColors.muted, fontSize: 12, fontWeight: '600' },
+  totalText: { color: NoxColors.emerald, fontWeight: '900', fontSize: 18 },
 
-  metaText: { color: '#8A7BAF', fontSize: 11, marginTop: 5 },
+  metaText: { color: NoxColors.muted, fontSize: 11, marginTop: 5 },
 
-  detail: { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.05)' },
-  detailLabel: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', letterSpacing: 2, marginBottom: 12 },
+  detail: { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: NoxColors.border },
+  detailLabel: { fontSize: 9, fontWeight: '900', color: NoxColors.muted, letterSpacing: 2, marginBottom: 12 },
   prodRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  prodName: { flex: 1, color: '#fff', fontSize: 13 },
-  prodQty: { color: '#8A7BAF', fontSize: 12, marginHorizontal: 8 },
+  prodName: { flex: 1, color: NoxColors.text, fontSize: 13 },
+  prodQty: { color: NoxColors.muted, fontSize: 12, marginHorizontal: 8 },
   statusDot: { width: 6, height: 6, borderRadius: 3, marginRight: 8 },
   statusTextSmall: { fontSize: 11, fontWeight: '900', letterSpacing: 0.5, marginLeft: 10, width: 85, textAlign: 'right' },
 
   empty: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
-  emptyTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  emptyTitle: { color: NoxColors.text, fontSize: 18, fontWeight: 'bold' },
 
   alertOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.9)', justifyContent: 'center', alignItems: 'center', padding: 30 },
-  alertCard: { backgroundColor: '#0E0D23', borderRadius: 35, padding: 35, alignItems: 'center', borderWidth: 2, borderColor: '#A944FF', width: '100%' },
-  alertIcon: { width: 70, height: 70, borderRadius: 35, backgroundColor: '#A944FF', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  alertTitle: { color: '#fff', fontSize: 18, fontWeight: '900', letterSpacing: 2, marginBottom: 15 },
-  alertMsg: { color: '#8A7BAF', textAlign: 'center', fontSize: 15, marginBottom: 30 },
-  alertBtn: { backgroundColor: '#A944FF', paddingVertical: 18, width: '100%', borderRadius: 20, alignItems: 'center' },
-  alertBtnText: { color: '#fff', fontWeight: '900', fontSize: 12 },
+  alertCard: { backgroundColor: NoxColors.card, borderRadius: 35, padding: 35, alignItems: 'center', borderWidth: 2, borderColor: NoxColors.aura, width: '100%' },
+  alertIcon: { width: 70, height: 70, borderRadius: 35, backgroundColor: NoxColors.aura, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  alertTitle: { color: NoxColors.text, fontSize: 18, fontWeight: '900', letterSpacing: 2, marginBottom: 15 },
+  alertMsg: { color: NoxColors.muted, textAlign: 'center', fontSize: 15, marginBottom: 30 },
+  alertBtn: { backgroundColor: NoxColors.aura, paddingVertical: 18, width: '100%', borderRadius: 20, alignItems: 'center' },
+  alertBtnText: { color: NoxColors.text, fontWeight: '900', fontSize: 12 },
 
   billAlertInline: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(169,68,255,0.1)', padding: 10, borderRadius: 12, marginTop: 10, marginBottom: 5, gap: 8 },
-  billAlertText: { color: '#A944FF', fontSize: 10, fontWeight: '900', letterSpacing: 1 }
+  billAlertText: { color: NoxColors.aura, fontSize: 10, fontWeight: '900', letterSpacing: 1 }
 });

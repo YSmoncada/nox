@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
+import { NoxColors } from '../../constants/theme';
+
 
 export default function AdminBartenderScreen() {
   const [pedidos, setPedidos] = useState<any[]>([]);
@@ -80,17 +82,17 @@ export default function AdminBartenderScreen() {
 
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <TouchableOpacity 
-            style={[styles.readyBtn, { flex: 1, backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 1, borderColor: '#ef4444' }]} 
+            style={[styles.readyBtn, { flex: 1, backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 1, borderColor: NoxColors.rose }]} 
             onPress={() => confirmAction(item.id, 'cancelado')}
           >
-            <Text style={[styles.readyBtnText, { color: '#ef4444' }]}>RECHAZAR</Text>
+            <Text style={[styles.readyBtnText, { color: NoxColors.rose }]}>RECHAZAR</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
             style={[styles.readyBtn, { flex: 2 }]} 
             onPress={() => confirmAction(item.id, 'despachado')}
           >
-            <Ionicons name="checkmark-circle-outline" size={20} color="#fff" />
+            <Ionicons name="checkmark-circle-outline" size={20} color=NoxColors.text />
             <Text style={styles.readyBtnText}>¡PREPARADO!</Text>
           </TouchableOpacity>
         </View>
@@ -106,12 +108,12 @@ export default function AdminBartenderScreen() {
           <Text style={styles.subtitle}>PREPARACIÓN EN BARRA</Text>
         </View>
         <TouchableOpacity style={styles.refreshBtn} onPress={fetchPending} disabled={loading}>
-          <Ionicons name="reload" size={24} color={loading ? "#444" : "#A944FF"} />
+          <Ionicons name="reload" size={24} color={loading ? NoxColors.gray : NoxColors.aura} />
         </TouchableOpacity>
       </View>
 
       {loading && pedidos.length === 0 ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 50 }} />
       ) : (
         <FlatList
           data={pedidos}
@@ -120,9 +122,9 @@ export default function AdminBartenderScreen() {
           contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Ionicons name="beer-outline" size={64} color="#1A103C" />
-              <Text style={{ color: '#8A7BAF', marginTop: 15, fontWeight:'bold', letterSpacing: 2 }}>TODO AL DÍA</Text>
-              <Text style={{ color: '#444', fontSize: 10, marginTop: 5 }}>NO HAY PEDIDOS PENDIENTES</Text>
+              <Ionicons name="beer-outline" size={64} color=NoxColors.container />
+              <Text style={{ color: NoxColors.muted, marginTop: 15, fontWeight:'bold', letterSpacing: 2 }}>TODO AL DÍA</Text>
+              <Text style={{ color: NoxColors.gray, fontSize: 10, marginTop: 5 }}>NO HAY PEDIDOS PENDIENTES</Text>
             </View>
           }
         />
@@ -132,7 +134,7 @@ export default function AdminBartenderScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   header: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -141,34 +143,34 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 20
   },
-  brandingNox: { fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: 2 },
-  brandingOS: { color: '#71717a' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 3, marginTop: 5 },
-  refreshBtn: { backgroundColor: '#1A103C', width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  brandingNox: { fontSize: 28, fontWeight: '900', color: NoxColors.text, letterSpacing: 2 },
+  brandingOS: { color: NoxColors.subtext },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 3, marginTop: 5 },
+  refreshBtn: { backgroundColor: NoxColors.container, width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
 
   card: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 24, 
     padding: 20, 
     marginBottom: 20, 
     borderLeftWidth: 5, 
-    borderLeftColor: '#A944FF',
+    borderLeftColor: NoxColors.aura,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, alignItems: 'center' },
   mesaBadge: { backgroundColor: 'rgba(169, 68, 255, 0.1)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
-  mesaText: { color: '#A944FF', fontWeight: '900', fontSize: 14 },
-  timeText: { color: '#444', fontSize: 10, fontWeight: 'bold' },
+  mesaText: { color: NoxColors.aura, fontWeight: '900', fontSize: 14 },
+  timeText: { color: NoxColors.gray, fontSize: 10, fontWeight: 'bold' },
   
   itemsList: { marginBottom: 20 },
   itemRow: { flexDirection: 'row', marginBottom: 10, alignItems: 'center' },
-  cantCircle: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#1A103C', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
-  cantNum: { fontWeight: 'bold', color: '#A944FF', fontSize: 12 },
-  itemName: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
+  cantCircle: { width: 28, height: 28, borderRadius: 14, backgroundColor: NoxColors.container, justifyContent: 'center', alignItems: 'center', marginRight: 12 },
+  cantNum: { fontWeight: 'bold', color: NoxColors.aura, fontSize: 12 },
+  itemName: { color: NoxColors.text, fontWeight: 'bold', fontSize: 15 },
   
-  readyBtn: { backgroundColor: '#10b981', padding: 18, borderRadius: 18, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-  readyBtnText: { color: '#fff', fontWeight: '900', marginLeft: 10, fontSize: 11, letterSpacing: 1 },
+  readyBtn: { backgroundColor: NoxColors.emerald, padding: 18, borderRadius: 18, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+  readyBtnText: { color: NoxColors.text, fontWeight: '900', marginLeft: 10, fontSize: 11, letterSpacing: 1 },
   
   empty: { alignItems: 'center', marginTop: 120 }
 });

@@ -5,12 +5,14 @@ import { useRouter } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
 import LogoutModal from '../../components/LogoutModal';
+import { NoxColors } from '../../constants/theme';
+
 
 const ESTADO_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  pendiente:   { label: 'Pendiente',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-  despachado:  { label: 'Despachado',  color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-  finalizada:  { label: 'Finalizado',  color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)' },
-  cancelado:   { label: 'Cancelado',   color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+  pendiente:   { label: 'Pendiente',   color: NoxColors.amber, bg: 'rgba(245,158,11,0.1)' },
+  despachado:  { label: 'Despachado',  color: NoxColors.emerald, bg: 'rgba(16,185,129,0.1)' },
+  finalizada:  { label: 'Finalizado',  color: NoxColors.muted, bg: 'rgba(138,123,175,0.1)' },
+  cancelado:   { label: 'Cancelado',   color: NoxColors.rose, bg: 'rgba(239,68,68,0.1)' },
 };
 
 export default function BartenderHistoryScreen() {
@@ -101,9 +103,9 @@ export default function BartenderHistoryScreen() {
         </View>
 
         <View style={styles.metaRow}>
-          <Ionicons name="calendar-outline" size={12} color="#8A7BAF" />
+          <Ionicons name="calendar-outline" size={12} color=NoxColors.muted />
           <Text style={styles.metaText}>{fecha}</Text>
-          <Ionicons name="time-outline" size={12} color="#8A7BAF" style={{ marginLeft: 10 }} />
+          <Ionicons name="time-outline" size={12} color=NoxColors.muted style={{ marginLeft: 10 }} />
           <Text style={styles.metaText}>{hora}</Text>
         </View>
 
@@ -129,7 +131,7 @@ export default function BartenderHistoryScreen() {
                     onPress={() => Alert.alert("Confirmar", "¿RECHAZAR este pedido?", [
                         {text:'No'}, {text:'Sí', onPress:() => handleUpdateEstado(item.id, 'cancelado')}
                     ])}>
-                    <Ionicons name="close" size={14} color="#ef4444" />
+                    <Ionicons name="close" size={14} color=NoxColors.rose />
                     <Text style={styles.cancelBtnTextMini}>RECHAZAR</Text>
                   </TouchableOpacity>
                   
@@ -137,7 +139,7 @@ export default function BartenderHistoryScreen() {
                     <TouchableOpacity 
                         style={styles.listoBtnMini} 
                         onPress={() => handleUpdateEstado(item.id, 'despachado')}>
-                        <Ionicons name="checkmark-circle" size={14} color="#fff" />
+                        <Ionicons name="checkmark-circle" size={14} color=NoxColors.text />
                         <Text style={styles.listoBtnTextMini}>¡LISTO!</Text>
                     </TouchableOpacity>
                   )}
@@ -162,15 +164,15 @@ export default function BartenderHistoryScreen() {
           <Text style={styles.subtitle}>MIS PEDIDOS</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-          <Ionicons name="log-out-outline" size={22} color="#ef4444" />
+          <Ionicons name="log-out-outline" size={22} color=NoxColors.rose />
         </TouchableOpacity>
       </View>
 
       {loading && !refreshing ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 60 }} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 60 }} />
       ) : pedidos.length === 0 ? (
         <View style={styles.empty}>
-          <Ionicons name="receipt-outline" size={64} color="#1A103C" />
+          <Ionicons name="receipt-outline" size={64} color=NoxColors.container />
           <Text style={styles.emptyTitle}>Sin pedidos aún</Text>
           <Text style={styles.emptyText}>Tus pedidos aparecerán aquí</Text>
         </View>
@@ -180,7 +182,7 @@ export default function BartenderHistoryScreen() {
           keyExtractor={item => String(item.id)}
           renderItem={renderPedido}
           contentContainerStyle={{ padding: 15, paddingBottom: 100 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#A944FF" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor=NoxColors.aura />}
         />
       )}
 
@@ -194,18 +196,18 @@ export default function BartenderHistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingHorizontal: 25, paddingTop: 60, paddingBottom: 25,
   },
-  brandingNox: { fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: 2 },
-  brandingOS: { color: '#71717a' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 3, marginTop: 4 },
-  logoutBtn: { backgroundColor: '#1A103C', padding: 12, borderRadius: 15 },
+  brandingNox: { fontSize: 28, fontWeight: '900', color: NoxColors.text, letterSpacing: 2 },
+  brandingOS: { color: NoxColors.subtext },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 3, marginTop: 4 },
+  logoutBtn: { backgroundColor: NoxColors.container, padding: 12, borderRadius: 15 },
   card: {
-    backgroundColor: '#0E0D23', borderRadius: 24, padding: 18, marginBottom: 12,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: NoxColors.card, borderRadius: 24, padding: 18, marginBottom: 12,
+    borderWidth: 1, borderColor: NoxColors.border,
   },
   cardActive: { borderColor: 'rgba(169,68,255,0.3)' },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 },
@@ -213,27 +215,27 @@ const styles = StyleSheet.create({
   cardRight: { alignItems: 'flex-end', gap: 4 },
   estadoBadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
   estadoText: { fontSize: 10, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1 },
-  pedidoId: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  mesaText: { color: '#8A7BAF', fontSize: 12, fontWeight: '600' },
-  totalText: { color: '#10b981', fontWeight: '900', fontSize: 18 },
+  pedidoId: { color: NoxColors.text, fontWeight: 'bold', fontSize: 16 },
+  mesaText: { color: NoxColors.muted, fontSize: 12, fontWeight: '600' },
+  totalText: { color: NoxColors.emerald, fontWeight: '900', fontSize: 18 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  metaText: { color: '#8A7BAF', fontSize: 11, marginRight: 5 },
-  detail: { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.05)' },
-  detailLabel: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', letterSpacing: 2, marginBottom: 12 },
+  metaText: { color: NoxColors.muted, fontSize: 11, marginRight: 5 },
+  detail: { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: NoxColors.border },
+  detailLabel: { fontSize: 9, fontWeight: '900', color: NoxColors.muted, letterSpacing: 2, marginBottom: 12 },
   prodRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  prodName: { flex: 1, color: '#fff', fontSize: 13 },
-  prodQty: { color: '#8A7BAF', fontSize: 12, marginHorizontal: 8 },
-  prodPrice: { color: '#A944FF', fontWeight: 'bold', fontSize: 13 },
-  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.05)', marginVertical: 12 },
+  prodName: { flex: 1, color: NoxColors.text, fontSize: 13 },
+  prodQty: { color: NoxColors.muted, fontSize: 12, marginHorizontal: 8 },
+  prodPrice: { color: NoxColors.aura, fontWeight: 'bold', fontSize: 13 },
+  divider: { height: 1, backgroundColor: NoxColors.border, marginVertical: 12 },
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  totalLabel: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 2 },
-  totalValue: { color: '#fff', fontWeight: '900', fontSize: 22 },
+  totalLabel: { color: NoxColors.muted, fontSize: 10, fontWeight: '900', letterSpacing: 2 },
+  totalValue: { color: NoxColors.text, fontWeight: '900', fontSize: 22 },
   actionsHistory: { flexDirection: 'row', gap: 10, marginTop: 10, marginBottom: 20 },
   cancelBtnMini: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 10, borderRadius: 12, backgroundColor: 'rgba(239,68,68,0.1)', borderWidth: 1, borderColor: 'rgba(239,68,68,0.2)' },
-  cancelBtnTextMini: { color: '#ef4444', fontWeight: '900', fontSize: 9, letterSpacing: 1 },
-  listoBtnMini: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 10, borderRadius: 12, backgroundColor: '#10b981' },
-  listoBtnTextMini: { color: '#fff', fontWeight: '900', fontSize: 9, letterSpacing: 1 },
+  cancelBtnTextMini: { color: NoxColors.rose, fontWeight: '900', fontSize: 9, letterSpacing: 1 },
+  listoBtnMini: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 10, borderRadius: 12, backgroundColor: NoxColors.emerald },
+  listoBtnTextMini: { color: NoxColors.text, fontWeight: '900', fontSize: 9, letterSpacing: 1 },
   empty: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
-  emptyTitle: { color: '#fff', fontSize: 20, fontWeight: 'bold' },
-  emptyText: { color: '#8A7BAF', fontSize: 13 },
+  emptyTitle: { color: NoxColors.text, fontSize: 20, fontWeight: 'bold' },
+  emptyText: { color: NoxColors.muted, fontSize: 13 },
 });

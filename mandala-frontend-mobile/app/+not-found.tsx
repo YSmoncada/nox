@@ -2,15 +2,17 @@ import { Link, Stack } from 'expo-router';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { NoxColors } from '../constants/theme';
+
 
 export default function NotFoundScreen() {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: 'No encontrado' }} />
-      <LinearGradient colors={['#1A103C', '#000']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={[NoxColors.container, NoxColors.deep]} style={StyleSheet.absoluteFill} />
       
       <View style={styles.content}>
-        <Ionicons name="compass-outline" size={80} color="#A944FF" style={styles.icon} />
+        <Ionicons name="compass-outline" size={80} color=NoxColors.aura style={styles.icon} />
         
         <Text style={styles.title}>404</Text>
         <Text style={styles.subtitle}>RUTA NO ENCONTRADA</Text>
@@ -36,7 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000',
+    backgroundColor: NoxColors.deep,
   },
   content: {
     alignItems: 'center',
@@ -50,33 +52,33 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 72,
     fontWeight: '900',
-    color: '#fff',
+    color: NoxColors.text,
     letterSpacing: 10,
   },
   subtitle: {
     fontSize: 12,
     fontWeight: '900',
-    color: '#8A7BAF',
+    color: NoxColors.muted,
     letterSpacing: 4,
     marginBottom: 20,
   },
   divider: {
     width: 60,
     height: 4,
-    backgroundColor: '#A944FF',
+    backgroundColor: NoxColors.aura,
     borderRadius: 2,
     marginBottom: 30,
   },
   description: {
     fontSize: 14,
-    color: '#71717a',
+    color: NoxColors.subtext,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 40,
     paddingHorizontal: 20,
   },
   link: {
-    backgroundColor: '#1A103C',
+    backgroundColor: NoxColors.container,
     paddingVertical: 18,
     paddingHorizontal: 40,
     borderRadius: 20,
@@ -86,7 +88,7 @@ const styles = StyleSheet.create({
   linkText: {
     fontSize: 12,
     fontWeight: '900',
-    color: '#fff',
+    color: NoxColors.text,
     letterSpacing: 2,
   },
 });

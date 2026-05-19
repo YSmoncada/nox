@@ -5,6 +5,8 @@ import { useRouter, Stack, useFocusEffect } from 'expo-router';
 import apiClient from '../../utils/apiClient';
 import { useAuthStore } from '../../store/authStore';
 import LogoutModal from '../../components/LogoutModal';
+import { NoxColors } from '../../constants/theme';
+
 
 const { width } = Dimensions.get('window');
 
@@ -84,7 +86,7 @@ export default function AdminDashboard() {
       <ScrollView 
         showsVerticalScrollIndicator={false} 
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchStats} tintColor="#A944FF" />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchStats} tintColor=NoxColors.aura />}
       >
         {/* Header - Premium NoxOS */}
         <View style={styles.header}>
@@ -93,7 +95,7 @@ export default function AdminDashboard() {
                 <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
             </View>
             <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-                <Ionicons name="power" size={20} color="#ff4444" />
+                <Ionicons name="power" size={20} color=NoxColors.rose />
             </TouchableOpacity>
         </View>
 
@@ -114,18 +116,18 @@ export default function AdminDashboard() {
         {/* Mini Stats Grid */}
         <View style={styles.statsSection}>
             <View style={styles.statsGrid}>
-                <View style={[styles.statItem, { borderLeftColor: '#10b981' }]}>
-                    <Ionicons name="trending-up" size={14} color="#10b981" />
+                <View style={[styles.statItem, { borderLeftColor: NoxColors.emerald }]}>
+                    <Ionicons name="trending-up" size={14} color=NoxColors.emerald />
                     <Text style={styles.statValue}>${stats.totalVentas.toLocaleString()}</Text>
                     <Text style={styles.statLabel}>Ventas Totales</Text>
                 </View>
-                <View style={[styles.statItem, { borderLeftColor: '#A944FF' }]}>
-                    <Ionicons name="receipt" size={14} color="#A944FF" />
+                <View style={[styles.statItem, { borderLeftColor: NoxColors.aura }]}>
+                    <Ionicons name="receipt" size={14} color=NoxColors.aura />
                     <Text style={styles.statValue}>{stats.pedidosHoy}</Text>
                     <Text style={styles.statLabel}>Pedidos Hoy</Text>
                 </View>
-                <View style={[styles.statItem, { borderLeftColor: '#ff4444' }]}>
-                    <Ionicons name="alert-circle" size={14} color="#ff4444" />
+                <View style={[styles.statItem, { borderLeftColor: NoxColors.rose }]}>
+                    <Ionicons name="alert-circle" size={14} color=NoxColors.rose />
                     <Text style={styles.statValue}>{stats.stockBajoCount}</Text>
                     <Text style={styles.statLabel}>Stock Crítico</Text>
                 </View>
@@ -143,7 +145,7 @@ export default function AdminDashboard() {
                     onPress={() => router.push(mod.path as any)}
                 >
                     <View style={styles.moduleIconContainer}>
-                        <Ionicons name={mod.icon as any} size={28} color="#fff" />
+                        <Ionicons name={mod.icon as any} size={28} color=NoxColors.text />
                     </View>
                     <View style={styles.moduleInfo}>
                         <Text style={styles.moduleLabel}>{mod.label}</Text>
@@ -170,7 +172,7 @@ export default function AdminDashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#050510' },
+  container: { flex: 1, backgroundColor: NoxColors.background },
   scrollContent: { paddingTop: Platform.OS === 'ios' ? 70 : 50 },
   header: { 
     flexDirection: 'row',
@@ -179,14 +181,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25, 
     marginBottom: 30
   },
-  welcomeText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 2, textTransform: 'uppercase' },
-  brandingNox: { fontSize: 36, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-  brandingOS: { color: '#A944FF' },
+  welcomeText: { color: NoxColors.muted, fontSize: 10, fontWeight: '900', letterSpacing: 2, textTransform: 'uppercase' },
+  brandingNox: { fontSize: 36, fontWeight: '900', color: NoxColors.text, letterSpacing: -1 },
+  brandingOS: { color: NoxColors.aura },
   logoutBtn: { backgroundColor: 'rgba(255, 68, 68, 0.05)', padding: 14, borderRadius: 18, borderWidth: 1, borderColor: 'rgba(255, 68, 68, 0.1)' },
 
   userCard: { 
     marginHorizontal: 25, 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 30, 
     padding: 20, 
     flexDirection: 'row', 
@@ -195,39 +197,39 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
     borderColor: 'rgba(169, 68, 255, 0.1)' 
   },
-  userAvatar: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#A944FF', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
-  avatarText: { color: '#fff', fontWeight: '900', fontSize: 18 },
-  userName: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  userAvatar: { width: 50, height: 50, borderRadius: 25, backgroundColor: NoxColors.aura, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  avatarText: { color: NoxColors.text, fontWeight: '900', fontSize: 18 },
+  userName: { color: NoxColors.text, fontSize: 18, fontWeight: 'bold' },
   onlineBadge: { flexDirection: 'row', alignItems: 'center', marginTop: 4, gap: 6 },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#10b981' },
-  onlineText: { color: '#10b981', fontSize: 9, fontWeight: '900', letterSpacing: 1 },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: NoxColors.emerald },
+  onlineText: { color: NoxColors.emerald, fontSize: 9, fontWeight: '900', letterSpacing: 1 },
 
   statsSection: { paddingHorizontal: 25, marginBottom: 40 },
   statsGrid: { flexDirection: 'row', gap: 12 },
   statItem: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     padding: 15, 
     borderRadius: 24, 
     flex: 1,
     borderLeftWidth: 4,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: NoxColors.border,
     gap: 8
   },
-  statValue: { color: '#fff', fontSize: 14, fontWeight: '900' },
-  statLabel: { color: '#8A7BAF', fontSize: 8, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.5 },
+  statValue: { color: NoxColors.text, fontSize: 14, fontWeight: '900' },
+  statLabel: { color: NoxColors.muted, fontSize: 8, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.5 },
 
   modulesSection: { paddingHorizontal: 25 },
-  sectionTitle: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', letterSpacing: 3, marginBottom: 20, textTransform: 'uppercase' },
+  sectionTitle: { color: NoxColors.muted, fontSize: 10, fontWeight: '900', letterSpacing: 3, marginBottom: 20, textTransform: 'uppercase' },
   modulesGrid: { gap: 12 },
   moduleCard: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     flexDirection: 'row', 
     alignItems: 'center', 
     padding: 20, 
     borderRadius: 28,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
   moduleIconContainer: { 
     width: 58, 
@@ -239,7 +241,7 @@ const styles = StyleSheet.create({
     marginRight: 18
   },
   moduleInfo: { flex: 1, gap: 2 },
-  moduleLabel: { color: '#fff', fontSize: 16, fontWeight: 'bold', letterSpacing: 1 },
-  moduleSub: { color: '#8A7BAF', fontSize: 11, fontWeight: '500' },
+  moduleLabel: { color: NoxColors.text, fontSize: 16, fontWeight: 'bold', letterSpacing: 1 },
+  moduleSub: { color: NoxColors.muted, fontSize: 11, fontWeight: '500' },
   moduleArrow: { backgroundColor: 'rgba(255,255,255,0.03)', padding: 10, borderRadius: 14 }
 });

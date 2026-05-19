@@ -8,6 +8,8 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import apiClient from '../../utils/apiClient';
 import LogoutModal from '../../components/LogoutModal';
+import { NoxColors } from '../../constants/theme';
+
 
 // ─── Sub-pantalla: Config de Marca ───────────────────────────────────────────
 function BrandConfigScreen({ onBack }: { onBack: () => void }) {
@@ -67,7 +69,7 @@ function BrandConfigScreen({ onBack }: { onBack: () => void }) {
 
   if (loading) return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#A944FF" style={{ flex: 1 }} />
+      <ActivityIndicator size="large" color=NoxColors.aura style={{ flex: 1 }} />
     </View>
   );
 
@@ -81,7 +83,7 @@ function BrandConfigScreen({ onBack }: { onBack: () => void }) {
             <Text style={styles.subtitle}>CONFIGURACIÓN DE MARCA</Text>
           </View>
           <View style={styles.userBadge}>
-              <Ionicons name="close-circle-outline" size={24} color="#A944FF" />
+              <Ionicons name="close-circle-outline" size={24} color=NoxColors.aura />
           </View>
         </TouchableOpacity>
 
@@ -89,35 +91,35 @@ function BrandConfigScreen({ onBack }: { onBack: () => void }) {
           <Text style={styles.sectionLabel}>DATOS LEGALES (PARA TICKETS)</Text>
 
           <Text style={styles.fieldLabel}>NOMBRE DEL ESTABLECIMIENTO</Text>
-          <TextInput style={styles.input} value={nombre} onChangeText={setNombre} placeholder="Nombre en el ticket" placeholderTextColor="#444" />
+          <TextInput style={styles.input} value={nombre} onChangeText={setNombre} placeholder="Nombre en el ticket" placeholderTextColor=NoxColors.gray />
 
           <Text style={styles.fieldLabel}>NIT / RUT / ID FISCAL</Text>
-          <TextInput style={styles.input} value={nit} onChangeText={setNit} placeholder="Obligatorio para tickets" placeholderTextColor="#444" />
+          <TextInput style={styles.input} value={nit} onChangeText={setNit} placeholder="Obligatorio para tickets" placeholderTextColor=NoxColors.gray />
 
           <View style={styles.formRow}>
              <View style={{flex:1, marginRight:10}}>
                 <Text style={styles.fieldLabel}>TELÉFONO CONTACTO</Text>
-                <TextInput style={styles.input} value={telefono} onChangeText={setTelefono} placeholder="Para el cliente" placeholderTextColor="#444" keyboardType="phone-pad" />
+                <TextInput style={styles.input} value={telefono} onChangeText={setTelefono} placeholder="Para el cliente" placeholderTextColor=NoxColors.gray keyboardType="phone-pad" />
              </View>
              <View style={{flex:1}}>
                 <Text style={styles.fieldLabel}>SÍMBOLO MONEDA</Text>
-                <TextInput style={styles.input} value={moneda} onChangeText={setMoneda} placeholder="$" placeholderTextColor="#444" />
+                <TextInput style={styles.input} value={moneda} onChangeText={setMoneda} placeholder="$" placeholderTextColor=NoxColors.gray />
              </View>
           </View>
 
           <Text style={styles.fieldLabel}>DIRECCIÓN LOCAL</Text>
-          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={direccion} onChangeText={setDireccion} placeholder="Dirección en el ticket" placeholderTextColor="#444" multiline />
+          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={direccion} onChangeText={setDireccion} placeholder="Dirección en el ticket" placeholderTextColor=NoxColors.gray multiline />
 
           <Text style={styles.fieldLabel}>MENSAJE FINAL DEL TICKET</Text>
-          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={mensajeFooter} onChangeText={setMensajeFooter} placeholder="Ej: Vuelva pronto..." placeholderTextColor="#444" multiline />
+          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={mensajeFooter} onChangeText={setMensajeFooter} placeholder="Ej: Vuelva pronto..." placeholderTextColor=NoxColors.gray multiline />
 
           <Text style={styles.fieldLabel}>IMPUESTO (%)</Text>
-          <TextInput style={styles.input} value={impuesto} onChangeText={setImpuesto} placeholder="0" placeholderTextColor="#444" keyboardType="decimal-pad" />
+          <TextInput style={styles.input} value={impuesto} onChangeText={setImpuesto} placeholder="0" placeholderTextColor=NoxColors.gray keyboardType="decimal-pad" />
         </View>
 
         <TouchableOpacity style={styles.saveBtn} onPress={handleGuardar} disabled={saving}>
           {saving
-            ? <ActivityIndicator color="#fff" />
+            ? <ActivityIndicator color=NoxColors.text />
             : <Text style={styles.saveBtnText}>GUARDAR DATOS DEL TICKET</Text>
           }
         </TouchableOpacity>
@@ -186,7 +188,7 @@ return (
             title="Usuarios y Roles"
             description="Control de meseras y bartenders"
             onPress={() => router.push('/(admin)/users')}
-            color="#A944FF"
+            color=NoxColors.aura
         />
         <SettingCard
             icon="grid-outline"
@@ -202,14 +204,14 @@ return (
             title="Historial de Ventas"
             description="Registro detallado de pedidos"
             onPress={() => router.push('/(admin)/history')}
-            color="#10b981"
+            color=NoxColors.emerald
         />
         <SettingCard
             icon="stats-chart-outline"
             title="Contabilidad General"
             description="Ingresos y egresos consolidados"
             onPress={() => router.push('/(admin)/accounting')}
-            color="#f59e0b"
+            color=NoxColors.amber
         />
 
         <Text style={styles.sectionTitle}>SISTEMA Y MARCA</Text>
@@ -222,7 +224,7 @@ return (
         />
 
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={20} color="#ff4444" />
+            <Ionicons name="log-out-outline" size={20} color=NoxColors.rose />
             <Text style={styles.logoutText}>CERRAR SESIÓN</Text>
         </TouchableOpacity>
 
@@ -238,7 +240,7 @@ return (
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#050510' },
+  container: { flex: 1, backgroundColor: NoxColors.background },
   header: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -248,46 +250,46 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   headerTitleContainer: { gap: 4 },
-  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-  brandingOS: { color: '#A944FF' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: NoxColors.text, letterSpacing: -1 },
+  brandingOS: { color: NoxColors.aura },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
   
-  userBadge: { width: 45, height: 45, borderRadius: 15, backgroundColor: '#1A103C', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.3)' },
-  userText: { color: '#A944FF', fontWeight: 'bold', fontSize: 18 },
+  userBadge: { width: 45, height: 45, borderRadius: 15, backgroundColor: NoxColors.container, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(169, 68, 255, 0.3)' },
+  userText: { color: NoxColors.aura, fontWeight: 'bold', fontSize: 18 },
 
   scrollContent: { paddingHorizontal: 20, paddingBottom: 100 },
-  sectionTitle: { fontSize: 9, fontWeight: '900', color: '#8A7BAF', letterSpacing: 2, marginTop: 30, marginBottom: 15, marginLeft: 5 },
+  sectionTitle: { fontSize: 9, fontWeight: '900', color: NoxColors.muted, letterSpacing: 2, marginTop: 30, marginBottom: 15, marginLeft: 5 },
 
   card: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     marginBottom: 12, 
     padding: 18, 
     borderRadius: 24, 
     flexDirection: 'row', 
     alignItems: 'center', 
     borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: NoxColors.border,
   },
   cardAccent: { position: 'absolute', left: 0, top: 20, bottom: 20, width: 4, borderTopRightRadius: 10, borderBottomRightRadius: 10 },
   cardIcon: { width: 50, height: 50, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
   cardMain: { flex: 1, marginLeft: 15 },
-  cardTitle: { fontSize: 16, fontWeight: 'bold', color: '#fff' },
-  cardDescription: { fontSize: 12, color: '#8A7BAF', marginTop: 2 },
+  cardTitle: { fontSize: 16, fontWeight: 'bold', color: NoxColors.text },
+  cardDescription: { fontSize: 12, color: NoxColors.muted, marginTop: 2 },
 
   // Form Styles
-  backBtn: { width: 45, height: 45, borderRadius: 15, backgroundColor: '#1A103C', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  backBtn: { width: 45, height: 45, borderRadius: 15, backgroundColor: NoxColors.container, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
   formSection: { marginTop: 10 },
-  sectionLabel: { fontSize: 11, fontWeight: '900', color: '#A944FF', letterSpacing: 3, marginBottom: 30, opacity: 0.8 },
-  fieldLabel: { fontSize: 10, fontWeight: '900', color: '#8A7BAF', marginBottom: 8, letterSpacing: 2, marginLeft: 5 },
-  input: { backgroundColor: '#0E0D23', borderRadius: 22, padding: 18, color: '#fff', fontSize: 15, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 28 },
+  sectionLabel: { fontSize: 11, fontWeight: '900', color: NoxColors.aura, letterSpacing: 3, marginBottom: 30, opacity: 0.8 },
+  fieldLabel: { fontSize: 10, fontWeight: '900', color: NoxColors.muted, marginBottom: 8, letterSpacing: 2, marginLeft: 5 },
+  input: { backgroundColor: NoxColors.card, borderRadius: 22, padding: 18, color: NoxColors.text, fontSize: 15, borderWidth: 1, borderColor: NoxColors.border, marginBottom: 28 },
   formRow: { flexDirection: 'row', gap: 10 },
 
-  saveBtn: { backgroundColor: '#A944FF', padding: 22, borderRadius: 25, alignItems: 'center', marginTop: 10, marginHorizontal: 5, shadowColor: '#A944FF', shadowOpacity: 0.5, shadowRadius: 15 },
-  saveBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 14 },
+  saveBtn: { backgroundColor: NoxColors.aura, padding: 22, borderRadius: 25, alignItems: 'center', marginTop: 10, marginHorizontal: 5, shadowColor: NoxColors.aura, shadowOpacity: 0.5, shadowRadius: 15 },
+  saveBtnText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 14 },
 
   cancelLink: { marginTop: 25, alignItems: 'center', padding: 10 },
-  cancelLinkText: { color: '#8A7BAF', fontWeight: '900', fontSize: 10, letterSpacing: 2, textDecorationLine: 'underline' },
+  cancelLinkText: { color: NoxColors.muted, fontWeight: '900', fontSize: 10, letterSpacing: 2, textDecorationLine: 'underline' },
 
   logoutBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 40, padding: 20, borderRadius: 20, backgroundColor: 'rgba(255, 68, 68, 0.05)', borderWidth: 1, borderColor: 'rgba(255, 68, 68, 0.1)' },
-  logoutText: { color: '#ff4444', fontWeight: '900', fontSize: 12, letterSpacing: 2 }
+  logoutText: { color: NoxColors.rose, fontWeight: '900', fontSize: 12, letterSpacing: 2 }
 });

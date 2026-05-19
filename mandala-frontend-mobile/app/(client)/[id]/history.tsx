@@ -4,14 +4,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams } from 'expo-router';
 import axios from 'axios';
 import { API_URL } from '../../../utils/apiClient';
+import { NoxColors } from '../../../constants/theme';
+
 
 const { width } = Dimensions.get('window');
 
 const ESTADO_CONFIG: Record<string, { label: string, color: string, bg: string }> = {
-  pendiente:   { label: 'En preparación', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-  despachado:  { label: 'Entregado',      color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-  finalizada:  { label: 'Cuenta cerrada', color: '#71717a', bg: 'rgba(113,113,122,0.1)' },
-  cancelado:   { label: 'Cancelado',      color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+  pendiente:   { label: 'En preparación', color: NoxColors.amber, bg: 'rgba(245,158,11,0.1)' },
+  despachado:  { label: 'Entregado',      color: NoxColors.emerald, bg: 'rgba(16,185,129,0.1)' },
+  finalizada:  { label: 'Cuenta cerrada', color: NoxColors.subtext, bg: 'rgba(113,113,122,0.1)' },
+  cancelado:   { label: 'Cancelado',      color: NoxColors.rose, bg: 'rgba(239,68,68,0.1)' },
 };
 
 export default function ClientHistoryScreen() {
@@ -103,14 +105,14 @@ export default function ClientHistoryScreen() {
   };
 
   if (loading && !refreshing) return (
-    <View style={styles.loader}><ActivityIndicator color="#A944FF" size="large" /></View>
+    <View style={styles.loader}><ActivityIndicator color=NoxColors.aura size="large" /></View>
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.branding}>Nox<Text style={{color:'#71717a'}}>OS</Text></Text>
+          <Text style={styles.branding}>Nox<Text style={{color:NoxColors.subtext}}>OS</Text></Text>
           <Text style={styles.subtitle}>MI CONSUMO - MESA #{mesaInfo?.numero || '?'}</Text>
         </View>
         <TouchableOpacity 
@@ -124,7 +126,7 @@ export default function ClientHistoryScreen() {
             }
           }}
         >
-           <Ionicons name="cash-outline" size={20} color="#fff" />
+           <Ionicons name="cash-outline" size={20} color=NoxColors.text />
            <Text style={styles.payBtnText}>PEDIR CUENTA</Text>
         </TouchableOpacity>
       </View>
@@ -140,10 +142,10 @@ export default function ClientHistoryScreen() {
         keyExtractor={item => String(item.id)}
         renderItem={renderPedido}
         contentContainerStyle={{ padding: 20, paddingBottom: 120 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchHistory(true)} tintColor="#A944FF" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchHistory(true)} tintColor=NoxColors.aura />}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Ionicons name="receipt-outline" size={60} color="#1A103C" />
+            <Ionicons name="receipt-outline" size={60} color=NoxColors.container />
             <Text style={styles.emptyTitle}>SIN CONSUMOS AÚN</Text>
             <Text style={styles.emptyText}>Tus pedidos aparecerán aquí una vez los envíes.</Text>
           </View>
@@ -154,37 +156,37 @@ export default function ClientHistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
-  loader: { flex: 1, backgroundColor: '#000', justifyContent: 'center' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
+  loader: { flex: 1, backgroundColor: NoxColors.deep, justifyContent: 'center' },
   header: { paddingHorizontal: 25, paddingTop: 60, paddingBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  branding: { color: '#fff', fontSize: 24, fontWeight: '900', letterSpacing: 2 },
-  subtitle: { color: '#8A7BAF', fontWeight: '900', fontSize: 9, letterSpacing: 2, marginTop: 4, textTransform:'uppercase' },
-  payBtn: { backgroundColor: '#10b981', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 15, flexDirection:'row', alignItems:'center', gap: 8 },
-  payBtnText: { color:'#fff', fontWeight:'900', fontSize: 10, letterSpacing: 1 },
+  branding: { color: NoxColors.text, fontSize: 24, fontWeight: '900', letterSpacing: 2 },
+  subtitle: { color: NoxColors.muted, fontWeight: '900', fontSize: 9, letterSpacing: 2, marginTop: 4, textTransform:'uppercase' },
+  payBtn: { backgroundColor: NoxColors.emerald, paddingHorizontal: 15, paddingVertical: 10, borderRadius: 15, flexDirection:'row', alignItems:'center', gap: 8 },
+  payBtnText: { color:NoxColors.text, fontWeight:'900', fontSize: 10, letterSpacing: 1 },
 
-  summaryCard: { backgroundColor: '#0E0D23', marginHorizontal: 20, padding: 30, borderRadius: 30, alignItems: 'center', marginBottom: 20, borderWidth:1, borderColor: 'rgba(255,255,255,0.05)' },
-  summaryLbl: { color:'#8A7BAF', fontSize: 9, fontWeight: '900', letterSpacing: 2, marginBottom:10 },
-  summaryVal: { color: '#fff', fontSize: 36, fontWeight: '900' },
-  lineGlow: { width: 50, height: 3, backgroundColor: '#A944FF', borderRadius: 2, marginTop: 15 },
+  summaryCard: { backgroundColor: NoxColors.card, marginHorizontal: 20, padding: 30, borderRadius: 30, alignItems: 'center', marginBottom: 20, borderWidth:1, borderColor: NoxColors.border },
+  summaryLbl: { color:NoxColors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 2, marginBottom:10 },
+  summaryVal: { color: NoxColors.text, fontSize: 36, fontWeight: '900' },
+  lineGlow: { width: 50, height: 3, backgroundColor: NoxColors.aura, borderRadius: 2, marginTop: 15 },
 
-  card: { backgroundColor: '#0E0D23', borderRadius: 25, padding: 20, marginBottom: 15, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  card: { backgroundColor: NoxColors.card, borderRadius: 25, padding: 20, marginBottom: 15, borderWidth: 1, borderColor: NoxColors.border },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 15 },
-  pedidoId: { color: '#fff', fontWeight: '900', fontSize: 14, letterSpacing: 1 },
-  hora: { color: '#71717a', fontSize: 11, fontWeight: 'bold', marginTop: 2 },
+  pedidoId: { color: NoxColors.text, fontWeight: '900', fontSize: 14, letterSpacing: 1 },
+  hora: { color: NoxColors.subtext, fontSize: 11, fontWeight: 'bold', marginTop: 2 },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
   badgeTxt: { fontSize: 8, fontWeight: '900', letterSpacing: 1 },
 
-  itemsList: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)', paddingBottom: 15, marginBottom: 15 },
+  itemsList: { borderBottomWidth: 1, borderBottomColor: NoxColors.border, paddingBottom: 15, marginBottom: 15 },
   itemRow: { flexDirection:'row', alignItems:'center', marginBottom: 8 },
-  itemName: { flex:1, color: '#fff', fontSize: 13, fontWeight:'600' },
-  itemQty: { color: '#8A7BAF', fontSize: 12, marginHorizontal: 10, fontWeight: 'bold' },
-  itemPrice: { color: '#fff', fontSize: 13, fontWeight: 'bold' },
+  itemName: { flex:1, color: NoxColors.text, fontSize: 13, fontWeight:'600' },
+  itemQty: { color: NoxColors.muted, fontSize: 12, marginHorizontal: 10, fontWeight: 'bold' },
+  itemPrice: { color: NoxColors.text, fontSize: 13, fontWeight: 'bold' },
 
   cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  itemPriceLabel: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', letterSpacing: 2 },
-  itemFinalPrice: { color: '#A944FF', fontSize: 18, fontWeight: '900' },
+  itemPriceLabel: { color: NoxColors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 2 },
+  itemFinalPrice: { color: NoxColors.aura, fontSize: 18, fontWeight: '900' },
 
   empty: { marginTop: 80, alignItems:'center' },
-  emptyTitle: { color:'#8A7BAF', fontWeight: '900', fontSize: 14, letterSpacing: 3, marginTop: 20 },
-  emptyText: { color: '#444', textAlign: 'center', marginTop: 10, paddingHorizontal: 40, fontSize: 12, fontWeight:'bold' }
+  emptyTitle: { color:NoxColors.muted, fontWeight: '900', fontSize: 14, letterSpacing: 3, marginTop: 20 },
+  emptyText: { color: NoxColors.gray, textAlign: 'center', marginTop: 10, paddingHorizontal: 40, fontSize: 12, fontWeight:'bold' }
 });

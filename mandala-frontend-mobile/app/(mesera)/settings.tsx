@@ -6,6 +6,8 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import { LinearGradient } from 'expo-linear-gradient';
 import LogoutModal from '../../components/LogoutModal';
+import { NoxColors } from '../../constants/theme';
+
 
 export default function MeseraSettingsScreen() {
   const router = useRouter();
@@ -25,7 +27,7 @@ export default function MeseraSettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#1A103C', '#000']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={[NoxColors.container, NoxColors.deep]} style={StyleSheet.absoluteFill} />
       
       <SafeAreaView style={styles.safe}>
         <View style={styles.header}>
@@ -36,14 +38,14 @@ export default function MeseraSettingsScreen() {
         <View style={styles.content}>
             <View style={styles.infoCard}>
                 <View style={styles.avatarCircle}>
-                    <Ionicons name="person" size={40} color="#A944FF" />
+                    <Ionicons name="person" size={40} color=NoxColors.aura />
                 </View>
                 <Text style={styles.userLabel}>SESIÓN ACTIVA</Text>
                 <Text style={styles.userName}>{user?.username || 'PERFIL MESERO'}</Text>
             </View>
 
             <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-                <Ionicons name="log-out-outline" size={24} color="#fff" style={{marginRight: 15}} />
+                <Ionicons name="log-out-outline" size={24} color=NoxColors.text style={{marginRight: 15}} />
                 <Text style={styles.logoutText}>CERRAR SESIÓN</Text>
             </TouchableOpacity>
 
@@ -64,22 +66,22 @@ export default function MeseraSettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   safe: { flex: 1 },
   header: { paddingHorizontal: 30, paddingTop: 60, marginBottom: 40 },
-  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: 3 },
-  brandingOS: { color: '#71717a' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, marginTop: 5 },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: NoxColors.text, letterSpacing: 3 },
+  brandingOS: { color: NoxColors.subtext },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 4, marginTop: 5 },
   
   content: { flex: 1, paddingHorizontal: 25, justifyContent: 'center' },
   infoCard: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 30, 
     padding: 40, 
     alignItems: 'center', 
     marginBottom: 30,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
   avatarCircle: { 
     width: 90, 
@@ -90,23 +92,23 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     marginBottom: 20 
   },
-  userLabel: { color: '#444', fontSize: 10, fontWeight: '900', letterSpacing: 3, marginBottom: 5 },
-  userName: { color: '#fff', fontSize: 24, fontWeight: 'bold', textTransform: 'uppercase' },
+  userLabel: { color: NoxColors.gray, fontSize: 10, fontWeight: '900', letterSpacing: 3, marginBottom: 5 },
+  userName: { color: NoxColors.text, fontSize: 24, fontWeight: 'bold', textTransform: 'uppercase' },
 
   logoutBtn: { 
     flexDirection: 'row',
-    backgroundColor: '#f44336', 
+    backgroundColor: NoxColors.rose, 
     padding: 22, 
     borderRadius: 25, 
     alignItems: 'center', 
     justifyContent: 'center',
-    shadowColor: '#f44336',
+    shadowColor: NoxColors.rose,
     shadowOpacity: 0.3,
     shadowRadius: 15,
     elevation: 5
   },
-  logoutText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 14 },
+  logoutText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 14 },
   
   footer: { marginTop: 50, alignItems: 'center' },
-  footerText: { color: '#444', fontSize: 10, fontWeight: 'bold', letterSpacing: 1, marginBottom: 5 }
+  footerText: { color: NoxColors.gray, fontSize: 10, fontWeight: 'bold', letterSpacing: 1, marginBottom: 5 }
 });

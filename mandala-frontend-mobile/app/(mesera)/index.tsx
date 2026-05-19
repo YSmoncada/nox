@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator, Alert, Modal, ScrollView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
+import { NoxColors } from '../../constants/theme';
+
 
 const { width } = Dimensions.get('window');
 
@@ -61,12 +63,12 @@ export default function MesasScreen() {
           <Text style={styles.subtitle}>GESTIÓN DE SALÓN</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setModalOpen(true)}>
-          <Ionicons name="add" size={24} color="#fff" />
+          <Ionicons name="add" size={24} color=NoxColors.text />
         </TouchableOpacity>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 50 }} />
       ) : (
         <FlatList 
           data={mesas} 
@@ -77,7 +79,7 @@ export default function MesasScreen() {
             <View style={styles.mesaCardContainer}>
               <View style={[styles.mesaCard, item.ocupada_por_id && styles.cardOcupada]}>
                 <View style={[styles.mesaIcon, item.ocupada_por_id ? styles.iconOcupada : styles.iconLibre]}>
-                  <Ionicons name="restaurant" size={24} color="#fff" />
+                  <Ionicons name="restaurant" size={24} color=NoxColors.text />
                 </View>
                 
                 <Text style={styles.mesaNum}>MESA {item.numero}</Text>
@@ -114,7 +116,7 @@ export default function MesasScreen() {
                 <View style={styles.modalHeader}>
                     <Text style={styles.modalTitle}>NUEVA MESA</Text>
                     <TouchableOpacity onPress={() => setModalOpen(false)}>
-                        <Ionicons name="close-circle-outline" size={32} color="#71717a" />
+                        <Ionicons name="close-circle-outline" size={32} color=NoxColors.subtext />
                     </TouchableOpacity>
                 </View>
                 
@@ -149,7 +151,7 @@ export default function MesasScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   header: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -158,21 +160,21 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 20
   },
-  brandingNox: { fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: 2 },
-  brandingOS: { color: '#71717a' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 3, marginTop: 5 },
-  addBtn: { backgroundColor: '#A944FF', width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  brandingNox: { fontSize: 28, fontWeight: '900', color: NoxColors.text, letterSpacing: 2 },
+  brandingOS: { color: NoxColors.subtext },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 3, marginTop: 5 },
+  addBtn: { backgroundColor: NoxColors.aura, width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
   
   listContent: { padding: 15, paddingBottom: 100 },
   mesaCardContainer: { flex: 0.5, padding: 8 },
   mesaCard: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 30, 
     padding: 20, 
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
-    shadowColor: '#000',
+    borderColor: NoxColors.border,
+    shadowColor: NoxColors.deep,
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
@@ -180,24 +182,24 @@ const styles = StyleSheet.create({
   },
   cardOcupada: { borderColor: 'rgba(169, 68, 255, 0.3)' },
   mesaIcon: { width: 50, height: 50, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginBottom: 15 },
-  iconLibre: { backgroundColor: '#10b981' },
-  iconOcupada: { backgroundColor: '#A944FF' },
+  iconLibre: { backgroundColor: NoxColors.emerald },
+  iconOcupada: { backgroundColor: NoxColors.aura },
   
-  mesaNum: { color: '#fff', fontWeight: '900', fontSize: 16, letterSpacing: 1 },
-  mesaCap: { color: '#8A7BAF', fontSize: 9, fontWeight: 'bold', marginTop: 4, letterSpacing: 1, textTransform: 'uppercase' },
+  mesaNum: { color: NoxColors.text, fontWeight: '900', fontSize: 16, letterSpacing: 1 },
+  mesaCap: { color: NoxColors.muted, fontSize: 9, fontWeight: 'bold', marginTop: 4, letterSpacing: 1, textTransform: 'uppercase' },
   
   statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, marginTop: 15 },
   badgeLibre: { backgroundColor: 'rgba(16, 185, 129, 0.1)' },
   badgeOcupada: { backgroundColor: 'rgba(169, 68, 255, 0.1)' },
   statusText: { fontSize: 8, fontWeight: '900', letterSpacing: 1 },
   
-  ocupadaPor: { color: '#fff', fontSize: 10, fontWeight: '600', marginTop: 10, opacity: 0.8 },
+  ocupadaPor: { color: NoxColors.text, fontSize: 10, fontWeight: '600', marginTop: 10, opacity: 0.8 },
   
   deleteOverlay: { position: 'absolute', top: 15, right: 15, padding: 5 },
   
   modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'flex-end' },
   modalCard: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderTopLeftRadius: 40, 
     borderTopRightRadius: 40, 
     padding: 30, 
@@ -206,19 +208,19 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(171, 0, 255, 0.2)'
   },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 },
-  modalTitle: { color: '#fff', fontSize: 20, fontWeight: 'bold', letterSpacing: 2 },
-  label: { fontSize: 10, fontWeight: '900', color: '#8A7BAF', marginBottom: 12, letterSpacing: 2, textTransform: 'uppercase' },
+  modalTitle: { color: NoxColors.text, fontSize: 20, fontWeight: 'bold', letterSpacing: 2 },
+  label: { fontSize: 10, fontWeight: '900', color: NoxColors.muted, marginBottom: 12, letterSpacing: 2, textTransform: 'uppercase' },
   input: { 
-    backgroundColor: '#1A103C', 
-    color: '#fff', 
+    backgroundColor: NoxColors.container, 
+    color: NoxColors.text, 
     borderRadius: 18, 
     padding: 18, 
     fontSize: 15, 
     marginBottom: 25,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)'
+    borderColor: NoxColors.border
   },
-  saveBtn: { backgroundColor: '#A944FF', padding: 22, borderRadius: 20, alignItems: 'center', marginTop: 10, shadowColor: '#A944FF', shadowOpacity: 0.3, shadowRadius: 15 },
-  saveBtnText: { color: '#fff', fontWeight: '900', letterSpacing: 2, fontSize: 13 }
+  saveBtn: { backgroundColor: NoxColors.aura, padding: 22, borderRadius: 20, alignItems: 'center', marginTop: 10, shadowColor: NoxColors.aura, shadowOpacity: 0.3, shadowRadius: 15 },
+  saveBtnText: { color: NoxColors.text, fontWeight: '900', letterSpacing: 2, fontSize: 13 }
 });
 

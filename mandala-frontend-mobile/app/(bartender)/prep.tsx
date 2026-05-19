@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, 
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
 import NoxAlert from '../../components/NoxAlert';
+import { NoxColors } from '../../constants/theme';
+
 
 export default function BartenderPrepScreen() {
   const [pedidos, setPedidos] = useState<any[]>([]);
@@ -142,7 +144,7 @@ export default function BartenderPrepScreen() {
             </View>
           </View>
           <View style={styles.rightInfo}>
-            <Ionicons name="time-outline" size={12} color="#8A7BAF" />
+            <Ionicons name="time-outline" size={12} color=NoxColors.muted />
             <Text style={styles.timeText}>{hora}</Text>
           </View>
         </View>
@@ -168,11 +170,11 @@ export default function BartenderPrepScreen() {
                     style={styles.checkBtn}
                     disabled={isDisabled}
                   >
-                    <Ionicons name="checkmark" size={16} color="#fff" />
+                    <Ionicons name="checkmark" size={16} color=NoxColors.text />
                   </TouchableOpacity>
                 ) : (
                   <View style={styles.doneBtn}>
-                    <Ionicons name="checkmark-done" size={16} color="#10b981" />
+                    <Ionicons name="checkmark-done" size={16} color=NoxColors.emerald />
                   </View>
                 )}
               </View>
@@ -182,10 +184,10 @@ export default function BartenderPrepScreen() {
 
         {/* Acciones */}
         {isUpdating ? (
-          <ActivityIndicator color="#A944FF" style={{ marginTop: 15 }} />
+          <ActivityIndicator color=NoxColors.aura style={{ marginTop: 15 }} />
         ) : isProcessed ? (
           <View style={[styles.actions, { justifyContent: 'center' }]}>
-            <Text style={{ color: '#10b981', fontWeight: '900', fontSize: 11, letterSpacing: 2 }}>✓ PROCESADO</Text>
+            <Text style={{ color: NoxColors.emerald, fontWeight: '900', fontSize: 11, letterSpacing: 2 }}>✓ PROCESADO</Text>
           </View>
         ) : (
           <View style={styles.actions}>
@@ -194,7 +196,7 @@ export default function BartenderPrepScreen() {
               onPress={() => confirmAction(item.id, 'cancelado')}
               disabled={isDisabled}
             >
-              <Ionicons name="close-circle-outline" size={16} color="#ef4444" />
+              <Ionicons name="close-circle-outline" size={16} color=NoxColors.rose />
               <Text style={styles.cancelBtnText}>RECHAZAR</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -202,7 +204,7 @@ export default function BartenderPrepScreen() {
               onPress={() => confirmAction(item.id, 'despachado')}
               disabled={isDisabled}
             >
-              <Ionicons name="checkmark-circle" size={16} color="#fff" />
+              <Ionicons name="checkmark-circle" size={16} color=NoxColors.text />
               <Text style={styles.listoBtnText}>¡PREPARADO!</Text>
             </TouchableOpacity>
           </View>
@@ -219,7 +221,7 @@ export default function BartenderPrepScreen() {
           <Text style={styles.subtitle}>MONITOR DE PEDIDOS</Text>
         </View>
         <TouchableOpacity style={styles.refreshBtn} onPress={() => fetchPending()} disabled={loading}>
-          <Ionicons name="reload" size={22} color={loading ? '#333' : '#A944FF'} />
+          <Ionicons name="reload" size={22} color={loading ? '#333' : NoxColors.aura} />
         </TouchableOpacity>
       </View>
 
@@ -233,7 +235,7 @@ export default function BartenderPrepScreen() {
 
       {loading && pedidos.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color="#A944FF" />
+          <ActivityIndicator size="large" color=NoxColors.aura />
           <Text style={styles.emptyText}>MONITOR ACTIVO...</Text>
         </View>
       ) : (
@@ -242,10 +244,10 @@ export default function BartenderPrepScreen() {
           keyExtractor={item => String(item.id)}
           renderItem={renderPedido}
           contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchPending(true)} tintColor="#A944FF" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchPending(true)} tintColor=NoxColors.aura />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Ionicons name="beer-outline" size={64} color="#1A103C" />
+              <Ionicons name="beer-outline" size={64} color=NoxColors.container />
               <Text style={styles.emptyTitle}>SILENCIO EN LA BARRA</Text>
               <Text style={styles.emptyText}>No hay pedidos pendientes</Text>
             </View>
@@ -266,15 +268,15 @@ export default function BartenderPrepScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: NoxColors.deep },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingHorizontal: 25, paddingTop: 60, paddingBottom: 20,
   },
-  brandingNox: { fontSize: 28, fontWeight: '900', color: '#fff', letterSpacing: 2 },
-  brandingOS: { color: '#71717a' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 3, marginTop: 5 },
-  refreshBtn: { backgroundColor: '#1A103C', width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
+  brandingNox: { fontSize: 28, fontWeight: '900', color: NoxColors.text, letterSpacing: 2 },
+  brandingOS: { color: NoxColors.subtext },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 3, marginTop: 5 },
+  refreshBtn: { backgroundColor: NoxColors.container, width: 50, height: 50, borderRadius: 15, justifyContent: 'center', alignItems: 'center' },
 
   countBanner: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
@@ -283,14 +285,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 10,
     borderRadius: 12, borderWidth: 1, borderColor: 'rgba(169,68,255,0.2)',
   },
-  countDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#A944FF' },
-  countText: { color: '#A944FF', fontSize: 10, fontWeight: '900', letterSpacing: 2 },
+  countDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: NoxColors.aura },
+  countText: { color: NoxColors.aura, fontSize: 10, fontWeight: '900', letterSpacing: 2 },
 
   card: {
-    backgroundColor: '#0E0D23',
+    backgroundColor: NoxColors.card,
     borderRadius: 24, padding: 20, marginBottom: 20,
-    borderLeftWidth: 4, borderLeftColor: '#A944FF',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
+    borderLeftWidth: 4, borderLeftColor: NoxColors.aura,
+    borderWidth: 1, borderColor: NoxColors.border,
   },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 },
   leftInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
@@ -298,29 +300,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(169,68,255,0.1)', padding: 10, borderRadius: 14,
     alignItems: 'center', minWidth: 55,
   },
-  mesaLabel: { color: '#8A7BAF', fontSize: 8, fontWeight: '900', letterSpacing: 2 },
-  mesaNum: { color: '#A944FF', fontSize: 20, fontWeight: '900' },
+  mesaLabel: { color: NoxColors.muted, fontSize: 8, fontWeight: '900', letterSpacing: 2 },
+  mesaNum: { color: NoxColors.aura, fontSize: 20, fontWeight: '900' },
   pedidoInfo: { gap: 3 },
-  pedidoId: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  responsable: { color: '#8A7BAF', fontSize: 11, fontWeight: '600', textTransform: 'uppercase' },
+  pedidoId: { color: NoxColors.text, fontWeight: 'bold', fontSize: 16 },
+  responsable: { color: NoxColors.muted, fontSize: 11, fontWeight: '600', textTransform: 'uppercase' },
   rightInfo: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  timeText: { color: '#8A7BAF', fontSize: 11, fontWeight: 'bold' },
+  timeText: { color: NoxColors.muted, fontSize: 11, fontWeight: 'bold' },
 
   comandaHeader: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 },
-  comandaLabel: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', letterSpacing: 3 },
-  divider: { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.05)' },
+  comandaLabel: { color: NoxColors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 3 },
+  divider: { flex: 1, height: 1, backgroundColor: NoxColors.border },
 
   itemsList: { marginBottom: 20, gap: 8 },
   itemRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   cantCircle: {
     width: 34, height: 34, borderRadius: 12,
-    backgroundColor: '#1A103C', justifyContent: 'center', alignItems: 'center',
+    backgroundColor: NoxColors.container, justifyContent: 'center', alignItems: 'center',
   },
-  cantNum: { fontWeight: '900', color: '#A944FF', fontSize: 13 },
-  itemName: { flex: 1, color: '#fff', fontWeight: 'bold', fontSize: 14 },
+  cantNum: { fontWeight: '900', color: NoxColors.aura, fontSize: 13 },
+  itemName: { flex: 1, color: NoxColors.text, fontWeight: 'bold', fontSize: 14 },
   checkBtn: {
     width: 32, height: 32, borderRadius: 10,
-    backgroundColor: '#10b981', justifyContent: 'center', alignItems: 'center',
+    backgroundColor: NoxColors.emerald, justifyContent: 'center', alignItems: 'center',
   },
   doneBtn: {
     width: 32, height: 32, borderRadius: 10,
@@ -333,15 +335,15 @@ const styles = StyleSheet.create({
     paddingVertical: 14, borderRadius: 16,
     backgroundColor: 'rgba(239,68,68,0.1)', borderWidth: 1, borderColor: 'rgba(239,68,68,0.2)',
   },
-  cancelBtnText: { color: '#ef4444', fontWeight: '900', fontSize: 10, letterSpacing: 2 },
+  cancelBtnText: { color: NoxColors.rose, fontWeight: '900', fontSize: 10, letterSpacing: 2 },
   listoBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
     paddingVertical: 14, borderRadius: 16,
-    backgroundColor: '#10b981',
+    backgroundColor: NoxColors.emerald,
   },
-  listoBtnText: { color: '#fff', fontWeight: '900', fontSize: 10, letterSpacing: 2 },
+  listoBtnText: { color: NoxColors.text, fontWeight: '900', fontSize: 10, letterSpacing: 2 },
 
   emptyContainer: { alignItems: 'center', marginTop: 100, gap: 15 },
-  emptyTitle: { color: '#8A7BAF', fontWeight: '900', fontSize: 14, letterSpacing: 3 },
-  emptyText: { color: '#444', fontWeight: 'bold', fontSize: 12, letterSpacing: 1 },
+  emptyTitle: { color: NoxColors.muted, fontWeight: '900', fontSize: 14, letterSpacing: 3 },
+  emptyText: { color: NoxColors.gray, fontWeight: 'bold', fontSize: 12, letterSpacing: 1 },
 });

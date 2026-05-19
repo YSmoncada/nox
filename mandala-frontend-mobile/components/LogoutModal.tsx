@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { NoxColors } from '../constants/theme';
+
 
 interface LogoutModalProps {
   visible: boolean;
@@ -15,7 +17,7 @@ export default function LogoutModal({ visible, onConfirm, onCancel, isLoggingOut
       <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.iconContainer}>
-            <Ionicons name="log-out-outline" size={40} color="#ff4444" />
+            <Ionicons name="log-out-outline" size={40} color=NoxColors.rose />
           </View>
           
           <Text style={styles.title}>CERRAR SESIÓN</Text>
@@ -36,7 +38,7 @@ export default function LogoutModal({ visible, onConfirm, onCancel, isLoggingOut
               disabled={isLoggingOut}
             >
               {isLoggingOut ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color=NoxColors.text size="small" />
               ) : (
                 <Text style={styles.confirmText}>SALIR</Text>
               )}
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   card: {
-    backgroundColor: '#0E0D23',
+    backgroundColor: NoxColors.card,
     width: '100%',
     maxWidth: 380,
     borderRadius: 30,
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255,68,68,0.3)',
-    shadowColor: '#ff4444',
+    shadowColor: NoxColors.rose,
     shadowOpacity: 0.2,
     shadowRadius: 20,
     elevation: 10,
@@ -80,14 +82,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    color: '#fff',
+    color: NoxColors.text,
     fontSize: 22,
     fontWeight: '900',
     letterSpacing: 2,
     marginBottom: 10,
   },
   message: {
-    color: '#8A7BAF',
+    color: NoxColors.muted,
     fontSize: 15,
     textAlign: 'center',
     marginBottom: 30,
@@ -102,11 +104,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: NoxColors.border,
     alignItems: 'center',
   },
   cancelText: {
-    color: '#fff',
+    color: NoxColors.text,
     fontSize: 13,
     fontWeight: 'bold',
     letterSpacing: 1,
@@ -115,14 +117,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     borderRadius: 16,
-    backgroundColor: '#ff4444',
+    backgroundColor: NoxColors.rose,
     alignItems: 'center',
-    shadowColor: '#ff4444',
+    shadowColor: NoxColors.rose,
     shadowOpacity: 0.4,
     shadowRadius: 10,
   },
   confirmText: {
-    color: '#fff',
+    color: NoxColors.text,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 1,

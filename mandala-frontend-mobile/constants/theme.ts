@@ -6,16 +6,19 @@
 import { Platform } from 'react-native';
 
 export const NoxColors = {
-  aura: '#A944FF',       // Morado Neon
-  deep: '#000000',       // Negro Puro
-  card: '#0E0D23',       // Fondo de Tarjetas
-  muted: '#8A7BAF',      // Gris Lavanda
-  border: 'rgba(255,255,255,0.05)', 
-  emerald: '#10b981',    // Verde Dinero/Exito
+  aura: '#A944FF',       // Morado Neon (Acciones principales)
+  background: '#050510', // Fondo Oscuro NoxOS
+  card: '#0E0D23',       // Fondo de Tarjetas/Modales
+  container: '#1A103C',  // Violeta Oscuro (Botones secundarios, inputs)
+  muted: '#8A7BAF',      // Gris Lavanda (Labels, textos de apoyo)
+  subtext: '#71717a',    // Gris Oscuro (Descripciones secundarias)
+  border: 'rgba(255,255,255,0.05)', // Bordes sutiles
+  emerald: '#10b981',    // Verde Dinero/Éxito (Stocks, confirmar)
   amber: '#f59e0b',      // Naranja Alerta
-  rose: '#ef4444',       // Rojo Error
-  text: '#ECEDEE',
-  subtext: '#71717a'
+  rose: '#ff4444',       // Rojo Error/Peligro (Borrar, salir)
+  text: '#ffffff',       // Blanco Puro (Títulos principales)
+  deep: '#000000',       // Negro Absoluto
+  gray: '#444444',       // Gris Medio/Cercano a placeholders
 };
 
 export const Colors = {

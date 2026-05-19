@@ -2,6 +2,8 @@ import { Redirect } from "expo-router";
 import { useAuthStore, getDashboardRoute } from "../store/authStore";
 import { View, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
+import { NoxColors } from '../constants/theme';
+
 
 export default function Index() {
   const [hydrated, setHydrated] = useState(false);
@@ -19,8 +21,8 @@ export default function Index() {
 
   if (!hydrated) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator color="#A944FF" size="large" />
+      <View style={{ flex: 1, backgroundColor: NoxColors.deep, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color=NoxColors.aura size="large" />
       </View>
     );
   }

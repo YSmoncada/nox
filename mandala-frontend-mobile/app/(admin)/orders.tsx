@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, ScrollView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../utils/apiClient';
+import { NoxColors } from '../../constants/theme';
+
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: keyof typeof Ionicons.glyphMap }> = {
-  Pendiente:  { label: 'PENDIENTE',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  icon: 'time-outline' },
-  Despachado: { label: 'DESPACHADO',  color: '#10b981', bg: 'rgba(16,185,129,0.1)',  icon: 'checkmark-circle-outline' },
-  Cancelado:  { label: 'CANCELADO',   color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   icon: 'close-circle-outline' },
+  Pendiente:  { label: 'PENDIENTE',   color: NoxColors.amber, bg: 'rgba(245,158,11,0.1)',  icon: 'time-outline' },
+  Despachado: { label: 'DESPACHADO',  color: NoxColors.emerald, bg: 'rgba(16,185,129,0.1)',  icon: 'checkmark-circle-outline' },
+  Cancelado:  { label: 'CANCELADO',   color: NoxColors.rose, bg: 'rgba(239,68,68,0.1)',   icon: 'close-circle-outline' },
 };
 
 const FILTROS = ['todos', 'Pendiente', 'Despachado', 'Cancelado'];
@@ -58,7 +60,7 @@ export default function MonitorOrdenesScreen() {
   }, {} as Record<string, number>);
 
   const renderPedido = ({ item }: { item: any }) => {
-    const cfg = STATUS_CONFIG[item.estado_nombre] ?? { label: item.estado_nombre ?? '?', color: '#8A7BAF', bg: 'rgba(138,123,175,0.1)', icon: 'help-circle-outline' };
+    const cfg = STATUS_CONFIG[item.estado_nombre] ?? { label: item.estado_nombre ?? '?', color: NoxColors.muted, bg: 'rgba(138,123,175,0.1)', icon: 'help-circle-outline' };
     const productos = item.productos_detalle ?? item.detalles ?? [];
     const horaStr = item.hora ?? (item.fecha_hora ? new Date(item.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--');
 
@@ -92,7 +94,7 @@ export default function MonitorOrdenesScreen() {
 
         <View style={styles.cardBottom}>
           <View style={styles.timeContainer}>
-            <Ionicons name="time-outline" size={12} color="#8A7BAF" />
+            <Ionicons name="time-outline" size={12} color=NoxColors.muted />
             <Text style={styles.hora}>{horaStr}</Text>
           </View>
           <Text style={styles.total}>${parseFloat(item.total || 0).toLocaleString()}</Text>
@@ -118,7 +120,7 @@ export default function MonitorOrdenesScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.statsContainer}>
             {FILTROS.map(f => (
               <TouchableOpacity key={f} style={[styles.statBox, filtro === f && styles.statActive]} onPress={() => setFiltro(f)}>
-                  <Text style={[styles.statNum, filtro === f && {color: '#fff'}, f !== 'todos' && {color: STATUS_CONFIG[f]?.color}]}>{counts[f]}</Text>
+                  <Text style={[styles.statNum, filtro === f && {color: NoxColors.text}, f !== 'todos' && {color: STATUS_CONFIG[f]?.color}]}>{counts[f]}</Text>
                   <Text style={styles.statLbl}>{f === 'todos' ? 'TODAS' : f.toUpperCase().substring(0,6)}</Text>
               </TouchableOpacity>
             ))}
@@ -126,7 +128,7 @@ export default function MonitorOrdenesScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#A944FF" style={{ marginTop: 60 }} />
+        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 60 }} />
       ) : filtered.length === 0 ? (
         <View style={styles.emptyContainer}>
             <Ionicons name="receipt-outline" size={60} color="rgba(138,123,175,0.05)" />
@@ -138,7 +140,7 @@ export default function MonitorOrdenesScreen() {
           keyExtractor={(item) => String(item.id)}
           renderItem={renderPedido}
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#A944FF" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor=NoxColors.aura />}
         />
       )}
     </View>
@@ -146,7 +148,7 @@ export default function MonitorOrdenesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#050510' },
+  container: { flex: 1, backgroundColor: NoxColors.background },
   header: { 
     paddingHorizontal: 25, 
     paddingTop: Platform.OS === 'ios' ? 70 : 50, 
@@ -155,55 +157,55 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', 
     alignItems: 'center' 
   },
-  brandingNox: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-  brandingOS: { color: '#A944FF' },
-  subtitle: { fontSize: 10, color: '#8A7BAF', fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
+  brandingNox: { fontSize: 32, fontWeight: '900', color: NoxColors.text, letterSpacing: -1 },
+  brandingOS: { color: NoxColors.aura },
+  subtitle: { fontSize: 10, color: NoxColors.muted, fontWeight: '900', letterSpacing: 4, textTransform: 'uppercase' },
   liveBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(16,185,129,0.05)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(16,185,129,0.2)' },
-  liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#10b981', marginRight: 6 },
-  liveText: { color: '#10b981', fontSize: 9, fontWeight: '900', letterSpacing: 2 },
+  liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: NoxColors.emerald, marginRight: 6 },
+  liveText: { color: NoxColors.emerald, fontSize: 9, fontWeight: '900', letterSpacing: 2 },
 
   statsRow: { marginBottom: 15 },
   statsContainer: { paddingHorizontal: 25, gap: 10 },
   statBox: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 20, 
     padding: 15, 
     minWidth: 80, 
     alignItems: 'center', 
     borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.05)' 
+    borderColor: NoxColors.border 
   },
-  statActive: { borderColor: '#A944FF', backgroundColor: 'rgba(169, 68, 255, 0.05)' },
-  statNum: { fontSize: 18, fontWeight: '900', color: '#fff' },
-  statLbl: { fontSize: 8, color: '#8A7BAF', fontWeight: '900', letterSpacing: 1.5, marginTop: 4 },
+  statActive: { borderColor: NoxColors.aura, backgroundColor: 'rgba(169, 68, 255, 0.05)' },
+  statNum: { fontSize: 18, fontWeight: '900', color: NoxColors.text },
+  statLbl: { fontSize: 8, color: NoxColors.muted, fontWeight: '900', letterSpacing: 1.5, marginTop: 4 },
 
   listContent: { padding: 20, paddingBottom: 100 },
   card: { 
-    backgroundColor: '#0E0D23', 
+    backgroundColor: NoxColors.card, 
     borderRadius: 28, 
     padding: 20, 
     marginBottom: 16, 
     borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.05)' 
+    borderColor: NoxColors.border 
   },
   cardAccent: { position: 'absolute', left: 0, top: 25, bottom: 25, width: 4, borderTopRightRadius: 10, borderBottomRightRadius: 10 },
   cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 15 },
   cardInfo: { gap: 2 },
-  orderId: { color: '#fff', fontWeight: '900', fontSize: 13, letterSpacing: 1 },
-  mesaText: { color: '#8A7BAF', fontSize: 10, fontWeight: '900', textTransform: 'uppercase' },
+  orderId: { color: NoxColors.text, fontWeight: '900', fontSize: 13, letterSpacing: 1 },
+  mesaText: { color: NoxColors.muted, fontSize: 10, fontWeight: '900', textTransform: 'uppercase' },
   badge: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, gap: 5 },
   badgeText: { fontSize: 9, fontWeight: '900', letterSpacing: 1 },
   content: { gap: 6, marginBottom: 15 },
   itemRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  itemCant: { color: '#A944FF', fontWeight: '900', fontSize: 12 },
+  itemCant: { color: NoxColors.aura, fontWeight: '900', fontSize: 12 },
   itemName: { color: '#ccc', fontSize: 13, flex: 1 },
-  moreText: { color: '#8A7BAF', fontSize: 9, fontWeight: '900', marginTop: 4 },
-  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.05)', marginBottom: 15 },
+  moreText: { color: NoxColors.muted, fontSize: 9, fontWeight: '900', marginTop: 4 },
+  divider: { height: 1, backgroundColor: NoxColors.border, marginBottom: 15 },
   cardBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   timeContainer: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  hora: { color: '#8A7BAF', fontSize: 11, fontWeight: 'bold' },
-  total: { color: '#10b981', fontSize: 18, fontWeight: '900' },
+  hora: { color: NoxColors.muted, fontSize: 11, fontWeight: 'bold' },
+  total: { color: NoxColors.emerald, fontSize: 18, fontWeight: '900' },
 
   emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100, gap: 15, opacity: 0.5 },
-  emptyText: { color: '#8A7BAF', fontWeight: '900', fontSize: 11, letterSpacing: 3 },
+  emptyText: { color: NoxColors.muted, fontWeight: '900', fontSize: 11, letterSpacing: 3 },
 });
