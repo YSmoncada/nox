@@ -4,7 +4,6 @@ import { Stack, useRouter, useSegments, useRootNavigationState } from 'expo-rout
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore, getDashboardRoute } from '../store/authStore';
 import { useAlertStore } from '../store/alertStore';
 import NoxAlert from '../components/NoxAlert';
@@ -14,7 +13,6 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const segments = useSegments();
   const router = useRouter();
   const { token, user } = useAuthStore();
@@ -61,7 +59,7 @@ export default function RootLayout() {
   }, [token, segments, user, navigationState?.key]);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DarkTheme}>
       <Stack screenOptions={{ headerShown: false }} />
       <StatusBar style="auto" />
 
