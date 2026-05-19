@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, ActivityIndicator, Alert, ScrollView, Image, RefreshControl, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, ActivityIndicator, Alert, ScrollView, Image, RefreshControl, Platform, KeyboardAvoidingView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -227,6 +227,7 @@ export default function AdmInventarioScreen() {
 
       {/* MODAL MOVIMIENTO AJUSTADO */}
       <Modal visible={movModalOpen} animationType="fade" transparent>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <View style={styles.modalBg}>
             <View style={styles.glassCard}>
                 <View style={styles.modalHeader}>
@@ -274,10 +275,12 @@ export default function AdmInventarioScreen() {
                 </TouchableOpacity>
             </View>
         </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* MODAL FORM PRODUCTO AJUSTADO */}
       <Modal visible={modalOpen} animationType="fade" transparent>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <View style={styles.modalBg}>
             <View style={styles.glassCard}>
                 <View style={styles.modalHeader}>
@@ -349,6 +352,7 @@ export default function AdmInventarioScreen() {
                 </ScrollView>
             </View>
         </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );
