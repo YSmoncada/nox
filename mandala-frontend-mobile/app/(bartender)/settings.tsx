@@ -38,14 +38,14 @@ export default function BartenderSettingsScreen() {
         <View style={styles.content}>
             <View style={styles.infoCard}>
                 <View style={styles.avatarCircle}>
-                    <Ionicons name="beer" size={40} color=NoxColors.aura />
+                    <Ionicons name="beer" size={40} color={NoxColors.aura} />
                 </View>
                 <Text style={styles.userLabel}>BARTENDER ACTIVO</Text>
                 <Text style={styles.userName}>{user?.username || 'PERFIL STAFF'}</Text>
             </View>
 
             <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-                <Ionicons name="log-out-outline" size={24} color=NoxColors.text style={{marginRight: 15}} />
+                <Ionicons name="log-out-outline" size={24} color={NoxColors.text} style={{marginRight: 15}} />
                 <Text style={styles.logoutText}>CERRAR SESIÓN</Text>
             </TouchableOpacity>
 

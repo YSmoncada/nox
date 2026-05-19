@@ -195,7 +195,7 @@ export default function MisPedidosScreen() {
 
       {item.pidiendo_cuenta && (
         <View style={styles.billAlertInline}>
-          <Ionicons name="notifications-outline" size={16} color=NoxColors.aura />
+          <Ionicons name="notifications-outline" size={16} color={NoxColors.aura} />
           <Text style={styles.billAlertText}>SOLICITÓ LA CUENTA</Text>
         </View>
       )}
@@ -277,17 +277,17 @@ export default function MisPedidosScreen() {
       </View>
 
       {loading && !refreshing ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 60 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 60 }} />
       ) : (
         <FlatList
           data={tab === 'activas' ? activeGroups : historicalPedidos}
           keyExtractor={item => String(item.id || item.mesa_id)}
           renderItem={tab === 'activas' ? renderMesaGroup : renderPedidoIndividual}
           contentContainerStyle={{ padding: 15, paddingBottom: 100 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor=NoxColors.aura />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={NoxColors.aura} />}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Ionicons name="receipt-outline" size={64} color=NoxColors.container />
+              <Ionicons name="receipt-outline" size={64} color={NoxColors.container} />
               <Text style={styles.emptyTitle}>Sin pedidos</Text>
             </View>
           }
@@ -297,7 +297,7 @@ export default function MisPedidosScreen() {
       <Modal visible={!!mesaAlerta} transparent animationType="fade">
         <View style={styles.alertOverlay}>
           <View style={styles.alertCard}>
-            <View style={styles.alertIcon}><Ionicons name="receipt" size={40} color=NoxColors.text /></View>
+            <View style={styles.alertIcon}><Ionicons name="receipt" size={40} color={NoxColors.text} /></View>
             <Text style={styles.alertTitle}>¡SOLICITUD DE CUENTA!</Text>
             <Text style={styles.alertMsg}>La <Text style={{color: NoxColors.aura, fontWeight: '900'}}>MESA #{mesaAlerta?.numero}</Text> está solicitando su cuenta.</Text>
             <TouchableOpacity style={styles.alertBtn} onPress={handleLimpiarAlerta}>

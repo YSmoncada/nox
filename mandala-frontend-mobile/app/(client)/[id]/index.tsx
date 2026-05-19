@@ -119,7 +119,7 @@ export default function ClientMenuScreen() {
 
   if (loading) return (
     <View style={styles.loader}>
-        <ActivityIndicator size="large" color=NoxColors.aura />
+        <ActivityIndicator size="large" color={NoxColors.aura} />
         <Text style={styles.loaderText}>CARGANDO MENÚ...</Text>
     </View>
   );
@@ -136,7 +136,7 @@ export default function ClientMenuScreen() {
           )}
         </View>
         <TouchableOpacity style={styles.cartBtnHeader} onPress={() => setShowCart(true)}>
-           <Ionicons name="bag-handle" size={24} color=NoxColors.aura />
+           <Ionicons name="bag-handle" size={24} color={NoxColors.aura} />
            {order.length > 0 && <View style={styles.badge}><Text style={styles.badgeTxt}>{order.length}</Text></View>}
         </TouchableOpacity>
       </View>
@@ -144,11 +144,11 @@ export default function ClientMenuScreen() {
       {/* Buscador y Categorías */}
       <View style={styles.searchSection}>
         <View style={styles.searchBar}>
-          <Ionicons name="search" size={18} color=NoxColors.muted />
+          <Ionicons name="search" size={18} color={NoxColors.muted} />
           <TextInput 
             style={styles.searchInput}
             placeholder="Buscar producto..."
-            placeholderTextColor=NoxColors.muted
+            placeholderTextColor={NoxColors.muted}
             value={filtroNombre}
             onChangeText={setFiltroNombre}
           />
@@ -175,14 +175,14 @@ export default function ClientMenuScreen() {
         renderItem={({ item }) => (
           <View style={styles.prodCard}>
              <View style={styles.imgContainer}>
-                {item.imagen ? <Image source={{uri: formatImageUrl(item.imagen)}} style={styles.prodImg} /> : <Ionicons name="beer-outline" size={32} color=NoxColors.muted />}
+                {item.imagen ? <Image source={{uri: formatImageUrl(item.imagen)}} style={styles.prodImg} /> : <Ionicons name="beer-outline" size={32} color={NoxColors.muted} />}
              </View>
              <View style={styles.infoContainer}>
                 <Text style={styles.prodName} numberOfLines={2}>{item.nombre}</Text>
                 <Text style={styles.prodPrice}>${parseFloat(item.precio).toLocaleString()}</Text>
              </View>
              <TouchableOpacity style={styles.addBtn} onPress={() => addToOrder(item)}>
-                <Ionicons name="add" size={20} color=NoxColors.text />
+                <Ionicons name="add" size={20} color={NoxColors.text} />
              </TouchableOpacity>
           </View>
         )}
@@ -205,7 +205,7 @@ export default function ClientMenuScreen() {
             <View style={styles.cartHead}>
               <Text style={styles.cartTitle}>TU PEDIDO</Text>
               <TouchableOpacity onPress={() => setShowCart(false)}>
-                <Ionicons name="close-circle" size={30} color=NoxColors.subtext />
+                <Ionicons name="close-circle" size={30} color={NoxColors.subtext} />
               </TouchableOpacity>
             </View>
 
@@ -217,9 +217,9 @@ export default function ClientMenuScreen() {
                     <Text style={styles.cartItemPrice}>${(i.precio * i.qty).toLocaleString()}</Text>
                   </View>
                   <View style={styles.qtyRow}>
-                    <TouchableOpacity onPress={() => removeFromOrder(i.id)} style={styles.qtyBtn}><Ionicons name="remove" size={18} color=NoxColors.text /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => removeFromOrder(i.id)} style={styles.qtyBtn}><Ionicons name="remove" size={18} color={NoxColors.text} /></TouchableOpacity>
                     <Text style={styles.qtyVal}>{i.qty}</Text>
-                    <TouchableOpacity onPress={() => addToOrder(i)} style={styles.qtyBtn}><Ionicons name="add" size={18} color=NoxColors.text /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => addToOrder(i)} style={styles.qtyBtn}><Ionicons name="add" size={18} color={NoxColors.text} /></TouchableOpacity>
                   </View>
                 </View>
               ))}

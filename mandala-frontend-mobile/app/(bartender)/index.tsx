@@ -33,14 +33,14 @@ export default function BartenderMenu() {
           <Text style={styles.subtitle}>PANEL DE BARTENDER</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-          <Ionicons name="log-out-outline" size={20} color=NoxColors.rose />
+          <Ionicons name="log-out-outline" size={20} color={NoxColors.rose} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.menuContainer}>
         <TouchableOpacity style={styles.menuCard} onPress={() => router.push("/(bartender)/prep" as any)}>
             <View style={styles.iconContainer}>
-                <Ionicons name="beer-outline" size={42} color=NoxColors.text />
+                <Ionicons name="beer-outline" size={42} color={NoxColors.text} />
             </View>
             <Text style={styles.menuLabel}>PREPARACIÓN</Text>
             <Text style={styles.menuDesc}>Ver pedidos por preparar</Text>
@@ -48,7 +48,7 @@ export default function BartenderMenu() {
 
         <TouchableOpacity style={[styles.menuCard, {marginTop: 20}]} onPress={() => router.push("/(bartender)/orders" as any)}>
             <View style={[styles.iconContainer, {backgroundColor: '#1E1B4B'}]}>
-                <Ionicons name="receipt-outline" size={42} color=NoxColors.text />
+                <Ionicons name="receipt-outline" size={42} color={NoxColors.text} />
             </View>
             <Text style={styles.menuLabel}>NUEVO PEDIDO</Text>
             <Text style={styles.menuDesc}>Registrar venta directa</Text>

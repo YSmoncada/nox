@@ -143,10 +143,10 @@ export default function AdmUsersScreen() {
             <Ionicons name={item.activo ? "person-outline" : "person-remove-outline"} size={18} color={item.activo ? NoxColors.emerald : NoxColors.rose} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleOpenReset(item)} style={styles.iconBtn}>
-            <Ionicons name="key-outline" size={18} color=NoxColors.text />
+            <Ionicons name="key-outline" size={18} color={NoxColors.text} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.iconBtnDanger}>
-            <Ionicons name="trash-outline" size={18} color=NoxColors.rose />
+            <Ionicons name="trash-outline" size={18} color={NoxColors.rose} />
           </TouchableOpacity>
         </View>
       </View>
@@ -162,7 +162,7 @@ export default function AdmUsersScreen() {
           <Text style={styles.subtitle}>USUARIOS</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowAddModal(true)}>
-          <Ionicons name="person-add" size={24} color=NoxColors.text />
+          <Ionicons name="person-add" size={24} color={NoxColors.text} />
         </TouchableOpacity>
       </View>
 
@@ -183,7 +183,7 @@ export default function AdmUsersScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{marginTop:50}} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{marginTop:50}} />
       ) : (
         <FlatList 
           data={getFilteredUsers()} 
@@ -207,7 +207,7 @@ export default function AdmUsersScreen() {
                 
                 <Text style={styles.label}>NOMBRE DE USUARIO</Text>
                 <TextInput 
-                    placeholder="Ej: Mesera01" placeholderTextColor=NoxColors.gray 
+                    placeholder="Ej: Mesera01" placeholderTextColor={NoxColors.gray} 
                     style={styles.input} value={newProfileForm.username} 
                     onChangeText={t => setNewProfileForm({...newProfileForm, username: t})} 
                     autoCapitalize="none"
@@ -215,7 +215,7 @@ export default function AdmUsersScreen() {
 
                 <Text style={styles.label}>CONTRASEÑA / PIN</Text>
                 <TextInput 
-                    placeholder="Mínimo 4 caracteres" placeholderTextColor=NoxColors.gray 
+                    placeholder="Mínimo 4 caracteres" placeholderTextColor={NoxColors.gray} 
                     secureTextEntry style={styles.input} 
                     value={newProfileForm.password} 
                     onChangeText={t => setNewProfileForm({...newProfileForm, password: t})} 
@@ -255,7 +255,7 @@ export default function AdmUsersScreen() {
                 <View style={{marginTop: 15}}>
                     <Text style={styles.label}>NUEVA CONTRASEÑA O PIN</Text>
                     <TextInput 
-                        placeholder="Mínimo 4 dígitos" placeholderTextColor=NoxColors.gray 
+                        placeholder="Mínimo 4 dígitos" placeholderTextColor={NoxColors.gray} 
                         secureTextEntry style={styles.input} 
                         value={newCredentials} onChangeText={setNewCredentials} 
                     />

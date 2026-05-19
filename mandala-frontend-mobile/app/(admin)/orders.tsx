@@ -94,7 +94,7 @@ export default function MonitorOrdenesScreen() {
 
         <View style={styles.cardBottom}>
           <View style={styles.timeContainer}>
-            <Ionicons name="time-outline" size={12} color=NoxColors.muted />
+            <Ionicons name="time-outline" size={12} color={NoxColors.muted} />
             <Text style={styles.hora}>{horaStr}</Text>
           </View>
           <Text style={styles.total}>${parseFloat(item.total || 0).toLocaleString()}</Text>
@@ -128,7 +128,7 @@ export default function MonitorOrdenesScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 60 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 60 }} />
       ) : filtered.length === 0 ? (
         <View style={styles.emptyContainer}>
             <Ionicons name="receipt-outline" size={60} color="rgba(138,123,175,0.05)" />
@@ -140,7 +140,7 @@ export default function MonitorOrdenesScreen() {
           keyExtractor={(item) => String(item.id)}
           renderItem={renderPedido}
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor=NoxColors.aura />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={NoxColors.aura} />}
         />
       )}
     </View>

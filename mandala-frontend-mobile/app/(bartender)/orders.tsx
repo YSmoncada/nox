@@ -112,7 +112,7 @@ export default function PedidosScreen() {
           <Text style={styles.subtitle}>CARTA DE PRODUCTOS</Text>
         </View>
         <TouchableOpacity style={styles.cartBtn} onPress={() => setShowCheckout(true)}>
-          <Ionicons name="cart-outline" size={24} color=NoxColors.text />
+          <Ionicons name="cart-outline" size={24} color={NoxColors.text} />
           {order.length > 0 && (
             <View style={styles.cartBadge}><Text style={styles.cartBadgeText}>{order.length}</Text></View>
           )}
@@ -135,7 +135,7 @@ export default function PedidosScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 50 }} />
       ) : (
         <FlatList
           data={filtered}
@@ -153,12 +153,12 @@ export default function PedidosScreen() {
                     resizeMode="cover"
                   />
                 ) : (
-                  <Ionicons name="fast-food-outline" size={32} color=NoxColors.muted />
+                  <Ionicons name="fast-food-outline" size={32} color={NoxColors.muted} />
                 )}
               </View>
               <Text style={styles.prodName} numberOfLines={1}>{item.nombre}</Text>
               <Text style={styles.prodPrice}>${parseFloat(item.precio).toLocaleString()}</Text>
-              <View style={styles.addIcon}><Ionicons name="add" size={16} color=NoxColors.text /></View>
+              <View style={styles.addIcon}><Ionicons name="add" size={16} color={NoxColors.text} /></View>
             </TouchableOpacity>
           )}
         />
@@ -171,7 +171,7 @@ export default function PedidosScreen() {
                 <View style={styles.chkHeader}>
                     <Text style={styles.chkTitle}>RESUMEN DEL PEDIDO</Text>
                     <TouchableOpacity onPress={() => setShowCheckout(false)}>
-                        <Ionicons name="close-circle-outline" size={32} color=NoxColors.subtext />
+                        <Ionicons name="close-circle-outline" size={32} color={NoxColors.subtext} />
                     </TouchableOpacity>
                 </View>
                 
@@ -210,11 +210,11 @@ export default function PedidosScreen() {
                             </View>
                             <View style={styles.cantCtrl}>
                                 <TouchableOpacity onPress={() => updateCant(item.id, -1)} style={styles.ctrlBtn}>
-                                    <Ionicons name="remove" size={20} color=NoxColors.text />
+                                    <Ionicons name="remove" size={20} color={NoxColors.text} />
                                 </TouchableOpacity>
                                 <Text style={styles.cantNum}>{item.cantidad}</Text>
                                 <TouchableOpacity onPress={() => updateCant(item.id, 1)} style={styles.ctrlBtn}>
-                                    <Ionicons name="add" size={20} color=NoxColors.text />
+                                    <Ionicons name="add" size={20} color={NoxColors.text} />
                                 </TouchableOpacity>
                             </View>
                         </View>

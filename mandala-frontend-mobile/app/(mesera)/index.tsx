@@ -63,12 +63,12 @@ export default function MesasScreen() {
           <Text style={styles.subtitle}>GESTIÓN DE SALÓN</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setModalOpen(true)}>
-          <Ionicons name="add" size={24} color=NoxColors.text />
+          <Ionicons name="add" size={24} color={NoxColors.text} />
         </TouchableOpacity>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 50 }} />
       ) : (
         <FlatList 
           data={mesas} 
@@ -79,7 +79,7 @@ export default function MesasScreen() {
             <View style={styles.mesaCardContainer}>
               <View style={[styles.mesaCard, item.ocupada_por_id && styles.cardOcupada]}>
                 <View style={[styles.mesaIcon, item.ocupada_por_id ? styles.iconOcupada : styles.iconLibre]}>
-                  <Ionicons name="restaurant" size={24} color=NoxColors.text />
+                  <Ionicons name="restaurant" size={24} color={NoxColors.text} />
                 </View>
                 
                 <Text style={styles.mesaNum}>MESA {item.numero}</Text>
@@ -116,7 +116,7 @@ export default function MesasScreen() {
                 <View style={styles.modalHeader}>
                     <Text style={styles.modalTitle}>NUEVA MESA</Text>
                     <TouchableOpacity onPress={() => setModalOpen(false)}>
-                        <Ionicons name="close-circle-outline" size={32} color=NoxColors.subtext />
+                        <Ionicons name="close-circle-outline" size={32} color={NoxColors.subtext} />
                     </TouchableOpacity>
                 </View>
                 

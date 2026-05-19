@@ -77,7 +77,7 @@ export default function LoginScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Usuario</Text>
               <View style={styles.inputWrapper}>
-                <Ionicons name="person-outline" size={18} color=NoxColors.muted style={styles.inputIcon} />
+                <Ionicons name="person-outline" size={18} color={NoxColors.muted} style={styles.inputIcon} />
                 <TextInput 
                   placeholder="Nombre de usuario" 
                   placeholderTextColor="#8A7BAF50"
@@ -92,7 +92,7 @@ export default function LoginScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Clave de Seguridad</Text>
               <View style={styles.inputWrapper}>
-                <Ionicons name="lock-closed-outline" size={18} color=NoxColors.muted style={styles.inputIcon} />
+                <Ionicons name="lock-closed-outline" size={18} color={NoxColors.muted} style={styles.inputIcon} />
                 <TextInput 
                   placeholder="••••••••••••" 
                   placeholderTextColor="#8A7BAF50"
@@ -102,7 +102,7 @@ export default function LoginScreen() {
                   secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeBtn}>
-                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color=NoxColors.muted />
+                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color={NoxColors.muted} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -113,7 +113,7 @@ export default function LoginScreen() {
               disabled={loading || !username || !password}
             >
               {loading ? (
-                <ActivityIndicator color=NoxColors.text />
+                <ActivityIndicator color={NoxColors.text} />
               ) : (
                 <Text style={styles.btnText}>ACCEDER AL SISTEMA</Text>
               )}

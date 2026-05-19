@@ -144,7 +144,7 @@ export default function BartenderPrepScreen() {
             </View>
           </View>
           <View style={styles.rightInfo}>
-            <Ionicons name="time-outline" size={12} color=NoxColors.muted />
+            <Ionicons name="time-outline" size={12} color={NoxColors.muted} />
             <Text style={styles.timeText}>{hora}</Text>
           </View>
         </View>
@@ -170,11 +170,11 @@ export default function BartenderPrepScreen() {
                     style={styles.checkBtn}
                     disabled={isDisabled}
                   >
-                    <Ionicons name="checkmark" size={16} color=NoxColors.text />
+                    <Ionicons name="checkmark" size={16} color={NoxColors.text} />
                   </TouchableOpacity>
                 ) : (
                   <View style={styles.doneBtn}>
-                    <Ionicons name="checkmark-done" size={16} color=NoxColors.emerald />
+                    <Ionicons name="checkmark-done" size={16} color={NoxColors.emerald} />
                   </View>
                 )}
               </View>
@@ -184,7 +184,7 @@ export default function BartenderPrepScreen() {
 
         {/* Acciones */}
         {isUpdating ? (
-          <ActivityIndicator color=NoxColors.aura style={{ marginTop: 15 }} />
+          <ActivityIndicator color={NoxColors.aura} style={{ marginTop: 15 }} />
         ) : isProcessed ? (
           <View style={[styles.actions, { justifyContent: 'center' }]}>
             <Text style={{ color: NoxColors.emerald, fontWeight: '900', fontSize: 11, letterSpacing: 2 }}>✓ PROCESADO</Text>
@@ -196,7 +196,7 @@ export default function BartenderPrepScreen() {
               onPress={() => confirmAction(item.id, 'cancelado')}
               disabled={isDisabled}
             >
-              <Ionicons name="close-circle-outline" size={16} color=NoxColors.rose />
+              <Ionicons name="close-circle-outline" size={16} color={NoxColors.rose} />
               <Text style={styles.cancelBtnText}>RECHAZAR</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -204,7 +204,7 @@ export default function BartenderPrepScreen() {
               onPress={() => confirmAction(item.id, 'despachado')}
               disabled={isDisabled}
             >
-              <Ionicons name="checkmark-circle" size={16} color=NoxColors.text />
+              <Ionicons name="checkmark-circle" size={16} color={NoxColors.text} />
               <Text style={styles.listoBtnText}>¡PREPARADO!</Text>
             </TouchableOpacity>
           </View>
@@ -235,7 +235,7 @@ export default function BartenderPrepScreen() {
 
       {loading && pedidos.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color=NoxColors.aura />
+          <ActivityIndicator size="large" color={NoxColors.aura} />
           <Text style={styles.emptyText}>MONITOR ACTIVO...</Text>
         </View>
       ) : (
@@ -244,10 +244,10 @@ export default function BartenderPrepScreen() {
           keyExtractor={item => String(item.id)}
           renderItem={renderPedido}
           contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchPending(true)} tintColor=NoxColors.aura />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchPending(true)} tintColor={NoxColors.aura} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Ionicons name="beer-outline" size={64} color=NoxColors.container />
+              <Ionicons name="beer-outline" size={64} color={NoxColors.container} />
               <Text style={styles.emptyTitle}>SILENCIO EN LA BARRA</Text>
               <Text style={styles.emptyText}>No hay pedidos pendientes</Text>
             </View>

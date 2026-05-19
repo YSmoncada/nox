@@ -93,18 +93,18 @@ export default function AdminMesasScreen() {
           <Text style={styles.subtitle}>CONFIGURACIÓN DE SALÓN</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setModalOpen(true)}>
-          <Ionicons name="add" size={24} color=NoxColors.text />
+          <Ionicons name="add" size={24} color={NoxColors.text} />
         </TouchableOpacity>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 50 }} />
       ) : (
         <FlatList 
           data={mesas} 
           keyExtractor={it => String(it.id)} 
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchMesas(true)} tintColor=NoxColors.aura />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchMesas(true)} tintColor={NoxColors.aura} />}
           renderItem={({item}) => {
             const isOcupada = item.estado_nombre === 'Ocupada';
             const isSolicitando = item.estado_nombre === 'Solicitando Cuenta';
@@ -118,7 +118,7 @@ export default function AdminMesasScreen() {
               <View style={styles.mesaCard}>
                 <View style={[styles.cardAccent, {backgroundColor: statusColor}]} />
                 <View style={[styles.mesaIcon, {backgroundColor: statusColor}]}>
-                  <Ionicons name={isSolicitando ? "cash-outline" : "restaurant-outline"} size={24} color=NoxColors.text />
+                  <Ionicons name={isSolicitando ? "cash-outline" : "restaurant-outline"} size={24} color={NoxColors.text} />
                 </View>
                 <View style={styles.mesaMain}>
                   <Text style={styles.mesaTitle}>Mesa {item.numero}</Text>
@@ -136,10 +136,10 @@ export default function AdminMesasScreen() {
                         onPress={() => { setSelectedMesa(item); setQrModalOpen(true); }} 
                         style={styles.iconBtnQr}
                     >
-                        <Ionicons name="qr-code-outline" size={18} color=NoxColors.aura />
+                        <Ionicons name="qr-code-outline" size={18} color={NoxColors.aura} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleDeleteMesa(item.id, item.numero)} style={styles.iconBtnDanger}>
-                        <Ionicons name="trash-outline" size={18} color=NoxColors.rose />
+                        <Ionicons name="trash-outline" size={18} color={NoxColors.rose} />
                     </TouchableOpacity>
                 </View>
               </View>
@@ -177,7 +177,7 @@ export default function AdminMesasScreen() {
                   <Text style={styles.qrInfo}>Escanea este código para realizar pedidos directamente desde esta mesa en el portal del cliente.</Text>
                   
                   <TouchableOpacity style={styles.shareBtn} onPress={() => handleShareQr(selectedMesa)}>
-                      <Ionicons name="share-social-outline" size={20} color=NoxColors.text style={{marginRight: 10}} />
+                      <Ionicons name="share-social-outline" size={20} color={NoxColors.text} style={{marginRight: 10}} />
                       <Text style={styles.saveBtnText}>COMPARTIR ENLACE</Text>
                   </TouchableOpacity>
               </View>
@@ -197,13 +197,13 @@ export default function AdminMesasScreen() {
                 
                 <Text style={styles.label}>NÚMERO IDENTIFICADOR</Text>
                 <TextInput 
-                    style={styles.input} placeholder="Ej: 101" placeholderTextColor=NoxColors.gray
+                    style={styles.input} placeholder="Ej: 101" placeholderTextColor={NoxColors.gray}
                     keyboardType="number-pad" value={formData.numero} onChangeText={t => setFormData({...formData, numero: t})} 
                 />
                 
                 <Text style={styles.label}>CAPACIDAD MÁXIMA</Text>
                 <TextInput 
-                    style={styles.input} placeholder="4" placeholderTextColor=NoxColors.gray
+                    style={styles.input} placeholder="4" placeholderTextColor={NoxColors.gray}
                     keyboardType="number-pad" value={formData.capacidad} onChangeText={t => setFormData({...formData, capacidad: t})} 
                 />
                 

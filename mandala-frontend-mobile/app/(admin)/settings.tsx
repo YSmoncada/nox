@@ -69,7 +69,7 @@ function BrandConfigScreen({ onBack }: { onBack: () => void }) {
 
   if (loading) return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color=NoxColors.aura style={{ flex: 1 }} />
+      <ActivityIndicator size="large" color={NoxColors.aura} style={{ flex: 1 }} />
     </View>
   );
 
@@ -83,7 +83,7 @@ function BrandConfigScreen({ onBack }: { onBack: () => void }) {
             <Text style={styles.subtitle}>CONFIGURACIÓN DE MARCA</Text>
           </View>
           <View style={styles.userBadge}>
-              <Ionicons name="close-circle-outline" size={24} color=NoxColors.aura />
+              <Ionicons name="close-circle-outline" size={24} color={NoxColors.aura} />
           </View>
         </TouchableOpacity>
 
@@ -91,35 +91,35 @@ function BrandConfigScreen({ onBack }: { onBack: () => void }) {
           <Text style={styles.sectionLabel}>DATOS LEGALES (PARA TICKETS)</Text>
 
           <Text style={styles.fieldLabel}>NOMBRE DEL ESTABLECIMIENTO</Text>
-          <TextInput style={styles.input} value={nombre} onChangeText={setNombre} placeholder="Nombre en el ticket" placeholderTextColor=NoxColors.gray />
+          <TextInput style={styles.input} value={nombre} onChangeText={setNombre} placeholder="Nombre en el ticket" placeholderTextColor={NoxColors.gray} />
 
           <Text style={styles.fieldLabel}>NIT / RUT / ID FISCAL</Text>
-          <TextInput style={styles.input} value={nit} onChangeText={setNit} placeholder="Obligatorio para tickets" placeholderTextColor=NoxColors.gray />
+          <TextInput style={styles.input} value={nit} onChangeText={setNit} placeholder="Obligatorio para tickets" placeholderTextColor={NoxColors.gray} />
 
           <View style={styles.formRow}>
              <View style={{flex:1, marginRight:10}}>
                 <Text style={styles.fieldLabel}>TELÉFONO CONTACTO</Text>
-                <TextInput style={styles.input} value={telefono} onChangeText={setTelefono} placeholder="Para el cliente" placeholderTextColor=NoxColors.gray keyboardType="phone-pad" />
+                <TextInput style={styles.input} value={telefono} onChangeText={setTelefono} placeholder="Para el cliente" placeholderTextColor={NoxColors.gray} keyboardType="phone-pad" />
              </View>
              <View style={{flex:1}}>
                 <Text style={styles.fieldLabel}>SÍMBOLO MONEDA</Text>
-                <TextInput style={styles.input} value={moneda} onChangeText={setMoneda} placeholder="$" placeholderTextColor=NoxColors.gray />
+                <TextInput style={styles.input} value={moneda} onChangeText={setMoneda} placeholder="$" placeholderTextColor={NoxColors.gray} />
              </View>
           </View>
 
           <Text style={styles.fieldLabel}>DIRECCIÓN LOCAL</Text>
-          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={direccion} onChangeText={setDireccion} placeholder="Dirección en el ticket" placeholderTextColor=NoxColors.gray multiline />
+          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={direccion} onChangeText={setDireccion} placeholder="Dirección en el ticket" placeholderTextColor={NoxColors.gray} multiline />
 
           <Text style={styles.fieldLabel}>MENSAJE FINAL DEL TICKET</Text>
-          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={mensajeFooter} onChangeText={setMensajeFooter} placeholder="Ej: Vuelva pronto..." placeholderTextColor=NoxColors.gray multiline />
+          <TextInput style={[styles.input, { height: 80, textAlignVertical: 'top' }]} value={mensajeFooter} onChangeText={setMensajeFooter} placeholder="Ej: Vuelva pronto..." placeholderTextColor={NoxColors.gray} multiline />
 
           <Text style={styles.fieldLabel}>IMPUESTO (%)</Text>
-          <TextInput style={styles.input} value={impuesto} onChangeText={setImpuesto} placeholder="0" placeholderTextColor=NoxColors.gray keyboardType="decimal-pad" />
+          <TextInput style={styles.input} value={impuesto} onChangeText={setImpuesto} placeholder="0" placeholderTextColor={NoxColors.gray} keyboardType="decimal-pad" />
         </View>
 
         <TouchableOpacity style={styles.saveBtn} onPress={handleGuardar} disabled={saving}>
           {saving
-            ? <ActivityIndicator color=NoxColors.text />
+            ? <ActivityIndicator color={NoxColors.text} />
             : <Text style={styles.saveBtnText}>GUARDAR DATOS DEL TICKET</Text>
           }
         </TouchableOpacity>
@@ -188,7 +188,7 @@ return (
             title="Usuarios y Roles"
             description="Control de meseras y bartenders"
             onPress={() => router.push('/(admin)/users')}
-            color=NoxColors.aura
+            color={NoxColors.aura}
         />
         <SettingCard
             icon="grid-outline"
@@ -204,14 +204,14 @@ return (
             title="Historial de Ventas"
             description="Registro detallado de pedidos"
             onPress={() => router.push('/(admin)/history')}
-            color=NoxColors.emerald
+            color={NoxColors.emerald}
         />
         <SettingCard
             icon="stats-chart-outline"
             title="Contabilidad General"
             description="Ingresos y egresos consolidados"
             onPress={() => router.push('/(admin)/accounting')}
-            color=NoxColors.amber
+            color={NoxColors.amber}
         />
 
         <Text style={styles.sectionTitle}>SISTEMA Y MARCA</Text>
@@ -224,7 +224,7 @@ return (
         />
 
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={20} color=NoxColors.rose />
+            <Ionicons name="log-out-outline" size={20} color={NoxColors.rose} />
             <Text style={styles.logoutText}>CERRAR SESIÓN</Text>
         </TouchableOpacity>
 

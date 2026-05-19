@@ -86,7 +86,7 @@ export default function AdminDashboard() {
       <ScrollView 
         showsVerticalScrollIndicator={false} 
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchStats} tintColor=NoxColors.aura />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchStats} tintColor={NoxColors.aura} />}
       >
         {/* Header - Premium NoxOS */}
         <View style={styles.header}>
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
                 <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
             </View>
             <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-                <Ionicons name="power" size={20} color=NoxColors.rose />
+                <Ionicons name="power" size={20} color={NoxColors.rose} />
             </TouchableOpacity>
         </View>
 
@@ -117,17 +117,17 @@ export default function AdminDashboard() {
         <View style={styles.statsSection}>
             <View style={styles.statsGrid}>
                 <View style={[styles.statItem, { borderLeftColor: NoxColors.emerald }]}>
-                    <Ionicons name="trending-up" size={14} color=NoxColors.emerald />
+                    <Ionicons name="trending-up" size={14} color={NoxColors.emerald} />
                     <Text style={styles.statValue}>${stats.totalVentas.toLocaleString()}</Text>
                     <Text style={styles.statLabel}>Ventas Totales</Text>
                 </View>
                 <View style={[styles.statItem, { borderLeftColor: NoxColors.aura }]}>
-                    <Ionicons name="receipt" size={14} color=NoxColors.aura />
+                    <Ionicons name="receipt" size={14} color={NoxColors.aura} />
                     <Text style={styles.statValue}>{stats.pedidosHoy}</Text>
                     <Text style={styles.statLabel}>Pedidos Hoy</Text>
                 </View>
                 <View style={[styles.statItem, { borderLeftColor: NoxColors.rose }]}>
-                    <Ionicons name="alert-circle" size={14} color=NoxColors.rose />
+                    <Ionicons name="alert-circle" size={14} color={NoxColors.rose} />
                     <Text style={styles.statValue}>{stats.stockBajoCount}</Text>
                     <Text style={styles.statLabel}>Stock Crítico</Text>
                 </View>
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
                     onPress={() => router.push(mod.path as any)}
                 >
                     <View style={styles.moduleIconContainer}>
-                        <Ionicons name={mod.icon as any} size={28} color=NoxColors.text />
+                        <Ionicons name={mod.icon as any} size={28} color={NoxColors.text} />
                     </View>
                     <View style={styles.moduleInfo}>
                         <Text style={styles.moduleLabel}>{mod.label}</Text>

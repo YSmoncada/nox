@@ -17,7 +17,7 @@ export default function LogoutModal({ visible, onConfirm, onCancel, isLoggingOut
       <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.iconContainer}>
-            <Ionicons name="log-out-outline" size={40} color=NoxColors.rose />
+            <Ionicons name="log-out-outline" size={40} color={NoxColors.rose} />
           </View>
           
           <Text style={styles.title}>CERRAR SESIÓN</Text>
@@ -38,7 +38,7 @@ export default function LogoutModal({ visible, onConfirm, onCancel, isLoggingOut
               disabled={isLoggingOut}
             >
               {isLoggingOut ? (
-                <ActivityIndicator color=NoxColors.text size="small" />
+                <ActivityIndicator color={NoxColors.text} size="small" />
               ) : (
                 <Text style={styles.confirmText}>SALIR</Text>
               )}

@@ -12,7 +12,7 @@ export default function NotFoundScreen() {
       <LinearGradient colors={[NoxColors.container, NoxColors.deep]} style={StyleSheet.absoluteFill} />
       
       <View style={styles.content}>
-        <Ionicons name="compass-outline" size={80} color=NoxColors.aura style={styles.icon} />
+        <Ionicons name="compass-outline" size={80} color={NoxColors.aura} style={styles.icon} />
         
         <Text style={styles.title}>404</Text>
         <Text style={styles.subtitle}>RUTA NO ENCONTRADA</Text>

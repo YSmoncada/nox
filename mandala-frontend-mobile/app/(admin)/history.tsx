@@ -233,7 +233,7 @@ export default function AdminHistoryScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 40 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 40 }} />
       ) : (
         <SectionList
           sections={groupedData}
@@ -241,11 +241,11 @@ export default function AdminHistoryScreen() {
           renderItem={renderPedido}
           renderSectionHeader={renderSectionHeader}
           contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 100 }]}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor=NoxColors.aura />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor={NoxColors.aura} />}
           stickySectionHeadersEnabled={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-                <Ionicons name="receipt-outline" size={60} color=NoxColors.container />
+                <Ionicons name="receipt-outline" size={60} color={NoxColors.container} />
                 <Text style={styles.emptyText}>SIN REGISTROS DISPONIBLES</Text>
             </View>
           }
@@ -259,7 +259,7 @@ export default function AdminHistoryScreen() {
                   <View style={styles.modalHeader}>
                       <Text style={styles.modalTitle}>FILTRAR POR USUARIO</Text>
                       <TouchableOpacity onPress={() => setUserFilterModalOpen(false)} style={styles.closeBtn}>
-                          <Ionicons name="close" size={24} color=NoxColors.text />
+                          <Ionicons name="close" size={24} color={NoxColors.text} />
                       </TouchableOpacity>
                   </View>
 
@@ -286,7 +286,7 @@ export default function AdminHistoryScreen() {
                                   <Text style={[styles.userItemText, selectedMesera === m.id && {color: NoxColors.text}]}>{m.username.toUpperCase()}</Text>
                                   <Text style={styles.userRoleText}>{m.user_role?.toUpperCase() || 'PERSONAL'}</Text>
                               </View>
-                              {selectedMesera === m.id && <Ionicons name="checkmark-circle" size={20} color=NoxColors.text style={{marginLeft: 'auto'}} />}
+                              {selectedMesera === m.id && <Ionicons name="checkmark-circle" size={20} color={NoxColors.text} style={{marginLeft: 'auto'}} />}
                           </TouchableOpacity>
                       ))}
                   </ScrollView>
@@ -305,7 +305,7 @@ export default function AdminHistoryScreen() {
                             <Text style={styles.selectedProdName}>VENTA #{selectedPedido?.id}</Text>
                         </View>
                         <TouchableOpacity onPress={() => setStatusModalOpen(false)} style={styles.closeBtn}>
-                            <Ionicons name="close" size={24} color=NoxColors.text />
+                            <Ionicons name="close" size={24} color={NoxColors.text} />
                         </TouchableOpacity>
                     </View>
 
@@ -335,7 +335,7 @@ export default function AdminHistoryScreen() {
                     </View>
                     
                     <View style={styles.infoBox}>
-                        <Ionicons name="alert-circle-outline" size={16} color=NoxColors.aura />
+                        <Ionicons name="alert-circle-outline" size={16} color={NoxColors.aura} />
                         <Text style={styles.qrInfo}>Modificar una venta afecta el reporte financiero del día correspondiente.</Text>
                     </View>
                   </ScrollView>

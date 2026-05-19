@@ -182,18 +182,18 @@ export default function AdmInventarioScreen() {
           <Text style={styles.subtitle}>CONTROL DE EXISTENCIAS</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => {setForm(INITIAL_FORM); setEditId(null); setModalOpen(true);}}>
-          <Ionicons name="add" size={24} color=NoxColors.text />
+          <Ionicons name="add" size={24} color={NoxColors.text} />
         </TouchableOpacity>
       </View>
 
       {isLoading ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{marginTop:50}} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{marginTop:50}} />
       ) : (
         <FlatList 
           data={productos} 
           keyExtractor={it => String(it.id)} 
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor=NoxColors.aura />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor={NoxColors.aura} />}
           renderItem={({item}) => (
           <View style={styles.card}>
             <View style={styles.cardAccent} />
@@ -201,7 +201,7 @@ export default function AdmInventarioScreen() {
                 {item.imagen ? (
                     <Image source={{ uri: formatImageUrl(item.imagen) }} style={styles.cardImage} />
                 ) : (
-                    <Ionicons name="cube-outline" size={26} color=NoxColors.aura />
+                    <Ionicons name="cube-outline" size={26} color={NoxColors.aura} />
                 )}
             </View>
             <View style={styles.cardMain}>
@@ -214,13 +214,13 @@ export default function AdmInventarioScreen() {
             </View>
             <View style={styles.actions}>
               <TouchableOpacity onPress={() => handleOpenMov(item)} style={styles.iconBtnMov}>
-                <Ionicons name="git-compare-outline" size={18} color=NoxColors.aura />
+                <Ionicons name="git-compare-outline" size={18} color={NoxColors.aura} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleEdit(item)} style={styles.iconBtn}>
-                <Ionicons name="pencil-outline" size={18} color=NoxColors.text />
+                <Ionicons name="pencil-outline" size={18} color={NoxColors.text} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.iconBtnDanger}>
-                <Ionicons name="trash-outline" size={18} color=NoxColors.rose />
+                <Ionicons name="trash-outline" size={18} color={NoxColors.rose} />
               </TouchableOpacity>
             </View>
           </View>
@@ -258,7 +258,7 @@ export default function AdmInventarioScreen() {
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>CANTIDAD</Text>
                     <TextInput 
-                        style={styles.input} keyboardType="numeric" placeholder="0" placeholderTextColor=NoxColors.gray
+                        style={styles.input} keyboardType="numeric" placeholder="0" placeholderTextColor={NoxColors.gray}
                         value={movForm.cantidad} onChangeText={t => setMovForm({...movForm, cantidad: t})} 
                     />
                 </View>
@@ -267,7 +267,7 @@ export default function AdmInventarioScreen() {
                     <Text style={styles.label}>OBSERVACIONES</Text>
                     <TextInput 
                         style={[styles.input, {height: 80, textAlignVertical: 'top'}]} 
-                        multiline placeholder="Escribe el motivo..." placeholderTextColor=NoxColors.gray
+                        multiline placeholder="Escribe el motivo..." placeholderTextColor={NoxColors.gray}
                         value={movForm.motivo} onChangeText={t => setMovForm({...movForm, motivo: t})} 
                     />
                 </View>
@@ -295,7 +295,7 @@ export default function AdmInventarioScreen() {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={styles.label}>NOMBRE DEL PRODUCTO</Text>
                     <TextInput 
-                        placeholder="Ej: Ron Añejo..." placeholderTextColor=NoxColors.gray
+                        placeholder="Ej: Ron Añejo..." placeholderTextColor={NoxColors.gray}
                         style={styles.input} value={form.nombre} onChangeText={t => setForm({...form, nombre: t})} 
                     />
 
@@ -306,12 +306,12 @@ export default function AdmInventarioScreen() {
                       disabled={isUploadingImage}
                     >
                       {isUploadingImage ? (
-                        <ActivityIndicator color=NoxColors.aura />
+                        <ActivityIndicator color={NoxColors.aura} />
                       ) : form.imagen ? (
                         <Image source={{ uri: form.imagen }} style={{ width: 100, height: 100, borderRadius: 10 }} />
                       ) : (
                         <View style={{ alignItems: 'center' }}>
-                          <Ionicons name="camera-outline" size={32} color=NoxColors.muted />
+                          <Ionicons name="camera-outline" size={32} color={NoxColors.muted} />
                           <Text style={{ color: NoxColors.muted, fontSize: 12, marginTop: 5 }}>Tocar para elegir foto de galería</Text>
                         </View>
                       )}

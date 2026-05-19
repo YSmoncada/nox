@@ -22,7 +22,7 @@ export default function Index() {
   if (!hydrated) {
     return (
       <View style={{ flex: 1, backgroundColor: NoxColors.deep, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator color=NoxColors.aura size="large" />
+        <ActivityIndicator color={NoxColors.aura} size="large" />
       </View>
     );
   }

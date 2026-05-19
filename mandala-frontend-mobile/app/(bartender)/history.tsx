@@ -103,9 +103,9 @@ export default function BartenderHistoryScreen() {
         </View>
 
         <View style={styles.metaRow}>
-          <Ionicons name="calendar-outline" size={12} color=NoxColors.muted />
+          <Ionicons name="calendar-outline" size={12} color={NoxColors.muted} />
           <Text style={styles.metaText}>{fecha}</Text>
-          <Ionicons name="time-outline" size={12} color=NoxColors.muted style={{ marginLeft: 10 }} />
+          <Ionicons name="time-outline" size={12} color={NoxColors.muted} style={{ marginLeft: 10 }} />
           <Text style={styles.metaText}>{hora}</Text>
         </View>
 
@@ -131,7 +131,7 @@ export default function BartenderHistoryScreen() {
                     onPress={() => Alert.alert("Confirmar", "¿RECHAZAR este pedido?", [
                         {text:'No'}, {text:'Sí', onPress:() => handleUpdateEstado(item.id, 'cancelado')}
                     ])}>
-                    <Ionicons name="close" size={14} color=NoxColors.rose />
+                    <Ionicons name="close" size={14} color={NoxColors.rose} />
                     <Text style={styles.cancelBtnTextMini}>RECHAZAR</Text>
                   </TouchableOpacity>
                   
@@ -139,7 +139,7 @@ export default function BartenderHistoryScreen() {
                     <TouchableOpacity 
                         style={styles.listoBtnMini} 
                         onPress={() => handleUpdateEstado(item.id, 'despachado')}>
-                        <Ionicons name="checkmark-circle" size={14} color=NoxColors.text />
+                        <Ionicons name="checkmark-circle" size={14} color={NoxColors.text} />
                         <Text style={styles.listoBtnTextMini}>¡LISTO!</Text>
                     </TouchableOpacity>
                   )}
@@ -164,15 +164,15 @@ export default function BartenderHistoryScreen() {
           <Text style={styles.subtitle}>MIS PEDIDOS</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-          <Ionicons name="log-out-outline" size={22} color=NoxColors.rose />
+          <Ionicons name="log-out-outline" size={22} color={NoxColors.rose} />
         </TouchableOpacity>
       </View>
 
       {loading && !refreshing ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 60 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 60 }} />
       ) : pedidos.length === 0 ? (
         <View style={styles.empty}>
-          <Ionicons name="receipt-outline" size={64} color=NoxColors.container />
+          <Ionicons name="receipt-outline" size={64} color={NoxColors.container} />
           <Text style={styles.emptyTitle}>Sin pedidos aún</Text>
           <Text style={styles.emptyText}>Tus pedidos aparecerán aquí</Text>
         </View>
@@ -182,7 +182,7 @@ export default function BartenderHistoryScreen() {
           keyExtractor={item => String(item.id)}
           renderItem={renderPedido}
           contentContainerStyle={{ padding: 15, paddingBottom: 100 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor=NoxColors.aura />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={NoxColors.aura} />}
         />
       )}
 

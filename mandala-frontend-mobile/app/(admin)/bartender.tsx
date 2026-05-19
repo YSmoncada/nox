@@ -92,7 +92,7 @@ export default function AdminBartenderScreen() {
             style={[styles.readyBtn, { flex: 2 }]} 
             onPress={() => confirmAction(item.id, 'despachado')}
           >
-            <Ionicons name="checkmark-circle-outline" size={20} color=NoxColors.text />
+            <Ionicons name="checkmark-circle-outline" size={20} color={NoxColors.text} />
             <Text style={styles.readyBtnText}>¡PREPARADO!</Text>
           </TouchableOpacity>
         </View>
@@ -113,7 +113,7 @@ export default function AdminBartenderScreen() {
       </View>
 
       {loading && pedidos.length === 0 ? (
-        <ActivityIndicator size="large" color=NoxColors.aura style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color={NoxColors.aura} style={{ marginTop: 50 }} />
       ) : (
         <FlatList
           data={pedidos}
@@ -122,7 +122,7 @@ export default function AdminBartenderScreen() {
           contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Ionicons name="beer-outline" size={64} color=NoxColors.container />
+              <Ionicons name="beer-outline" size={64} color={NoxColors.container} />
               <Text style={{ color: NoxColors.muted, marginTop: 15, fontWeight:'bold', letterSpacing: 2 }}>TODO AL DÍA</Text>
               <Text style={{ color: NoxColors.gray, fontSize: 10, marginTop: 5 }}>NO HAY PEDIDOS PENDIENTES</Text>
             </View>

@@ -83,7 +83,7 @@ export default function AdminAccountingScreen() {
 
       {loading ? (
         <View style={{ flex: 1, justifyContent: 'center' }}>
-            <ActivityIndicator size="large" color=NoxColors.aura />
+            <ActivityIndicator size="large" color={NoxColors.aura} />
         </View>
       ) : (
         <ScrollView style={{ padding: 25 }} showsVerticalScrollIndicator={false}>
@@ -114,13 +114,13 @@ export default function AdminAccountingScreen() {
 
                 {/* Acciones de Cierre */}
                 <TouchableOpacity style={styles.closeBtn} onPress={() => setShowCerrar(true)}>
-                    <Ionicons name="lock-closed-outline" size={24} color=NoxColors.text />
+                    <Ionicons name="lock-closed-outline" size={24} color={NoxColors.text} />
                     <Text style={styles.closeBtnText}>REALIZAR CORTE DE CAJA</Text>
                 </TouchableOpacity>
                 </>
             ) : (
                 <View style={styles.closedState}>
-                    <Ionicons name="calendar-outline" size={80} color=NoxColors.container />
+                    <Ionicons name="calendar-outline" size={80} color={NoxColors.container} />
                     <Text style={styles.closedTitle}>SISTEMA FUERA DE TURNO</Text>
                     <Text style={styles.closedMsg}>No hay una operación activa. Abre un nuevo turno para habilitar las ventas.</Text>
                     
@@ -151,7 +151,7 @@ export default function AdminAccountingScreen() {
                             value={baseInicial} 
                             onChangeText={setBaseInicial}
                             placeholder="0"
-                            placeholderTextColor=NoxColors.gray
+                            placeholderTextColor={NoxColors.gray}
                             returnKeyType="done"
                         />
                         <Text style={styles.modalLabel}>OBSERVACIONES</Text>
@@ -161,7 +161,7 @@ export default function AdminAccountingScreen() {
                             value={observaciones} 
                             onChangeText={setObservaciones}
                             placeholder="Ej: Turno nocturno viernes"
-                            placeholderTextColor=NoxColors.gray
+                            placeholderTextColor={NoxColors.gray}
                         />
                         
                         <View style={styles.modalActions}>
@@ -195,7 +195,7 @@ export default function AdminAccountingScreen() {
                             value={efectivoReal} 
                             onChangeText={setEfectivoReal}
                             placeholder="Cuenta el dinero físico..."
-                            placeholderTextColor=NoxColors.gray
+                            placeholderTextColor={NoxColors.gray}
                             returnKeyType="done"
                         />
                         <Text style={styles.modalLabel}>NOTAS DE CIERRE</Text>
@@ -205,7 +205,7 @@ export default function AdminAccountingScreen() {
                             value={observaciones} 
                             onChangeText={setObservaciones}
                             placeholder="Diferencias, novedades, etc."
-                            placeholderTextColor=NoxColors.gray
+                            placeholderTextColor={NoxColors.gray}
                         />
                         
                         <View style={styles.modalActions}>

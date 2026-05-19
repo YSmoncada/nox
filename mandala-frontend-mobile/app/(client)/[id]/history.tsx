@@ -105,7 +105,7 @@ export default function ClientHistoryScreen() {
   };
 
   if (loading && !refreshing) return (
-    <View style={styles.loader}><ActivityIndicator color=NoxColors.aura size="large" /></View>
+    <View style={styles.loader}><ActivityIndicator color={NoxColors.aura} size="large" /></View>
   );
 
   return (
@@ -126,7 +126,7 @@ export default function ClientHistoryScreen() {
             }
           }}
         >
-           <Ionicons name="cash-outline" size={20} color=NoxColors.text />
+           <Ionicons name="cash-outline" size={20} color={NoxColors.text} />
            <Text style={styles.payBtnText}>PEDIR CUENTA</Text>
         </TouchableOpacity>
       </View>
@@ -142,10 +142,10 @@ export default function ClientHistoryScreen() {
         keyExtractor={item => String(item.id)}
         renderItem={renderPedido}
         contentContainerStyle={{ padding: 20, paddingBottom: 120 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchHistory(true)} tintColor=NoxColors.aura />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchHistory(true)} tintColor={NoxColors.aura} />}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Ionicons name="receipt-outline" size={60} color=NoxColors.container />
+            <Ionicons name="receipt-outline" size={60} color={NoxColors.container} />
             <Text style={styles.emptyTitle}>SIN CONSUMOS AÚN</Text>
             <Text style={styles.emptyText}>Tus pedidos aparecerán aquí una vez los envíes.</Text>
           </View>
