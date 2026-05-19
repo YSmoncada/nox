@@ -62,13 +62,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-        <Stack.Screen name="(mesera)" options={{ headerShown: false }} />
-        <Stack.Screen name="(bartender)" options={{ headerShown: false }} />
-        <Stack.Screen name="(client)/[id]" options={{ headerShown: false }} />
-      </Stack>
+      <Stack screenOptions={{ headerShown: false }} />
       <StatusBar style="auto" />
 
       {/* Sistema de Alerta Global */}
