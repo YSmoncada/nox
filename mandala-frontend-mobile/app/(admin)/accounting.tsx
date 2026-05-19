@@ -68,7 +68,7 @@ export default function AdminAccountingScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Encabezado Premium */}
+      
       <View style={styles.header}>
         <View>
           <Text style={styles.brandingNox}>Nox<Text style={styles.brandingOS}>OS</Text></Text>
